@@ -578,6 +578,172 @@
             overflow-y: auto;
             max-height: 100vh;
             border-radius: 20px 0 0 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .shop.hidden {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .shop-toggle {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #8E44AD, #E74C3C);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 15px 0 0 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .shop-toggle:hover {
+            transform: translateY(-50%) translateX(-5px);
+        }
+
+        .shop-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #E74C3C;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .shop-close:hover {
+            background: #C0392B;
+            transform: scale(1.1);
+        }
+
+        .donate-button {
+            position: fixed;
+            top: 20px;
+            left: 250px;
+            background: linear-gradient(45deg, #27AE60, #2ECC71);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .donate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .player-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .player-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .player-name {
+            font-weight: bold;
+            color: #2C3E50;
+            font-size: 1.1rem;
+        }
+
+        .player-status {
+            font-size: 0.9rem;
+            color: #27AE60;
+            margin-top: 3px;
+        }
+
+        .donation-amount {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            direction: ltr;
+        }
+
+        .donation-amount:focus {
+            border-color: #27AE60;
+            outline: none;
+        }
+
+        .donation-confirm {
+            background: linear-gradient(45deg, #27AE60, #2ECC71);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .donation-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            min-width: 300px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: popupShow 0.3s ease;
+        }
+
+        @keyframes popupShow {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         .shop h2 {
@@ -876,6 +1042,12 @@
         <button class="club-button" onclick="openCreateClubModal()">⭐ צור מועדון</button>
     </div>
 
+    <!-- Donate Button -->
+    <button class="donate-button" onclick="openDonateModal()">🎁 תרום עוגיות</button>
+
+    <!-- Shop Toggle Button (hidden by default) -->
+    <button class="shop-toggle" id="shopToggle" onclick="toggleShop()" style="display: none;">חנות</button>
+
     <!-- Join Club Modal -->
     <div class="modal" id="joinClubModal">
         <div class="modal-content">
@@ -918,6 +1090,30 @@
         </div>
     </div>
 
+    <!-- Donate Modal -->
+    <div class="modal" id="donateModal">
+        <div class="modal-content">
+            <h3>🎁 תרום עוגיות לשחקן</h3>
+            <p>בחר שחקן לתרומה:</p>
+            <div class="player-list" id="playerList"></div>
+            <button class="close-button" onclick="closeModal('donateModal')">ביטול</button>
+            <div id="donateMessage"></div>
+        </div>
+    </div>
+
+    <!-- Donation Amount Modal -->
+    <div class="modal" id="donationAmountModal">
+        <div class="modal-content">
+            <h3>🎁 תרום עוגיות</h3>
+            <p>תרומה לשחקן: <strong id="donationTargetPlayer"></strong></p>
+            <p>יש לך: <strong id="currentCookiesDisplay"></strong> עוגיות</p>
+            <input type="number" class="donation-amount" id="donationAmountInput" placeholder="הזן מספר עוגיות" min="1">
+            <button class="donation-confirm" onclick="confirmDonation()">אשר תרומה</button>
+            <button class="close-button" onclick="closeModal('donationAmountModal')">ביטול</button>
+            <div id="donationMessage"></div>
+        </div>
+    </div>
+
     <div class="floating-cookies" id="floatingCookies"></div>
     
     <!-- Firebase Status -->
@@ -954,7 +1150,8 @@
             </div>
         </div>
         
-        <div class="shop">
+        <div class="shop" id="shop">
+            <button class="shop-close" onclick="toggleShop()">×</button>
             <h2>🛒 חנות האימפריה 🛒</h2>
             
             <div class="shop-section">
@@ -984,8 +1181,290 @@
     </div>
 
     <script>
+async function leaveClub() {
+            if (!currentClub) return;
+
+            const club = clubs[currentClub];
+            if (club.founder === currentUser) {
+                if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
+                    // Delete club from Firebase
+                    if (firebaseInitialized) {
+                        try {
+                            await database.ref(`clubs/${currentClub}`).remove();
+                        } catch (error) {
+                            console.warn('Failed to delete club from Firebase:', error);
+                        }
+                    }
+
+                    delete clubs[currentClub];
+                    
+                    // Remove club from all members
+                    for (let username in users) {
+                        if (users[username].club === currentClub) {
+                            users[username].club = null;
+                            // Update in Firebase
+                            if (firebaseInitialized) {
+                                try {
+                                    await database.ref(`users/${username}/club`).remove();
+                                } catch (error) {
+                                    console.warn('Failed to update user club in Firebase:', error);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                club.members = club.members.filter(member => member.username !== currentUser);
+                
+                // Update club in Firebase
+                if (firebaseInitialized) {
+                    try {
+                        await database.ref(`clubs/${currentClub}/members`).set(club.members);
+                    } catch (error) {
+                        console.warn('Failed to update club members in Firebase:', error);
+                    }
+                }
+            }
+
+            currentClub = null;
+            users[currentUser].club = null;
+            
+            // Update user in Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`users/${currentUser}/club`).remove();
+                } catch (error) {
+                    console.warn('Failed to update user club in Firebase:', error);
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
+            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+            
+            updateClubButton();
+            closeModal('clubInfoModal');
+        }
+
+        async function showClubInfo() {
+            if (!currentClub) return;
+
+            let club = clubs[currentClub];
+
+            // Try to get fresh data from Firebase
+            if (firebaseInitialized) {
+                try {
+                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
+                    if (clubSnapshot.exists()) {
+                        club = clubSnapshot.val();
+                        clubs[currentClub] = club; // Update local cache
+                    }
+                } catch (error) {
+                    console.warn('Failed to fetch club info from Firebase:', error);
+                }
+            }
+
+            if (!club) return;
+
+            document.getElementById('clubInfoName').textContent = club.name;
+            document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
+            
+            // Calculate total clicks from all members
+            let totalClubClicks = 0;
+            for (const member of club.members) {
+                if (users[member.username]) {
+                    totalClubClicks += users[member.username].totalClicks || 0;
+                } else if (firebaseInitialized) {
+                    // Try to fetch member data from Firebase
+                    try {
+                        const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
+                        if (memberSnapshot.exists()) {
+                            const memberData = memberSnapshot.val();
+                            users[member.username] = memberData; // Cache locally
+                            totalClubClicks += memberData.totalClicks || 0;
+                        }
+                    } catch (error) {
+                        console.warn('Failed to fetch member data from Firebase:', error);
+                    }
+                }
+            }
+            
+            document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
+            
+            // Show members
+            const memberListDiv = document.getElementById('memberList');
+            memberListDiv.innerHTML = '';
+            club.members.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'member-item';
+                memberDiv.innerHTML = `
+                    <span class="member-name">${member.username}</span>
+                    <span class="member-role">${member.role}</span>
+                `;
+                memberListDiv.appendChild(memberDiv);
+            });
+
+            document.getElementById('clubInfoModal').style.display = 'flex';
+        }
+
+        // Chat Functions
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            const chatToggle = document.getElementById('chatToggle');
+            
+            if (chatContainer.classList.contains('minimized')) {
+                chatContainer.classList.remove('minimized');
+                chatToggle.textContent = '−';
+            } else {
+                chatContainer.classList.add('minimized');
+                chatToggle.textContent = '+';
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message || !currentUser) return;
+            
+            const messageData = {
+                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                sender: currentUser,
+                message: message,
+                timestamp: Date.now()
+            };
+
+            // Add to local cache
+            chatMessages.push(messageData);
+            if (chatMessages.length > 50) {
+                chatMessages = chatMessages.slice(-50);
+            }
+
+            // Send to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`chat/${messageData.id}`).set(messageData);
+                } catch (error) {
+                    console.warn('Failed to send message to Firebase:', error);
+                }
+            }
+
+            input.value = '';
+            displayChatMessages();
+        }
+
+        function displayChatMessages() {
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatMessagesDiv.innerHTML = '';
+
+            chatMessages.slice(-20).forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                messageDiv.innerHTML = `
+                    ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
+                    <div>${msg.message}</div>
+                    <div class="message-time">${time}</div>
+                `;
+
+                chatMessagesDiv.appendChild(messageDiv);
+            });
+
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        function setupChatListener() {
+            if (!firebaseInitialized) return;
+
+            try {
+                chatListener = database.ref('chat').limitToLast(50);
+                chatListener.on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        chatMessages = Object.values(snapshot.val());
+                        displayChatMessages();
+                    }
+                });
+            } catch (error) {
+                console.warn('Failed to setup chat listener:', error);
+            }
+        }
+
+        // Chat input event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
+        // Auto-save with Firebase sync
+        setInterval(async () => {
+            await saveUserData();
+            if (currentUser) {
+                checkNotifications();
+            }
+        }, 30000);
+
+        // Check for remembered user and load initial data
+        window.onload = async function() {
+            await loadInitialData();
+            
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser && users[rememberedUser]) {
+                currentUser = rememberedUser;
+                loadUserData();
+                document.getElementById('loginScreen').style.display = 'none';
+                startGame();
+            } else {
+                // Still setup chat for viewing even if not logged in
+                setupChatListener();
+                displayChatMessages();
+            }
+        };
+
+        // Sync with Firebase every 2 minutes for fresh club data
+        setInterval(async () => {
+            if (firebaseInitialized && currentClub) {
+                try {
+                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
+                    if (clubSnapshot.exists()) {
+                        const freshClubData = clubSnapshot.val();
+                        clubs[currentClub] = freshClubData;
+                        localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+                    }
+                } catch (error) {
+                    console.warn('Failed to sync club data:', error);
+                }
+            }
+        }, 120000);
+
+        function startGame() {
+            calculateClickPower();
+            calculateCPS();
+            updateDisplay();
+            createShopItems();
+            createFloatingCookies();
+            checkAchievements();
+            setupChatListener();
+            displayChatMessages();
+            checkNotifications();
+        }
+
+
+
+
         // Firebase Configuration
         const firebaseConfig = {
+            
     apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
     authDomain: "my-login-system-d583d.firebaseapp.com",
     databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
@@ -995,7 +1474,6 @@
     appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
     measurementId: "G-W9EBGS5PQ5"
   };
-
 
         // Initialize Firebase
         let database;
@@ -1039,6 +1517,7 @@
         let clubs = {}; // Local cache
         let chatMessages = []; // Local chat cache
         let chatListener = null;
+        let selectedDonationTarget = null;
 
         // Load saved data from localStorage and Firebase
         async function loadInitialData() {
@@ -1555,15 +2034,189 @@
             }
         }
 
-        function startGame() {
-            calculateClickPower();
-            calculateCPS();
+        function toggleShop() {
+            const shop = document.getElementById('shop');
+            const shopToggle = document.getElementById('shopToggle');
+            
+            if (shop.classList.contains('hidden')) {
+                shop.classList.remove('hidden');
+                shopToggle.style.display = 'none';
+            } else {
+                shop.classList.add('hidden');
+                shopToggle.style.display = 'block';
+            }
+        }
+
+        function openDonateModal() {
+            if (!currentUser) {
+                showNotification('יש להתחבר כדי לתרום עוגיות', 'error');
+                return;
+            }
+            
+            loadOnlinePlayers();
+            document.getElementById('donateModal').style.display = 'flex';
+        }
+
+        async function loadOnlinePlayers() {
+            const playerListDiv = document.getElementById('playerList');
+            playerListDiv.innerHTML = '';
+
+            // Get all users from Firebase or local cache
+            let allUsers = { ...users };
+            
+            if (firebaseInitialized) {
+                try {
+                    const usersSnapshot = await database.ref('users').once('value');
+                    if (usersSnapshot.exists()) {
+                        allUsers = { ...allUsers, ...usersSnapshot.val() };
+                    }
+                } catch (error) {
+                    console.warn('Failed to load users from Firebase:', error);
+                }
+            }
+
+            for (let username in allUsers) {
+                if (username === currentUser) continue; // Don't show self
+                
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player-item';
+                playerDiv.onclick = () => selectPlayer(username);
+                
+                const lastSave = allUsers[username].lastSave || 0;
+                const isOnline = Date.now() - lastSave < 300000; // 5 minutes
+                
+                playerDiv.innerHTML = `
+                    <div class="player-name">👤 ${username}</div>
+                    <div class="player-status">${isOnline ? '🟢 מחובר' : '🔴 לא מחובר'}</div>
+                `;
+                
+                playerListDiv.appendChild(playerDiv);
+            }
+        }
+
+        function selectPlayer(username) {
+            selectedDonationTarget = username;
+            document.getElementById('donationTargetPlayer').textContent = username;
+            document.getElementById('currentCookiesDisplay').textContent = formatNumber(cookies);
+            document.getElementById('donationAmountInput').value = '';
+            
+            closeModal('donateModal');
+            document.getElementById('donationAmountModal').style.display = 'flex';
+        }
+
+        async function confirmDonation() {
+            const amount = parseInt(document.getElementById('donationAmountInput').value);
+            const messageDiv = document.getElementById('donationMessage');
+            
+            if (!amount || amount <= 0) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן מספר עוגיות תקין</div>';
+                return;
+            }
+            
+            if (amount > cookies) {
+                messageDiv.innerHTML = `<div class="error-message">אין לך ${formatNumber(amount)} עוגיות</div>`;
+                return;
+            }
+
+            // Perform donation
+            cookies -= amount;
+            
+            // Add to target player
+            if (!users[selectedDonationTarget]) {
+                // Try to load from Firebase
+                if (firebaseInitialized) {
+                    try {
+                        const userSnapshot = await database.ref(`users/${selectedDonationTarget}`).once('value');
+                        if (userSnapshot.exists()) {
+                            users[selectedDonationTarget] = userSnapshot.val();
+                        }
+                    } catch (error) {
+                        console.warn('Failed to load target user from Firebase:', error);
+                    }
+                }
+            }
+
+            if (users[selectedDonationTarget]) {
+                users[selectedDonationTarget].cookies = (users[selectedDonationTarget].cookies || 0) + amount;
+                
+                // Save to Firebase
+                if (firebaseInitialized) {
+                    try {
+                        await database.ref(`users/${selectedDonationTarget}/cookies`).set(users[selectedDonationTarget].cookies);
+                        
+                        // Send notification to target player
+                        const notificationData = {
+                            id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                            recipient: selectedDonationTarget,
+                            message: `${currentUser} תרם לך ${formatNumber(amount)} עוגיות! 🎁`,
+                            timestamp: Date.now(),
+                            type: 'donation'
+                        };
+                        
+                        await database.ref(`notifications/${selectedDonationTarget}/${notificationData.id}`).set(notificationData);
+                    } catch (error) {
+                        console.warn('Failed to save donation to Firebase:', error);
+                    }
+                }
+            }
+
+            // Save current user data
+            await saveUserData();
             updateDisplay();
-            createShopItems();
-            createFloatingCookies();
-            checkAchievements();
-            setupChatListener();
-            displayChatMessages();
+            
+            messageDiv.innerHTML = `<div class="success-message">העברת ל${selectedDonationTarget} ${formatNumber(amount)} עוגיות!</div>`;
+            
+            setTimeout(() => {
+                closeModal('donationAmountModal');
+                showNotification(`תרמת ${formatNumber(amount)} עוגיות ל${selectedDonationTarget}! 🎁`, 'success');
+            }, 2000);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification-popup';
+            if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #E74C3C, #C0392B)';
+            } else if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #27AE60, #2ECC71)';
+            }
+            
+            notification.innerHTML = `
+                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
+                    ${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}
+                </div>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 4000);
+        }
+
+        // Check for notifications
+        async function checkNotifications() {
+            if (!firebaseInitialized || !currentUser) return;
+            
+            try {
+                const notificationsSnapshot = await database.ref(`notifications/${currentUser}`).once('value');
+                if (notificationsSnapshot.exists()) {
+                    const notifications = notificationsSnapshot.val();
+                    
+                    for (let notificationId in notifications) {
+                        const notification = notifications[notificationId];
+                        showNotification(notification.message, 'success');
+                        
+                        // Remove notification after showing
+                        await database.ref(`notifications/${currentUser}/${notificationId}`).remove();
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to check notifications:', error);
+            }
         }
 
         // Check for remembered user
@@ -2201,269 +2854,6 @@
         // createShopItems();
         // createFloatingCookies();
         // checkAchievements();
-
-        async function leaveClub() {
-            if (!currentClub) return;
-
-            const club = clubs[currentClub];
-            if (club.founder === currentUser) {
-                if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
-                    // Delete club from Firebase
-                    if (firebaseInitialized) {
-                        try {
-                            await database.ref(`clubs/${currentClub}`).remove();
-                        } catch (error) {
-                            console.warn('Failed to delete club from Firebase:', error);
-                        }
-                    }
-
-                    delete clubs[currentClub];
-                    
-                    // Remove club from all members
-                    for (let username in users) {
-                        if (users[username].club === currentClub) {
-                            users[username].club = null;
-                            // Update in Firebase
-                            if (firebaseInitialized) {
-                                try {
-                                    await database.ref(`users/${username}/club`).remove();
-                                } catch (error) {
-                                    console.warn('Failed to update user club in Firebase:', error);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                club.members = club.members.filter(member => member.username !== currentUser);
-                
-                // Update club in Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`clubs/${currentClub}/members`).set(club.members);
-                    } catch (error) {
-                        console.warn('Failed to update club members in Firebase:', error);
-                    }
-                }
-            }
-
-            currentClub = null;
-            users[currentUser].club = null;
-            
-            // Update user in Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`users/${currentUser}/club`).remove();
-                } catch (error) {
-                    console.warn('Failed to update user club in Firebase:', error);
-                }
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-            
-            updateClubButton();
-            closeModal('clubInfoModal');
-        }
-
-        async function showClubInfo() {
-            if (!currentClub) return;
-
-            let club = clubs[currentClub];
-
-            // Try to get fresh data from Firebase
-            if (firebaseInitialized) {
-                try {
-                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
-                    if (clubSnapshot.exists()) {
-                        club = clubSnapshot.val();
-                        clubs[currentClub] = club; // Update local cache
-                    }
-                } catch (error) {
-                    console.warn('Failed to fetch club info from Firebase:', error);
-                }
-            }
-
-            if (!club) return;
-
-            document.getElementById('clubInfoName').textContent = club.name;
-            document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
-            
-            // Calculate total clicks from all members
-            let totalClubClicks = 0;
-            for (const member of club.members) {
-                if (users[member.username]) {
-                    totalClubClicks += users[member.username].totalClicks || 0;
-                } else if (firebaseInitialized) {
-                    // Try to fetch member data from Firebase
-                    try {
-                        const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
-                        if (memberSnapshot.exists()) {
-                            const memberData = memberSnapshot.val();
-                            users[member.username] = memberData; // Cache locally
-                            totalClubClicks += memberData.totalClicks || 0;
-                        }
-                    } catch (error) {
-                        console.warn('Failed to fetch member data from Firebase:', error);
-                    }
-                }
-            }
-            
-            document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
-            
-            // Show members
-            const memberListDiv = document.getElementById('memberList');
-            memberListDiv.innerHTML = '';
-            club.members.forEach(member => {
-                const memberDiv = document.createElement('div');
-                memberDiv.className = 'member-item';
-                memberDiv.innerHTML = `
-                    <span class="member-name">${member.username}</span>
-                    <span class="member-role">${member.role}</span>
-                `;
-                memberListDiv.appendChild(memberDiv);
-            });
-
-            document.getElementById('clubInfoModal').style.display = 'flex';
-        }
-
-        // Chat Functions
-        function toggleChat() {
-            const chatContainer = document.getElementById('chatContainer');
-            const chatToggle = document.getElementById('chatToggle');
-            
-            if (chatContainer.classList.contains('minimized')) {
-                chatContainer.classList.remove('minimized');
-                chatToggle.textContent = '−';
-            } else {
-                chatContainer.classList.add('minimized');
-                chatToggle.textContent = '+';
-            }
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message || !currentUser) return;
-            
-            const messageData = {
-                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                sender: currentUser,
-                message: message,
-                timestamp: Date.now()
-            };
-
-            // Add to local cache
-            chatMessages.push(messageData);
-            if (chatMessages.length > 50) {
-                chatMessages = chatMessages.slice(-50);
-            }
-
-            // Send to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`chat/${messageData.id}`).set(messageData);
-                } catch (error) {
-                    console.warn('Failed to send message to Firebase:', error);
-                }
-            }
-
-            input.value = '';
-            displayChatMessages();
-        }
-
-        function displayChatMessages() {
-            const chatMessagesDiv = document.getElementById('chatMessages');
-            chatMessagesDiv.innerHTML = '';
-
-            chatMessages.slice(-20).forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
-                
-                const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                messageDiv.innerHTML = `
-                    ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
-                    <div>${msg.message}</div>
-                    <div class="message-time">${time}</div>
-                `;
-
-                chatMessagesDiv.appendChild(messageDiv);
-            });
-
-            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-        }
-
-        function setupChatListener() {
-            if (!firebaseInitialized) return;
-
-            try {
-                chatListener = database.ref('chat').limitToLast(50);
-                chatListener.on('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        chatMessages = Object.values(snapshot.val());
-                        displayChatMessages();
-                    }
-                });
-            } catch (error) {
-                console.warn('Failed to setup chat listener:', error);
-            }
-        }
-
-        // Chat input event listener
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-        });
-
-        // Auto-save with Firebase sync
-        setInterval(async () => {
-            await saveUserData();
-        }, 30000);
-
-        // Sync with Firebase every 2 minutes for fresh club data
-        setInterval(async () => {
-            if (firebaseInitialized && currentClub) {
-                try {
-                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
-                    if (clubSnapshot.exists()) {
-                        const freshClubData = clubSnapshot.val();
-                        clubs[currentClub] = freshClubData;
-                        localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-                    }
-                } catch (error) {
-                    console.warn('Failed to sync club data:', error);
-                }
-            }
-        }, 120000);
-
-        // Check for remembered user and load initial data
-        window.onload = async function() {
-            await loadInitialData();
-            
-            const rememberedUser = localStorage.getItem('rememberedUser');
-            if (rememberedUser && users[rememberedUser]) {
-                currentUser = rememberedUser;
-                loadUserData();
-                document.getElementById('loginScreen').style.display = 'none';
-                startGame();
-            } else {
-                // Still setup chat for viewing even if not logged in
-                setupChatListener();
-                displayChatMessages();
-            }
-        };
     </script>
 </body>
 </html>
