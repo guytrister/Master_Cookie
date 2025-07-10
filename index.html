@@ -83,6 +83,16 @@
             margin-bottom: 10px;
         }
 
+        .cookies-per-click {
+            font-size: 1.2rem;
+            color: #E74C3C;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
         .prestige-info {
             font-size: 1.1rem;
             color: #8E44AD;
@@ -483,6 +493,7 @@
                 </div>
                 <div class="cookie-count" id="cookieCount">0</div>
                 <div class="cookies-per-second" id="cpsDisplay">0 עוגיות לשנייה</div>
+                <div class="cookies-per-click" id="cpcDisplay">+1 עוגיות ללחיצה</div>
                 <div class="prestige-info" id="prestigeInfo">רמת יוקרה: 0 | כפולה: x1</div>
                 <button class="prestige-button" id="prestigeButton" onclick="prestige()">🌟 איפוס יוקרה 🌟</button>
             </div>
@@ -498,6 +509,11 @@
             <div class="shop-section">
                 <h3>🏭 מבנים</h3>
                 <div id="buildingItems"></div>
+            </div>
+            
+            <div class="shop-section">
+                <h3>👆 שדרוגי לחיצה</h3>
+                <div id="clickUpgradeItems"></div>
             </div>
             
             <div class="shop-section">
@@ -625,6 +641,49 @@
             }
         };
 
+        const clickUpgrades = {
+            clickPower1: {
+                name: "אצבע חזקה",
+                emoji: "👆",
+                description: "כל לחיצה מביאה +1 עוגיה נוספת",
+                baseCost: 50,
+                clickBonus: 1,
+                level: 0
+            },
+            clickPower2: {
+                name: "יד ברזל",
+                emoji: "✊",
+                description: "כל לחיצה מביאה +5 עוגיות נוספות",
+                baseCost: 500,
+                clickBonus: 5,
+                level: 0
+            },
+            clickPower3: {
+                name: "זרוע טיטניום",
+                emoji: "🦾",
+                description: "כל לחיצה מביאה +25 עוגיות נוספות",
+                baseCost: 5000,
+                clickBonus: 25,
+                level: 0
+            },
+            clickPower4: {
+                name: "כוח על-אנושי",
+                emoji: "⚡",
+                description: "כל לחיצה מביאה +100 עוגיות נוספות",
+                baseCost: 50000,
+                clickBonus: 100,
+                level: 0
+            },
+            clickPower5: {
+                name: "אצבע אלוהית",
+                emoji: "🌟",
+                description: "כל לחיצה מביאה +500 עוגיות נוספות",
+                baseCost: 500000,
+                clickBonus: 500,
+                level: 0
+            }
+        };
+
         const upgrades = {
             reinforcedIndex: {
                 name: "אצבע מחוזקת",
@@ -719,9 +778,17 @@
             return (num / 1000000000000).toFixed(1) + 'T';
         }
 
+        function calculateClickPower() {
+            clickPower = 1; // Base click power
+            for (let key in clickUpgrades) {
+                clickPower += clickUpgrades[key].level * clickUpgrades[key].clickBonus;
+            }
+        }
+
         function updateDisplay() {
             document.getElementById('cookieCount').textContent = formatNumber(cookies);
             document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
+            document.getElementById('cpcDisplay').textContent = `+${formatNumber(Math.floor(clickPower * prestigeMultiplier))} עוגיות ללחיצה`;
             document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
         }
 
@@ -734,6 +801,10 @@
 
         function getCost(building) {
             return Math.floor(building.baseCost * Math.pow(1.15, building.count));
+        }
+
+        function getClickUpgradeCost(upgrade) {
+            return Math.floor(upgrade.baseCost * Math.pow(2, upgrade.level));
         }
 
         function createShopItems() {
@@ -763,6 +834,34 @@
                 }
                 
                 buildingContainer.appendChild(item);
+            }
+
+            // Click Upgrades
+            const clickUpgradeContainer = document.getElementById('clickUpgradeItems');
+            clickUpgradeContainer.innerHTML = '';
+            
+            for (let key in clickUpgrades) {
+                const upgrade = clickUpgrades[key];
+                const cost = getClickUpgradeCost(upgrade);
+                const canAfford = cookies >= cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
+                        <span class="item-count">רמה ${upgrade.level}</span>
+                    </div>
+                    <div class="item-description">${upgrade.description}</div>
+                    <div class="item-production">נוכחי: +${formatNumber(upgrade.level * upgrade.clickBonus)} ללחיצה</div>
+                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyClickUpgrade(key);
+                }
+                
+                clickUpgradeContainer.appendChild(item);
             }
 
             // Upgrades
@@ -813,6 +912,23 @@
             });
         }
 
+        function buyClickUpgrade(upgradeKey) {
+            const upgrade = clickUpgrades[upgradeKey];
+            const cost = getClickUpgradeCost(upgrade);
+            
+            if (cookies >= cost) {
+                cookies -= cost;
+                upgrade.level++;
+                totalCookiesBaked += cost;
+                calculateClickPower();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#E74C3C');
+                showAchievement({name: 'שדרוג לחיצה!', desc: `${upgrade.name} - רמה ${upgrade.level}`, emoji: upgrade.emoji});
+            }
+        }
+
         function buyBuilding(buildingKey) {
             const building = buildings[buildingKey];
             const cost = getCost(building);
@@ -821,6 +937,12 @@
                 cookies -= cost;
                 building.count++;
                 totalCookiesBaked += cost;
+                // Reset click upgrades
+                for (let key in clickUpgrades) {
+                    clickUpgrades[key].level = 0;
+                }
+                
+                calculateClickPower();
                 calculateCPS();
                 updateDisplay();
                 createShopItems();
@@ -1035,6 +1157,7 @@
         }, 30000);
 
         // Initialize game
+        calculateClickPower();
         calculateCPS();
         updateDisplay();
         createShopItems();
