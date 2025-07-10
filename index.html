@@ -22,6 +22,230 @@
             overflow-x: hidden;
         }
 
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            min-width: 350px;
+        }
+
+        .login-form h2 {
+            color: #2C3E50;
+            margin-bottom: 25px;
+            font-size: 2rem;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .login-form button {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .login-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            font-size: 1rem;
+            color: #2C3E50;
+        }
+
+        .remember-me input {
+            width: auto;
+            margin-left: 8px;
+        }
+
+        .club-buttons {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .club-button {
+            background: linear-gradient(45deg, #8E44AD, #E74C3C);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .club-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            min-width: 400px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .modal button {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .modal button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-button {
+            background: linear-gradient(45deg, #E74C3C, #C0392B) !important;
+        }
+
+        .club-info {
+            text-align: right;
+            margin: 20px 0;
+        }
+
+        .club-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+
+        .club-code {
+            font-size: 1.2rem;
+            color: #8E44AD;
+            margin-bottom: 10px;
+        }
+
+        .club-stats {
+            font-size: 1.1rem;
+            color: #27AE60;
+            margin-bottom: 15px;
+        }
+
+        .member-list {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: #2C3E50;
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            color: #8E44AD;
+            background: rgba(142, 68, 173, 0.2);
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+
+        .error-message {
+            color: #E74C3C;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .success-message {
+            color: #27AE60;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -483,6 +707,70 @@
     </style>
 </head>
 <body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-form">
+            <h2>🍪 ברוכים הבאים למשחק העוגיות! 🍪</h2>
+            <input type="text" id="usernameInput" placeholder="שם משתמש" maxlength="20">
+            <input type="password" id="passwordInput" placeholder="סיסמה">
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">זכור אותי</label>
+            </div>
+            <button onclick="login()">התחבר</button>
+            <button onclick="register()">הרשם</button>
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <!-- Club Buttons -->
+    <div class="club-buttons">
+        <button class="club-button" onclick="openJoinClubModal()">🏆 הצטרף למועדון</button>
+        <button class="club-button" onclick="openCreateClubModal()">⭐ צור מועדון</button>
+    </div>
+
+    <!-- Join Club Modal -->
+    <div class="modal" id="joinClubModal">
+        <div class="modal-content">
+            <h3>🏆 הצטרפות למועדון</h3>
+            <p>הקלד קוד מועדון (4 ספרות):</p>
+            <input type="text" id="clubCodeInput" placeholder="קוד מועדון" maxlength="4" pattern="[0-9]{4}">
+            <button onclick="joinClub()">אישור</button>
+            <button class="close-button" onclick="closeModal('joinClubModal')">ביטול</button>
+            <div id="joinClubMessage"></div>
+        </div>
+    </div>
+
+    <!-- Create Club Modal -->
+    <div class="modal" id="createClubModal">
+        <div class="modal-content">
+            <h3>⭐ יצירת מועדון</h3>
+            <p>שם מועדון:</p>
+            <input type="text" id="clubNameInput" placeholder="שם המועדון" maxlength="30">
+            <button onclick="createClub()">צור</button>
+            <button class="close-button" onclick="closeModal('createClubModal')">ביטול</button>
+            <div id="createClubMessage"></div>
+        </div>
+    </div>
+
+    <!-- Club Info Modal -->
+    <div class="modal" id="clubInfoModal">
+        <div class="modal-content">
+            <h3>🏆 פרטי המועדון</h3>
+            <div class="club-info">
+                <div class="club-name" id="clubInfoName"></div>
+                <div class="club-code" id="clubInfoCode"></div>
+                <div class="club-stats" id="clubInfoStats"></div>
+                <div class="member-list">
+                    <h4>חברי המועדון:</h4>
+                    <div id="memberList"></div>
+                </div>
+            </div>
+            <button onclick="leaveClub()">עזוב מועדון</button>
+            <button class="close-button" onclick="closeModal('clubInfoModal')">סגור</button>
+        </div>
+    </div>
+
     <div class="floating-cookies" id="floatingCookies"></div>
     
     <div class="game-container">
@@ -541,6 +829,353 @@
         let totalCookiesBaked = 0;
         let goldenCookieClicks = 0;
         let lastGoldenCookie = 0;
+        let totalClicks = 0;
+
+        // User and Club System
+        let currentUser = null;
+        let currentClub = null;
+        let users = {}; // Simulated user database
+        let clubs = {}; // Simulated club database
+
+        // Load saved data
+        if (localStorage.getItem('cookieUsers')) {
+            users = JSON.parse(localStorage.getItem('cookieUsers'));
+        }
+        if (localStorage.getItem('cookieClubs')) {
+            clubs = JSON.parse(localStorage.getItem('cookieClubs'));
+        }
+
+        function saveData() {
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
+            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+        }
+
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const remember = document.getElementById('rememberMe').checked;
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (!username || !password) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
+                return;
+            }
+
+            if (users[username] && users[username].password === password) {
+                currentUser = username;
+                loadUserData();
+                if (remember) {
+                    localStorage.setItem('rememberedUser', username);
+                }
+                document.getElementById('loginScreen').style.display = 'none';
+                startGame();
+            } else {
+                messageDiv.innerHTML = '<div class="error-message">שם משתמש או סיסמה שגויים</div>';
+            }
+        }
+
+        function register() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const remember = document.getElementById('rememberMe').checked;
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (!username || !password) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
+                return;
+            }
+
+            if (username.length < 3) {
+                messageDiv.innerHTML = '<div class="error-message">שם המשתמש חייב להיות לפחות 3 תווים</div>';
+                return;
+            }
+
+            if (users[username]) {
+                messageDiv.innerHTML = '<div class="error-message">שם המשתמש כבר קיים</div>';
+                return;
+            }
+
+            users[username] = {
+                password: password,
+                cookies: 0,
+                totalClicks: 0,
+                totalCookiesBaked: 0,
+                buildings: JSON.parse(JSON.stringify(buildings)),
+                clickUpgrades: JSON.parse(JSON.stringify(clickUpgrades)),
+                upgrades: JSON.parse(JSON.stringify(upgrades)),
+                prestigeLevel: 0,
+                prestigeMultiplier: 1,
+                club: null
+            };
+
+            currentUser = username;
+            saveData();
+            
+            if (remember) {
+                localStorage.setItem('rememberedUser', username);
+            }
+            
+            messageDiv.innerHTML = '<div class="success-message">נרשמת בהצלחה!</div>';
+            setTimeout(() => {
+                document.getElementById('loginScreen').style.display = 'none';
+                startGame();
+            }, 1000);
+        }
+
+        function loadUserData() {
+            if (users[currentUser]) {
+                const userData = users[currentUser];
+                cookies = userData.cookies || 0;
+                totalClicks = userData.totalClicks || 0;
+                totalCookiesBaked = userData.totalCookiesBaked || 0;
+                prestigeLevel = userData.prestigeLevel || 0;
+                prestigeMultiplier = userData.prestigeMultiplier || 1;
+                
+                if (userData.buildings) {
+                    for (let key in userData.buildings) {
+                        if (buildings[key]) {
+                            buildings[key].count = userData.buildings[key].count || 0;
+                        }
+                    }
+                }
+                
+                if (userData.clickUpgrades) {
+                    for (let key in userData.clickUpgrades) {
+                        if (clickUpgrades[key]) {
+                            clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
+                        }
+                    }
+                }
+                
+                if (userData.upgrades) {
+                    for (let key in userData.upgrades) {
+                        if (upgrades[key]) {
+                            upgrades[key].purchased = userData.upgrades[key].purchased || false;
+                        }
+                    }
+                }
+
+                currentClub = userData.club;
+                if (currentClub && clubs[currentClub]) {
+                    updateClubButton();
+                }
+            }
+        }
+
+        function saveUserData() {
+            if (currentUser && users[currentUser]) {
+                users[currentUser].cookies = cookies;
+                users[currentUser].totalClicks = totalClicks;
+                users[currentUser].totalCookiesBaked = totalCookiesBaked;
+                users[currentUser].buildings = JSON.parse(JSON.stringify(buildings));
+                users[currentUser].clickUpgrades = JSON.parse(JSON.stringify(clickUpgrades));
+                users[currentUser].upgrades = JSON.parse(JSON.stringify(upgrades));
+                users[currentUser].prestigeLevel = prestigeLevel;
+                users[currentUser].prestigeMultiplier = prestigeMultiplier;
+                users[currentUser].club = currentClub;
+                saveData();
+            }
+        }
+
+        function generateClubCode() {
+            let code;
+            do {
+                code = Math.floor(1000 + Math.random() * 9000).toString();
+            } while (clubs[code]);
+            return code;
+        }
+
+        function openJoinClubModal() {
+            document.getElementById('joinClubModal').style.display = 'flex';
+        }
+
+        function openCreateClubModal() {
+            document.getElementById('createClubModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Clear messages
+            const messageElements = document.querySelectorAll('#' + modalId + ' .error-message, #' + modalId + ' .success-message');
+            messageElements.forEach(el => el.remove());
+        }
+
+        function joinClub() {
+            const clubCode = document.getElementById('clubCodeInput').value.trim();
+            const messageDiv = document.getElementById('joinClubMessage');
+
+            if (clubCode.length !== 4 || !/^\d{4}$/.test(clubCode)) {
+                messageDiv.innerHTML = '<div class="error-message">הקוד חייב להיות 4 ספרות</div>';
+                return;
+            }
+
+            if (!clubs[clubCode]) {
+                messageDiv.innerHTML = '<div class="error-message">לא נמצא מועדון עם קוד זה</div>';
+                return;
+            }
+
+            if (currentClub) {
+                messageDiv.innerHTML = '<div class="error-message">אתה כבר חבר במועדון אחר</div>';
+                return;
+            }
+
+            // Join the club
+            clubs[clubCode].members.push({
+                username: currentUser,
+                role: 'חבר רגיל',
+                joinDate: Date.now()
+            });
+
+            currentClub = clubCode;
+            users[currentUser].club = clubCode;
+            saveData();
+
+            messageDiv.innerHTML = '<div class="success-message">הצטרפת למועדון בהצלחה!</div>';
+            updateClubButton();
+            
+            setTimeout(() => {
+                closeModal('joinClubModal');
+                showClubInfo();
+            }, 1000);
+        }
+
+        function createClub() {
+            const clubName = document.getElementById('clubNameInput').value.trim();
+            const messageDiv = document.getElementById('createClubMessage');
+
+            if (!clubName) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם מועדון</div>';
+                return;
+            }
+
+            if (clubName.length < 3) {
+                messageDiv.innerHTML = '<div class="error-message">שם המועדון חייב להיות לפחות 3 תווים</div>';
+                return;
+            }
+
+            if (currentClub) {
+                messageDiv.innerHTML = '<div class="error-message">אתה כבר חבר במועדון אחר</div>';
+                return;
+            }
+
+            const clubCode = generateClubCode();
+            
+            clubs[clubCode] = {
+                name: clubName,
+                code: clubCode,
+                founder: currentUser,
+                created: Date.now(),
+                members: [{
+                    username: currentUser,
+                    role: 'מייסד מועדון',
+                    joinDate: Date.now()
+                }]
+            };
+
+            currentClub = clubCode;
+            users[currentUser].club = clubCode;
+            saveData();
+
+            messageDiv.innerHTML = '<div class="success-message">המועדון נוצר בהצלחה!<br>קוד המועדון: ' + clubCode + '</div>';
+            updateClubButton();
+            
+            setTimeout(() => {
+                closeModal('createClubModal');
+                showClubInfo();
+            }, 2000);
+        }
+
+        function leaveClub() {
+            if (!currentClub) return;
+
+            const club = clubs[currentClub];
+            if (club.founder === currentUser) {
+                if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
+                    delete clubs[currentClub];
+                    // Remove club from all members
+                    for (let username in users) {
+                        if (users[username].club === currentClub) {
+                            users[username].club = null;
+                        }
+                    }
+                }
+            } else {
+                club.members = club.members.filter(member => member.username !== currentUser);
+            }
+
+            currentClub = null;
+            users[currentUser].club = null;
+            saveData();
+            updateClubButton();
+            closeModal('clubInfoModal');
+        }
+
+        function showClubInfo() {
+            if (!currentClub || !clubs[currentClub]) return;
+
+            const club = clubs[currentClub];
+            document.getElementById('clubInfoName').textContent = club.name;
+            document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
+            
+            // Calculate total clicks
+            let totalClubClicks = 0;
+            club.members.forEach(member => {
+                if (users[member.username]) {
+                    totalClubClicks += users[member.username].totalClicks || 0;
+                }
+            });
+            
+            document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
+            
+            // Show members
+            const memberListDiv = document.getElementById('memberList');
+            memberListDiv.innerHTML = '';
+            club.members.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'member-item';
+                memberDiv.innerHTML = `
+                    <span class="member-name">${member.username}</span>
+                    <span class="member-role">${member.role}</span>
+                `;
+                memberListDiv.appendChild(memberDiv);
+            });
+
+            document.getElementById('clubInfoModal').style.display = 'flex';
+        }
+
+        function updateClubButton() {
+            const clubButtons = document.querySelector('.club-buttons');
+            if (currentClub) {
+                clubButtons.innerHTML = `
+                    <button class="club-button" onclick="showClubInfo()">🏆 ${clubs[currentClub].name}</button>
+                `;
+            } else {
+                clubButtons.innerHTML = `
+                    <button class="club-button" onclick="openJoinClubModal()">🏆 הצטרף למועדון</button>
+                    <button class="club-button" onclick="openCreateClubModal()">⭐ צור מועדון</button>
+                `;
+            }
+        }
+
+        function startGame() {
+            calculateClickPower();
+            calculateCPS();
+            updateDisplay();
+            createShopItems();
+            createFloatingCookies();
+            checkAchievements();
+        }
+
+        // Check for remembered user
+        window.onload = function() {
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser && users[rememberedUser]) {
+                currentUser = rememberedUser;
+                loadUserData();
+                document.getElementById('loginScreen').style.display = 'none';
+                startGame();
+            }
+        };
 
         const buildings = {
             cursor: {
@@ -1114,10 +1749,12 @@
             const clickValue = clickPower * prestigeMultiplier;
             cookies += clickValue;
             totalCookiesBaked += clickValue;
+            totalClicks++;
             updateDisplay();
             createClickEffect(e.clientX, e.clientY);
             createParticles(e.clientX, e.clientY, '#FFD700');
             checkAchievements();
+            saveUserData();
         });
 
         // Game loops
@@ -1157,12 +1794,13 @@
         }, 30000);
 
         // Initialize game
-        calculateClickPower();
-        calculateCPS();
-        updateDisplay();
-        createShopItems();
-        createFloatingCookies();
-        checkAchievements();
+        // Game will start only after login
+        // calculateClickPower();
+        // calculateCPS();
+        // updateDisplay();
+        // createShopItems();
+        // createFloatingCookies();
+        // checkAchievements();
     </script>
 </body>
 </html>
