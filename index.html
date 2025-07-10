@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍪 משחק האימפריית עוגיות 🍪</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .game-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .main-game {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            min-width: 300px;
+        }
+
+        .cookie-count {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #FFD700, #FF8C00);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .cookies-per-second {
+            font-size: 1.3rem;
+            color: #2C3E50;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .prestige-info {
+            font-size: 1.1rem;
+            color: #8E44AD;
+            font-weight: bold;
+        }
+
+        .cookie-container {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .cookie {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle at 30% 30%, #DEB887, #D2691E, #8B4513);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            border: 8px solid #654321;
+            box-shadow: 
+                0 0 0 4px #8B4513,
+                0 15px 30px rgba(0, 0, 0, 0.3),
+                inset 0 5px 10px rgba(255, 255, 255, 0.2);
+            animation: cookieFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes cookieFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .cookie:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 
+                0 0 0 4px #8B4513,
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                inset 0 5px 10px rgba(255, 255, 255, 0.3),
+                0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .cookie:active {
+            transform: scale(0.9) rotate(-3deg);
+            box-shadow: 
+                0 0 0 4px #8B4513,
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .cookie::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 18px;
+            height: 18px;
+            background: #3C2414;
+            border-radius: 50%;
+            box-shadow: 
+                40px 20px 0 -2px #3C2414,
+                -5px 45px 0 -3px #3C2414,
+                60px 60px 0 -4px #3C2414,
+                15px 75px 0 -2px #3C2414,
+                75px 35px 0 -3px #3C2414,
+                30px 50px 0 -1px #3C2414,
+                50px 85px 0 -2px #3C2414,
+                85px 65px 0 -3px #3C2414,
+                10px 25px 0 -1px #3C2414,
+                65px 15px 0 -2px #3C2414;
+        }
+
+        .cookie::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 60px;
+            height: 40px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+
+        .click-effect {
+            position: absolute;
+            color: #FFD700;
+            font-size: 2.5rem;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 1.2s ease-out forwards;
+            z-index: 1000;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) scale(1.5);
+            }
+        }
+
+        .shop {
+            width: 400px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-left: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100vh;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .shop h2 {
+            color: #2C3E50;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .shop-section {
+            margin-bottom: 25px;
+        }
+
+        .shop-section h3 {
+            color: #34495E;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .shop-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .shop-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .shop-item:hover::before {
+            left: 100%;
+        }
+
+        .shop-item:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .shop-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            background: rgba(200, 200, 200, 0.1) !important;
+            border-color: rgba(150, 150, 150, 0.3) !important;
+        }
+
+        .shop-item.disabled:hover {
+            box-shadow: none !important;
+        }
+
+        .shop-item.disabled::before {
+            display: none;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2C3E50;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .item-emoji {
+            font-size: 1.5rem;
+            margin-left: 8px;
+        }
+
+        .item-count {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            color: #34495E;
+            margin-bottom: 10px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .item-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #E67E22;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 8px;
+            border-radius: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .item-production {
+            font-size: 0.9rem;
+            color: #27AE60;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .floating-cookies {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-cookie {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #DEB887, #D2691E);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: float 25s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(450px);
+            transition: transform 0.6s ease;
+            z-index: 1000;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 250px;
+        }
+
+        .achievement-popup.show {
+            transform: translateX(0);
+        }
+
+        .prestige-button {
+            background: linear-gradient(45deg, #8E44AD, #E74C3C);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .prestige-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .prestige-button:active {
+            transform: translateY(0);
+        }
+
+        .golden-cookie {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 500;
+            animation: goldenFloat 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            border: 3px solid #FF8C00;
+        }
+
+        @keyframes goldenFloat {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(10deg); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .shop {
+                width: 100%;
+                max-height: 50vh;
+                border-radius: 20px 20px 0 0;
+                border-left: none;
+                border-top: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .cookie {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .cookie-count {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-cookies" id="floatingCookies"></div>
+    
+    <div class="game-container">
+        <div class="main-game">
+            <div class="stats">
+                <div class="cookie-count" id="cookieCount">0</div>
+                <div class="cookies-per-second" id="cpsDisplay">0 עוגיות לשנייה</div>
+                <div class="prestige-info" id="prestigeInfo">רמת יוקרה: 0 | כפולה: x1</div>
+                <button class="prestige-button" id="prestigeButton" onclick="prestige()">🌟 איפוס יוקרה 🌟</button>
+            </div>
+            
+            <div class="cookie-container">
+                <div class="cookie" id="cookie"></div>
+            </div>
+        </div>
+        
+        <div class="shop">
+            <h2>🛒 חנות האימפריה 🛒</h2>
+            
+            <div class="shop-section">
+                <h3>🏭 מבנים</h3>
+                <div id="buildingItems"></div>
+            </div>
+            
+            <div class="shop-section">
+                <h3>⚡ שדרוגים</h3>
+                <div id="upgradeItems"></div>
+            </div>
+            
+            <div class="shop-section">
+                <h3>🎯 הישגים</h3>
+                <div id="achievementItems"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievement-popup" id="achievementPopup">
+        <div id="achievementText"></div>
+    </div>
+
+    <script>
+        let cookies = 0;
+        let cookiesPerSecond = 0;
+        let clickPower = 1;
+        let prestigeLevel = 0;
+        let prestigeMultiplier = 1;
+        let totalCookiesBaked = 0;
+        let goldenCookieClicks = 0;
+        let lastGoldenCookie = 0;
+
+        const buildings = {
+            cursor: {
+                name: "סמן אוטומטי",
+                emoji: "👆",
+                description: "לוחץ על העוגייה אוטומטית",
+                baseCost: 15,
+                cps: 0.1,
+                count: 0
+            },
+            grandma: {
+                name: "סבתא",
+                emoji: "👵",
+                description: "סבתא מנוסה שאופה עוגיות טעימות",
+                baseCost: 100,
+                cps: 1,
+                count: 0
+            },
+            farm: {
+                name: "חווה",
+                emoji: "🚜",
+                description: "חווה לגידול עוגיות אורגניות",
+                baseCost: 1100,
+                cps: 8,
+                count: 0
+            },
+            mine: {
+                name: "מכרה",
+                emoji: "⛏️",
+                description: "מכרה עמוק לחפירת עוגיות נדירות",
+                baseCost: 12000,
+                cps: 47,
+                count: 0
+            },
+            factory: {
+                name: "מפעל",
+                emoji: "🏭",
+                description: "מפעל אוטומטי לייצור עוגיות",
+                baseCost: 130000,
+                cps: 260,
+                count: 0
+            },
+            bank: {
+                name: "בנק",
+                emoji: "🏦",
+                description: "בנק שמייצר עוגיות מריבית",
+                baseCost: 1400000,
+                cps: 1400,
+                count: 0
+            },
+            temple: {
+                name: "מקדש",
+                emoji: "🏛️",
+                description: "מקדש קדוש לעוגיות",
+                baseCost: 20000000,
+                cps: 7800,
+                count: 0
+            },
+            wizardTower: {
+                name: "מגדל קוסמים",
+                emoji: "🧙",
+                description: "קוסמים שמזמנים עוגיות מהאוויר",
+                baseCost: 330000000,
+                cps: 44000,
+                count: 0
+            },
+            shipment: {
+                name: "חללית",
+                emoji: "🚀",
+                description: "חללית שמביאה עוגיות מהחלל",
+                baseCost: 5100000000,
+                cps: 260000,
+                count: 0
+            },
+            alchemyLab: {
+                name: "מעבדה אלכימית",
+                emoji: "⚗️",
+                description: "מעבדה להפיכת חומרים לעוגיות",
+                baseCost: 75000000000,
+                cps: 1600000,
+                count: 0
+            },
+            portal: {
+                name: "פורטל",
+                emoji: "🌀",
+                description: "פורטל לממדים אחרים מלאי עוגיות",
+                baseCost: 1000000000000,
+                cps: 10000000,
+                count: 0
+            },
+            timeMachine: {
+                name: "מכונת זמן",
+                emoji: "⏰",
+                description: "מכונת זמן שמביאה עוגיות מהעתיד",
+                baseCost: 14000000000000,
+                cps: 65000000,
+                count: 0
+            }
+        };
+
+        const upgrades = {
+            reinforcedIndex: {
+                name: "אצבע מחוזקת",
+                emoji: "💪",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 100,
+                condition: () => buildings.cursor.count >= 1,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            carpalTunnelPrevention: {
+                name: "מניעת תסמונת התעלה",
+                emoji: "🖱️",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 500,
+                condition: () => buildings.cursor.count >= 5,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            ambidextrous: {
+                name: "דו-צדדי",
+                emoji: "👐",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 10000,
+                condition: () => buildings.cursor.count >= 25,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            forwardsFromGrandma: {
+                name: "מתכונים מסבתא",
+                emoji: "📧",
+                description: "כפולה x2 לכל הסבתות",
+                cost: 1000,
+                condition: () => buildings.grandma.count >= 1,
+                effect: () => { buildings.grandma.cps *= 2; },
+                purchased: false
+            },
+            steelPlatedRollingPins: {
+                name: "מערוכי מתכת",
+                emoji: "🍴",
+                description: "כפולה x2 לכל הסבתות",
+                cost: 5000,
+                condition: () => buildings.grandma.count >= 5,
+                effect: () => { buildings.grandma.cps *= 2; },
+                purchased: false
+            },
+            lubrication: {
+                name: "שיפור מכונות",
+                emoji: "🛠️",
+                description: "כפולה x2 לכל המפעלים",
+                cost: 650000,
+                condition: () => buildings.factory.count >= 1,
+                effect: () => { buildings.factory.cps *= 2; },
+                purchased: false
+            },
+            goldenTouch: {
+                name: "מגע הזהב",
+                emoji: "✨",
+                description: "כפולה x3 לכל הייצור",
+                cost: 10000000,
+                condition: () => goldenCookieClicks >= 5,
+                effect: () => { 
+                    for (let key in buildings) {
+                        buildings[key].cps *= 3;
+                    }
+                },
+                purchased: false
+            }
+        };
+
+        const achievements = [
+            { id: 'first_click', name: 'הלחיצה הראשונה', emoji: '👆', desc: 'לחצת על העוגייה!', condition: () => totalCookiesBaked >= 1 },
+            { id: 'hundred_cookies', name: 'מאה עוגיות', emoji: '💯', desc: 'הגעת ל-100 עוגיות!', condition: () => totalCookiesBaked >= 100 },
+            { id: 'first_building', name: 'הבנייה הראשונה', emoji: '🏗️', desc: 'קנית את הבניין הראשון!', condition: () => Object.values(buildings).some(b => b.count > 0) },
+            { id: 'thousand_cookies', name: 'אלף עוגיות', emoji: '🎯', desc: 'הגעת ל-1,000 עוגיות!', condition: () => totalCookiesBaked >= 1000 },
+            { id: 'ten_thousand_cookies', name: 'עשרת אלפים עוגיות', emoji: '🏆', desc: 'הגעת ל-10,000 עוגיות!', condition: () => totalCookiesBaked >= 10000 },
+            { id: 'hundred_thousand_cookies', name: 'מאה אלף עוגיות', emoji: '🎖️', desc: 'הגעת ל-100,000 עוגיות!', condition: () => totalCookiesBaked >= 100000 },
+            { id: 'million_cookies', name: 'מיליון עוגיות', emoji: '💎', desc: 'הגעת למיליון עוגיות!', condition: () => totalCookiesBaked >= 1000000 },
+            { id: 'first_golden', name: 'עוגיית הזהב הראשונה', emoji: '🌟', desc: 'לחצת על עוגיית זהב!', condition: () => goldenCookieClicks >= 1 },
+            { id: 'golden_master', name: 'מאסטר הזהב', emoji: '👑', desc: 'לחצת על 10 עוגיות זהב!', condition: () => goldenCookieClicks >= 10 },
+            { id: 'hundred_buildings', name: 'מאה בניינים', emoji: '🏙️', desc: 'יש לך 100 בניינים!', condition: () => Object.values(buildings).reduce((sum, b) => sum + b.count, 0) >= 100 },
+            { id: 'first_prestige', name: 'יוקרה ראשונה', emoji: '⭐', desc: 'עשית איפוס יוקרה!', condition: () => prestigeLevel >= 1 }
+        ];
+
+        let unlockedAchievements = [];
+
+        function formatNumber(num) {
+            if (num < 1000) return Math.floor(num).toString();
+            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
+            return (num / 1000000000000).toFixed(1) + 'T';
+        }
+
+        function updateDisplay() {
+            document.getElementById('cookieCount').textContent = formatNumber(cookies);
+            document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
+            document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
+        }
+
+        function calculateCPS() {
+            cookiesPerSecond = 0;
+            for (let key in buildings) {
+                cookiesPerSecond += buildings[key].count * buildings[key].cps * prestigeMultiplier;
+            }
+        }
+
+        function getCost(building) {
+            return Math.floor(building.baseCost * Math.pow(1.15, building.count));
+        }
+
+        function createShopItems() {
+            // Buildings
+            const buildingContainer = document.getElementById('buildingItems');
+            buildingContainer.innerHTML = '';
+            
+            for (let key in buildings) {
+                const building = buildings[key];
+                const cost = getCost(building);
+                const canAfford = cookies >= cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${building.emoji} ${building.name}</span>
+                        <span class="item-count">${building.count}</span>
+                    </div>
+                    <div class="item-description">${building.description}</div>
+                    <div class="item-production">מייצר: ${formatNumber(building.cps * prestigeMultiplier)} עוגיות/שנייה</div>
+                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyBuilding(key);
+                }
+                
+                buildingContainer.appendChild(item);
+            }
+
+            // Upgrades
+            const upgradeContainer = document.getElementById('upgradeItems');
+            upgradeContainer.innerHTML = '';
+            
+            for (let key in upgrades) {
+                const upgrade = upgrades[key];
+                if (upgrade.purchased || !upgrade.condition()) continue;
+                
+                const canAfford = cookies >= upgrade.cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
+                        <span class="item-count">🆕</span>
+                    </div>
+                    <div class="item-description">${upgrade.description}</div>
+                    <div class="item-price">💰 ${formatNumber(upgrade.cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyUpgrade(key);
+                }
+                
+                upgradeContainer.appendChild(item);
+            }
+
+            // Achievements
+            const achievementContainer = document.getElementById('achievementItems');
+            achievementContainer.innerHTML = '';
+            
+            achievements.forEach(achievement => {
+                const unlocked = unlockedAchievements.includes(achievement.id);
+                const item = document.createElement('div');
+                item.className = `shop-item ${unlocked ? '' : 'disabled'}`;
+                item.style.cursor = 'default';
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${achievement.emoji} ${achievement.name}</span>
+                        <span class="item-count">${unlocked ? '✅' : '❌'}</span>
+                    </div>
+                    <div class="item-description">${achievement.desc}</div>
+                `;
+                achievementContainer.appendChild(item);
+            });
+        }
+
+        function buyBuilding(buildingKey) {
+            const building = buildings[buildingKey];
+            const cost = getCost(building);
+            
+            if (cookies >= cost) {
+                cookies -= cost;
+                building.count++;
+                totalCookiesBaked += cost;
+                calculateCPS();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#4ECDC4');
+            }
+        }
+
+        function buyUpgrade(upgradeKey) {
+            const upgrade = upgrades[upgradeKey];
+            
+            if (cookies >= upgrade.cost && !upgrade.purchased) {
+                cookies -= upgrade.cost;
+                totalCookiesBaked += upgrade.cost;
+                upgrade.purchased = true;
+                upgrade.effect();
+                calculateCPS();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#E74C3C');
+                showAchievement({name: 'שדרוג נקנה!', desc: `קנית: ${upgrade.name}`, emoji: '⚡'});
+            }
+        }
+
+        function createClickEffect(x, y) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.textContent = `+${formatNumber(clickPower * prestigeMultiplier)}`;
+            effect.style.left = (x - 25) + 'px';
+            effect.style.top = (y - 25) + 'px';
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                if (document.body.contains(effect)) {
+                    document.body.removeChild(effect);
+                }
+            }, 1200);
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = color;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px)`;
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (document.body.contains(particle)) {
+                        document.body.removeChild(particle);
+                    }
+                }, 2000);
+            }
+        }
+
+        function checkAchievements() {
+            achievements.forEach(achievement => {
+                if (!unlockedAchievements.includes(achievement.id) && achievement.condition()) {
+                    unlockedAchievements.push(achievement.id);
+                    showAchievement(achievement);
+                }
+            });
+        }
+
+        function showAchievement(achievement) {
+            const popup = document.getElementById('achievementPopup');
+            const text = document.getElementById('achievementText');
+            text.innerHTML = `<strong>🏆 הישג חדש!</strong><br>${achievement.emoji} ${achievement.name}<br>${achievement.desc}`;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 4000);
+        }
+
+        function createFloatingCookies() {
+            const container = document.getElementById('floatingCookies');
+            
+            for (let i = 0; i < 20; i++) {
+                const cookie = document.createElement('div');
+                cookie.className = 'floating-cookie';
+                cookie.style.left = Math.random() * 100 + '%';
+                cookie.style.animationDelay = Math.random() * 25 + 's';
+                cookie.style.animationDuration = (20 + Math.random() * 10) + 's';
+                container.appendChild(cookie);
+            }
+        }
+
+        function spawnGoldenCookie() {
+            if (Date.now() - lastGoldenCookie < 30000) return; // 30 seconds cooldown
+            
+            const goldenCookie = document.createElement('div');
+            goldenCookie.className = 'golden-cookie';
+            goldenCookie.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+            goldenCookie.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+            
+            goldenCookie.onclick = function() {
+                goldenCookieClicks++;
+                const bonus = Math.floor(cookies * 0.15) + Math.floor(cookiesPerSecond * 77);
+                cookies += bonus;
+                totalCookiesBaked += bonus;
+                createClickEffect(event.clientX, event.clientY);
+                createParticles(event.clientX, event.clientY, '#FFD700');
+                showAchievement({name: 'עוגיית זהב!', desc: `+${formatNumber(bonus)} עוגיות!`, emoji: '🌟'});
+                document.body.removeChild(goldenCookie);
+                lastGoldenCookie = Date.now();
+                checkAchievements();
+            };
+            
+            document.body.appendChild(goldenCookie);
+            
+            // Remove after 13 seconds
+            setTimeout(() => {
+                if (document.body.contains(goldenCookie)) {
+                    document.body.removeChild(goldenCookie);
+                }
+            }, 13000);
+        }
+
+        function prestige() {
+            if (totalCookiesBaked < 1000000) {
+                showAchievement({name: 'לא מוכן!', desc: 'צריך לפחות מיליון עוגיות כדי לעשות איפוס יוקרה', emoji: '❌'});
+                return;
+            }
+            
+            if (confirm('האם אתה בטוח שאתה רוצה לעשות איפוס יוקרה? זה יאפס את כל הקניות אבל יתן לך בונוס קבוע!')) {
+                prestigeLevel++;
+                prestigeMultiplier = 1 + (prestigeLevel * 0.1);
+                
+                // Reset everything except prestige
+                cookies = 0;
+                cookiesPerSecond = 0;
+                totalCookiesBaked = 0;
+                
+                // Reset buildings
+                for (let key in buildings) {
+                    buildings[key].count = 0;
+                    buildings[key].cps = buildings[key].baseCost === 15 ? 0.1 : 
+                                        buildings[key].baseCost === 100 ? 1 :
+                                        buildings[key].baseCost === 1100 ? 8 :
+                                        buildings[key].baseCost === 12000 ? 47 :
+                                        buildings[key].baseCost === 130000 ? 260 :
+                                        buildings[key].baseCost === 1400000 ? 1400 :
+                                        buildings[key].baseCost === 20000000 ? 7800 :
+                                        buildings[key].baseCost === 330000000 ? 44000 :
+                                        buildings[key].baseCost === 5100000000 ? 260000 :
+                                        buildings[key].baseCost === 75000000000 ? 1600000 :
+                                        buildings[key].baseCost === 1000000000000 ? 10000000 : 65000000;
+                }
+                
+                // Reset upgrades
+                for (let key in upgrades) {
+                    upgrades[key].purchased = false;
+                }
+                
+                calculateCPS();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                showAchievement({name: 'איפוס יוקרה!', desc: `רמת יוקרה: ${prestigeLevel}`, emoji: '⭐'});
+            }
+        }
+
+        // Event listeners
+        document.getElementById('cookie').addEventListener('click', function(e) {
+            const clickValue = clickPower * prestigeMultiplier;
+            cookies += clickValue;
+            totalCookiesBaked += clickValue;
+            updateDisplay();
+            createClickEffect(e.clientX, e.clientY);
+            createParticles(e.clientX, e.clientY, '#FFD700');
+            checkAchievements();
+        });
+
+        // Game loops
+        setInterval(() => {
+            const cpsGain = cookiesPerSecond / 10;
+            cookies += cpsGain;
+            totalCookiesBaked += cpsGain;
+            updateDisplay();
+            checkAchievements();
+        }, 100);
+
+        setInterval(() => {
+            createShopItems();
+        }, 1000);
+
+        // Golden cookie spawner
+        setInterval(() => {
+            if (Math.random() < 0.3 && cookiesPerSecond > 0) { // 30% chance every 10 seconds if producing
+                spawnGoldenCookie();
+            }
+        }, 10000);
+
+        // Auto-save
+        setInterval(() => {
+            const gameData = {
+                cookies,
+                totalCookiesBaked,
+                buildings,
+                upgrades,
+                unlockedAchievements,
+                prestigeLevel,
+                prestigeMultiplier,
+                goldenCookieClicks
+            };
+            // In a real implementation, you'd save to localStorage here
+            // localStorage.setItem('cookieClickerSave', JSON.stringify(gameData));
+        }, 30000);
+
+        // Initialize game
+        calculateCPS();
+        updateDisplay();
+        createShopItems();
+        createFloatingCookies();
+        checkAchievements();
+    </script>
+</body>
+</html>
