@@ -1488,7 +1488,7 @@ async function leaveClub() {
             const rememberedUser = localStorage.getItem('rememberedUser');
             if (rememberedUser && users[rememberedUser]) {
                 currentUser = rememberedUser;
-                loadUserData();
+                await loadUserData();
                 document.getElementById('loginScreen').style.display = 'none';
                 startGame();
             } else {
@@ -1528,6 +1528,9 @@ async function leaveClub() {
 
 
 
+
+
+
         // Firebase Configuration
         const firebaseConfig = {
     apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
@@ -1539,6 +1542,7 @@ async function leaveClub() {
     appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
     measurementId: "G-W9EBGS5PQ5"
   };
+
         // Initialize Firebase
         let database;
         let firebaseInitialized = false;
@@ -1688,7 +1692,7 @@ async function leaveClub() {
             if (userExists && userData.password === password) {
                 currentUser = username;
                 users[username] = userData; // Update local cache
-                loadUserData();
+                await loadUserData();
                 if (remember) {
                     localStorage.setItem('rememberedUser', username);
                 }
@@ -2644,7 +2648,7 @@ async function leaveClub() {
                     updateClubButton();
                 }
             }
-        
+        }
 
         // Check for remembered user
         window.onload = function() {
