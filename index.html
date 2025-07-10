@@ -1773,7 +1773,7 @@ async function leaveClub() {
             }
             
             messageDiv.innerHTML = '<div class="success-message">נרשמת בהצלחה!</div>';
-            setTimeout(() => {
+            setTimeout(() => {7
                 document.getElementById('loginScreen').style.display = 'none';
                 startGame();
             }, 1000);
@@ -2541,7 +2541,7 @@ async function leaveClub() {
             }
         }
 
-        function logout() {
+        async function logout() {
             if (confirm('האם אתה בטוח שברצונך להתנתק?')) {
                 // Clear current user data
                 currentUser = null;
@@ -2647,7 +2647,7 @@ async function leaveClub() {
                     updateClubButton();
                 }
             }
-        }
+        
 
         // Check for remembered user
         window.onload = function() {
