@@ -1445,7 +1445,7 @@ async function leaveClub() {
             chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
         }
 
-        function setupChatListener() {
+        async function setupChatListener() {
             if (!firebaseInitialized) return;
 
             try {
