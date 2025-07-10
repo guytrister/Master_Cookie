@@ -272,9 +272,125 @@
             border: 2px solid #E74C3C;
         }
 
-        .loading {
-            color: #3498DB;
-            border: 2px solid #3498DB;
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .chat-container.minimized {
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 13px 13px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            direction: rtl;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+        }
+
+        .chat-message.own {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            color: white;
+            margin-left: 20px;
+            text-align: right;
+        }
+
+        .chat-message.other {
+            background: rgba(108, 117, 125, 0.1);
+            color: #2C3E50;
+            margin-right: 20px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            opacity: 0.8;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 3px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 0 0 13px 13px;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+            direction: rtl;
+        }
+
+        .chat-input:focus {
+            border-color: #4ECDC4;
+        }
+
+        .chat-send-btn {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
         }
 
         @keyframes gradientShift {
@@ -807,6 +923,19 @@
     <!-- Firebase Status -->
     <div class="firebase-status loading" id="firebaseStatus">🔄 מתחבר ל-Firebase...</div>
     
+    <!-- Global Chat -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header" onclick="toggleChat()">
+            <span>💬 צ'ט גלובלי</span>
+            <button class="chat-toggle" id="chatToggle">−</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="הקלד הודעה..." maxlength="200">
+            <button class="chat-send-btn" onclick="sendMessage()">שלח</button>
+        </div>
+    </div>
+    
     <div class="game-container">
         <div class="main-game">
             <div class="stats">
@@ -857,15 +986,17 @@
     <script>
         // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
-            authDomain: "my-login-system-d583d.firebaseapp.com",
-            databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "my-login-system-d583d",
-            storageBucket: "my-login-system-d583d.firebasestorage.app",
-            messagingSenderId: "873530338056",
-            appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
-            measurementId: "G-W9EBGS5PQ5"
-        };
+    apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
+    authDomain: "my-login-system-d583d.firebaseapp.com",
+    databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "my-login-system-d583d",
+    storageBucket: "my-login-system-d583d.firebasestorage.app",
+    messagingSenderId: "873530338056",
+    appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
+    measurementId: "G-W9EBGS5PQ5"
+  };
+
+
         // Initialize Firebase
         let database;
         let firebaseInitialized = false;
@@ -906,6 +1037,8 @@
         let currentClub = null;
         let users = {}; // Local cache
         let clubs = {}; // Local cache
+        let chatMessages = []; // Local chat cache
+        let chatListener = null;
 
         // Load saved data from localStorage and Firebase
         async function loadInitialData() {
@@ -937,6 +1070,12 @@
                     // Save merged data to localStorage
                     localStorage.setItem('cookieUsers', JSON.stringify(users));
                     localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+
+                    // Load chat messages
+                    const chatSnapshot = await database.ref('chat').limitToLast(50).once('value');
+                    if (chatSnapshot.exists()) {
+                        chatMessages = Object.values(chatSnapshot.val());
+                    }
                 } catch (error) {
                     console.warn('Failed to load from Firebase:', error);
                 }
@@ -1423,6 +1562,8 @@
             createShopItems();
             createFloatingCookies();
             checkAchievements();
+            setupChatListener();
+            displayChatMessages();
         }
 
         // Check for remembered user
@@ -2187,6 +2328,105 @@
             document.getElementById('clubInfoModal').style.display = 'flex';
         }
 
+        // Chat Functions
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            const chatToggle = document.getElementById('chatToggle');
+            
+            if (chatContainer.classList.contains('minimized')) {
+                chatContainer.classList.remove('minimized');
+                chatToggle.textContent = '−';
+            } else {
+                chatContainer.classList.add('minimized');
+                chatToggle.textContent = '+';
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message || !currentUser) return;
+            
+            const messageData = {
+                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                sender: currentUser,
+                message: message,
+                timestamp: Date.now()
+            };
+
+            // Add to local cache
+            chatMessages.push(messageData);
+            if (chatMessages.length > 50) {
+                chatMessages = chatMessages.slice(-50);
+            }
+
+            // Send to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`chat/${messageData.id}`).set(messageData);
+                } catch (error) {
+                    console.warn('Failed to send message to Firebase:', error);
+                }
+            }
+
+            input.value = '';
+            displayChatMessages();
+        }
+
+        function displayChatMessages() {
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatMessagesDiv.innerHTML = '';
+
+            chatMessages.slice(-20).forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                messageDiv.innerHTML = `
+                    ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
+                    <div>${msg.message}</div>
+                    <div class="message-time">${time}</div>
+                `;
+
+                chatMessagesDiv.appendChild(messageDiv);
+            });
+
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        function setupChatListener() {
+            if (!firebaseInitialized) return;
+
+            try {
+                chatListener = database.ref('chat').limitToLast(50);
+                chatListener.on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        chatMessages = Object.values(snapshot.val());
+                        displayChatMessages();
+                    }
+                });
+            } catch (error) {
+                console.warn('Failed to setup chat listener:', error);
+            }
+        }
+
+        // Chat input event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
         // Auto-save with Firebase sync
         setInterval(async () => {
             await saveUserData();
@@ -2218,6 +2458,10 @@
                 loadUserData();
                 document.getElementById('loginScreen').style.display = 'none';
                 startGame();
+            } else {
+                // Still setup chat for viewing even if not logged in
+                setupChatListener();
+                displayChatMessages();
             }
         };
     </script>
