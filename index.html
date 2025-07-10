@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🍪 משחק האימפריית עוגיות 🍪</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-database-compat.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -244,6 +249,32 @@
             color: #27AE60;
             font-weight: bold;
             margin: 10px 0;
+        }
+
+        .firebase-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+
+        .firebase-connected {
+            color: #27AE60;
+            border: 2px solid #27AE60;
+        }
+
+        .firebase-disconnected {
+            color: #E74C3C;
+            border: 2px solid #E74C3C;
+        }
+
+        .loading {
+            color: #3498DB;
+            border: 2px solid #3498DB;
         }
 
         @keyframes gradientShift {
@@ -773,6 +804,9 @@
 
     <div class="floating-cookies" id="floatingCookies"></div>
     
+    <!-- Firebase Status -->
+    <div class="firebase-status loading" id="firebaseStatus">🔄 מתחבר ל-Firebase...</div>
+    
     <div class="game-container">
         <div class="main-game">
             <div class="stats">
@@ -821,6 +855,42 @@
     </div>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
+            authDomain: "my-login-system-d583d.firebaseapp.com",
+            databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "my-login-system-d583d",
+            storageBucket: "my-login-system-d583d.firebasestorage.app",
+            messagingSenderId: "873530338056",
+            appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
+            measurementId: "G-W9EBGS5PQ5"
+        };
+        // Initialize Firebase
+        let database;
+        let firebaseInitialized = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            firebaseInitialized = true;
+            updateFirebaseStatus('connected');
+        } catch (error) {
+            console.warn('Firebase initialization failed, using localStorage fallback:', error);
+            updateFirebaseStatus('disconnected');
+        }
+
+        function updateFirebaseStatus(status) {
+            const statusElement = document.getElementById('firebaseStatus');
+            if (status === 'connected') {
+                statusElement.className = 'firebase-status firebase-connected';
+                statusElement.textContent = '✅ מחובר ל-Firebase';
+            } else {
+                statusElement.className = 'firebase-status firebase-disconnected';
+                statusElement.textContent = '❌ מצב אופליין (localStorage)';
+            }
+        }
+
         let cookies = 0;
         let cookiesPerSecond = 0;
         let clickPower = 1;
@@ -834,23 +904,74 @@
         // User and Club System
         let currentUser = null;
         let currentClub = null;
-        let users = {}; // Simulated user database
-        let clubs = {}; // Simulated club database
+        let users = {}; // Local cache
+        let clubs = {}; // Local cache
 
-        // Load saved data
-        if (localStorage.getItem('cookieUsers')) {
-            users = JSON.parse(localStorage.getItem('cookieUsers'));
-        }
-        if (localStorage.getItem('cookieClubs')) {
-            clubs = JSON.parse(localStorage.getItem('cookieClubs'));
+        // Load saved data from localStorage and Firebase
+        async function loadInitialData() {
+            // Load local cache first
+            if (localStorage.getItem('cookieUsers')) {
+                users = JSON.parse(localStorage.getItem('cookieUsers'));
+            }
+            if (localStorage.getItem('cookieClubs')) {
+                clubs = JSON.parse(localStorage.getItem('cookieClubs'));
+            }
+
+            // Try to sync with Firebase
+            if (firebaseInitialized) {
+                try {
+                    // Load users from Firebase
+                    const usersSnapshot = await database.ref('users').once('value');
+                    if (usersSnapshot.exists()) {
+                        const firebaseUsers = usersSnapshot.val();
+                        users = { ...users, ...firebaseUsers };
+                    }
+
+                    // Load clubs from Firebase
+                    const clubsSnapshot = await database.ref('clubs').once('value');
+                    if (clubsSnapshot.exists()) {
+                        const firebaseClubs = clubsSnapshot.val();
+                        clubs = { ...clubs, ...firebaseClubs };
+                    }
+
+                    // Save merged data to localStorage
+                    localStorage.setItem('cookieUsers', JSON.stringify(users));
+                    localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+                } catch (error) {
+                    console.warn('Failed to load from Firebase:', error);
+                }
+            }
         }
 
-        function saveData() {
+        async function saveToFirebase(type, key, data) {
+            if (!firebaseInitialized) return false;
+            
+            try {
+                await database.ref(`${type}/${key}`).set(data);
+                return true;
+            } catch (error) {
+                console.warn('Failed to save to Firebase:', error);
+                return false;
+            }
+        }
+
+        async function saveData() {
+            // Always save to localStorage
             localStorage.setItem('cookieUsers', JSON.stringify(users));
             localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+
+            // Try to save to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref('users').set(users);
+                    await database.ref('clubs').set(clubs);
+                } catch (error) {
+                    console.warn('Failed to sync with Firebase:', error);
+                }
+            }
         }
 
-        function login() {
+        async function login() {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
             const remember = document.getElementById('rememberMe').checked;
@@ -861,8 +982,30 @@
                 return;
             }
 
-            if (users[username] && users[username].password === password) {
+            // Check if user exists (try Firebase first, then localStorage)
+            let userExists = false;
+            let userData = null;
+
+            if (firebaseInitialized) {
+                try {
+                    const userSnapshot = await database.ref(`users/${username}`).once('value');
+                    if (userSnapshot.exists()) {
+                        userData = userSnapshot.val();
+                        userExists = true;
+                    }
+                } catch (error) {
+                    console.warn('Firebase login check failed, using local data:', error);
+                }
+            }
+
+            if (!userExists && users[username]) {
+                userData = users[username];
+                userExists = true;
+            }
+
+            if (userExists && userData.password === password) {
                 currentUser = username;
+                users[username] = userData; // Update local cache
                 loadUserData();
                 if (remember) {
                     localStorage.setItem('rememberedUser', username);
@@ -874,11 +1017,11 @@
             }
         }
 
-        function register() {
+        async function register() {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
             const remember = document.getElementById('rememberMe').checked;
-            const messageDiv = document.getElementById('loginMessage');
+            const messageDiv = document.getElementById('registerMessage') || document.getElementById('loginMessage');
 
             if (!username || !password) {
                 messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
@@ -890,12 +1033,28 @@
                 return;
             }
 
-            if (users[username]) {
+            // Check if user already exists
+            let userExists = false;
+            
+            if (firebaseInitialized) {
+                try {
+                    const userSnapshot = await database.ref(`users/${username}`).once('value');
+                    userExists = userSnapshot.exists();
+                } catch (error) {
+                    console.warn('Firebase registration check failed, using local data:', error);
+                }
+            }
+
+            if (!userExists && users[username]) {
+                userExists = true;
+            }
+
+            if (userExists) {
                 messageDiv.innerHTML = '<div class="error-message">שם המשתמש כבר קיים</div>';
                 return;
             }
 
-            users[username] = {
+            const newUser = {
                 password: password,
                 cookies: 0,
                 totalClicks: 0,
@@ -905,11 +1064,24 @@
                 upgrades: JSON.parse(JSON.stringify(upgrades)),
                 prestigeLevel: 0,
                 prestigeMultiplier: 1,
-                club: null
+                club: null,
+                created: Date.now()
             };
 
+            users[username] = newUser;
             currentUser = username;
-            saveData();
+
+            // Save to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`users/${username}`).set(newUser);
+                } catch (error) {
+                    console.warn('Failed to save new user to Firebase:', error);
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
             
             if (remember) {
                 localStorage.setItem('rememberedUser', username);
@@ -962,7 +1134,7 @@
             }
         }
 
-        function saveUserData() {
+        async function saveUserData() {
             if (currentUser && users[currentUser]) {
                 users[currentUser].cookies = cookies;
                 users[currentUser].totalClicks = totalClicks;
@@ -973,15 +1145,51 @@
                 users[currentUser].prestigeLevel = prestigeLevel;
                 users[currentUser].prestigeMultiplier = prestigeMultiplier;
                 users[currentUser].club = currentClub;
-                saveData();
+                users[currentUser].lastSave = Date.now();
+
+                // Save to localStorage immediately
+                localStorage.setItem('cookieUsers', JSON.stringify(users));
+
+                // Try to save to Firebase
+                if (firebaseInitialized) {
+                    try {
+                        await database.ref(`users/${currentUser}`).update(users[currentUser]);
+                    } catch (error) {
+                        console.warn('Failed to save user data to Firebase:', error);
+                    }
+                }
             }
         }
 
-        function generateClubCode() {
+        async function generateClubCode() {
             let code;
+            let attempts = 0;
+            const maxAttempts = 100;
+
             do {
                 code = Math.floor(1000 + Math.random() * 9000).toString();
-            } while (clubs[code]);
+                attempts++;
+
+                // Check Firebase first
+                if (firebaseInitialized) {
+                    try {
+                        const snapshot = await database.ref(`clubs/${code}`).once('value');
+                        if (!snapshot.exists() && !clubs[code]) {
+                            break;
+                        }
+                    } catch (error) {
+                        console.warn('Firebase club code check failed, using local data:', error);
+                        if (!clubs[code]) break;
+                    }
+                } else {
+                    if (!clubs[code]) break;
+                }
+            } while (attempts < maxAttempts);
+
+            if (attempts >= maxAttempts) {
+                throw new Error('Failed to generate unique club code');
+            }
+
             return code;
         }
 
@@ -1000,7 +1208,7 @@
             messageElements.forEach(el => el.remove());
         }
 
-        function joinClub() {
+        async function joinClub() {
             const clubCode = document.getElementById('clubCodeInput').value.trim();
             const messageDiv = document.getElementById('joinClubMessage');
 
@@ -1009,7 +1217,28 @@
                 return;
             }
 
-            if (!clubs[clubCode]) {
+            // Check if club exists (try Firebase first)
+            let clubExists = false;
+            let clubData = null;
+
+            if (firebaseInitialized) {
+                try {
+                    const clubSnapshot = await database.ref(`clubs/${clubCode}`).once('value');
+                    if (clubSnapshot.exists()) {
+                        clubData = clubSnapshot.val();
+                        clubExists = true;
+                    }
+                } catch (error) {
+                    console.warn('Firebase club check failed, using local data:', error);
+                }
+            }
+
+            if (!clubExists && clubs[clubCode]) {
+                clubData = clubs[clubCode];
+                clubExists = true;
+            }
+
+            if (!clubExists) {
                 messageDiv.innerHTML = '<div class="error-message">לא נמצא מועדון עם קוד זה</div>';
                 return;
             }
@@ -1020,15 +1249,31 @@
             }
 
             // Join the club
-            clubs[clubCode].members.push({
+            const newMember = {
                 username: currentUser,
                 role: 'חבר רגיל',
                 joinDate: Date.now()
-            });
+            };
+
+            clubData.members.push(newMember);
+            clubs[clubCode] = clubData;
 
             currentClub = clubCode;
             users[currentUser].club = clubCode;
-            saveData();
+
+            // Save to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`clubs/${clubCode}`).set(clubData);
+                    await database.ref(`users/${currentUser}/club`).set(clubCode);
+                } catch (error) {
+                    console.warn('Failed to save club join to Firebase:', error);
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
 
             messageDiv.innerHTML = '<div class="success-message">הצטרפת למועדון בהצלחה!</div>';
             updateClubButton();
@@ -1039,7 +1284,7 @@
             }, 1000);
         }
 
-        function createClub() {
+        async function createClub() {
             const clubName = document.getElementById('clubNameInput').value.trim();
             const messageDiv = document.getElementById('createClubMessage');
 
@@ -1058,9 +1303,9 @@
                 return;
             }
 
-            const clubCode = generateClubCode();
+            const clubCode = await generateClubCode();
             
-            clubs[clubCode] = {
+            const newClub = {
                 name: clubName,
                 code: clubCode,
                 founder: currentUser,
@@ -1072,9 +1317,23 @@
                 }]
             };
 
+            clubs[clubCode] = newClub;
             currentClub = clubCode;
             users[currentUser].club = clubCode;
-            saveData();
+
+            // Save to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`clubs/${clubCode}`).set(newClub);
+                    await database.ref(`users/${currentUser}/club`).set(clubCode);
+                } catch (error) {
+                    console.warn('Failed to save new club to Firebase:', error);
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
 
             messageDiv.innerHTML = '<div class="success-message">המועדון נוצר בהצלחה!<br>קוד המועדון: ' + clubCode + '</div>';
             updateClubButton();
@@ -1801,6 +2060,166 @@
         // createShopItems();
         // createFloatingCookies();
         // checkAchievements();
+
+        async function leaveClub() {
+            if (!currentClub) return;
+
+            const club = clubs[currentClub];
+            if (club.founder === currentUser) {
+                if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
+                    // Delete club from Firebase
+                    if (firebaseInitialized) {
+                        try {
+                            await database.ref(`clubs/${currentClub}`).remove();
+                        } catch (error) {
+                            console.warn('Failed to delete club from Firebase:', error);
+                        }
+                    }
+
+                    delete clubs[currentClub];
+                    
+                    // Remove club from all members
+                    for (let username in users) {
+                        if (users[username].club === currentClub) {
+                            users[username].club = null;
+                            // Update in Firebase
+                            if (firebaseInitialized) {
+                                try {
+                                    await database.ref(`users/${username}/club`).remove();
+                                } catch (error) {
+                                    console.warn('Failed to update user club in Firebase:', error);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                club.members = club.members.filter(member => member.username !== currentUser);
+                
+                // Update club in Firebase
+                if (firebaseInitialized) {
+                    try {
+                        await database.ref(`clubs/${currentClub}/members`).set(club.members);
+                    } catch (error) {
+                        console.warn('Failed to update club members in Firebase:', error);
+                    }
+                }
+            }
+
+            currentClub = null;
+            users[currentUser].club = null;
+            
+            // Update user in Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`users/${currentUser}/club`).remove();
+                } catch (error) {
+                    console.warn('Failed to update user club in Firebase:', error);
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
+            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+            
+            updateClubButton();
+            closeModal('clubInfoModal');
+        }
+
+        async function showClubInfo() {
+            if (!currentClub) return;
+
+            let club = clubs[currentClub];
+
+            // Try to get fresh data from Firebase
+            if (firebaseInitialized) {
+                try {
+                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
+                    if (clubSnapshot.exists()) {
+                        club = clubSnapshot.val();
+                        clubs[currentClub] = club; // Update local cache
+                    }
+                } catch (error) {
+                    console.warn('Failed to fetch club info from Firebase:', error);
+                }
+            }
+
+            if (!club) return;
+
+            document.getElementById('clubInfoName').textContent = club.name;
+            document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
+            
+            // Calculate total clicks from all members
+            let totalClubClicks = 0;
+            for (const member of club.members) {
+                if (users[member.username]) {
+                    totalClubClicks += users[member.username].totalClicks || 0;
+                } else if (firebaseInitialized) {
+                    // Try to fetch member data from Firebase
+                    try {
+                        const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
+                        if (memberSnapshot.exists()) {
+                            const memberData = memberSnapshot.val();
+                            users[member.username] = memberData; // Cache locally
+                            totalClubClicks += memberData.totalClicks || 0;
+                        }
+                    } catch (error) {
+                        console.warn('Failed to fetch member data from Firebase:', error);
+                    }
+                }
+            }
+            
+            document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
+            
+            // Show members
+            const memberListDiv = document.getElementById('memberList');
+            memberListDiv.innerHTML = '';
+            club.members.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'member-item';
+                memberDiv.innerHTML = `
+                    <span class="member-name">${member.username}</span>
+                    <span class="member-role">${member.role}</span>
+                `;
+                memberListDiv.appendChild(memberDiv);
+            });
+
+            document.getElementById('clubInfoModal').style.display = 'flex';
+        }
+
+        // Auto-save with Firebase sync
+        setInterval(async () => {
+            await saveUserData();
+        }, 30000);
+
+        // Sync with Firebase every 2 minutes for fresh club data
+        setInterval(async () => {
+            if (firebaseInitialized && currentClub) {
+                try {
+                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
+                    if (clubSnapshot.exists()) {
+                        const freshClubData = clubSnapshot.val();
+                        clubs[currentClub] = freshClubData;
+                        localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+                    }
+                } catch (error) {
+                    console.warn('Failed to sync club data:', error);
+                }
+            }
+        }, 120000);
+
+        // Check for remembered user and load initial data
+        window.onload = async function() {
+            await loadInitialData();
+            
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser && users[rememberedUser]) {
+                currentUser = rememberedUser;
+                loadUserData();
+                document.getElementById('loginScreen').style.display = 'none';
+                startGame();
+            }
+        };
     </script>
 </body>
 </html>
