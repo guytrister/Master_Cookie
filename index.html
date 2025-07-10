@@ -1359,18 +1359,36 @@ async function leaveClub() {
 
             chatMessages.slice(-20).forEach(msg => {
                 const messageDiv = document.createElement('div');
-                messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
+                
+                // Check if it's a system message
+                if (msg.isSystemMessage) {
+                    messageDiv.className = 'chat-message system-message';
+                    messageDiv.style.background = 'linear-gradient(45deg, #F39C12, #E67E22)';
+                    messageDiv.style.color = 'white';
+                    messageDiv.style.textAlign = 'center';
+                    messageDiv.style.margin = '10px 5px';
+                    messageDiv.style.fontWeight = 'bold';
+                } else {
+                    messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
+                }
                 
                 const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
 
-                messageDiv.innerHTML = `
-                    ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
-                    <div>${msg.message}</div>
-                    <div class="message-time">${time}</div>
-                `;
+                if (msg.isSystemMessage) {
+                    messageDiv.innerHTML = `
+                        <div>${msg.message}</div>
+                        <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 3px;">${time}</div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
+                        <div>${msg.message}</div>
+                        <div class="message-time">${time}</div>
+                    `;
+                }
 
                 chatMessagesDiv.appendChild(messageDiv);
             });
@@ -1464,7 +1482,6 @@ async function leaveClub() {
 
         // Firebase Configuration
         const firebaseConfig = {
-            
     apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
     authDomain: "my-login-system-d583d.firebaseapp.com",
     databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
@@ -1474,7 +1491,6 @@ async function leaveClub() {
     appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
     measurementId: "G-W9EBGS5PQ5"
   };
-
         // Initialize Firebase
         let database;
         let firebaseInitialized = false;
@@ -2118,58 +2134,87 @@ async function leaveClub() {
                 return;
             }
 
-            // Perform donation
-            cookies -= amount;
-            
-            // Add to target player
-            if (!users[selectedDonationTarget]) {
-                // Try to load from Firebase
-                if (firebaseInitialized) {
-                    try {
-                        const userSnapshot = await database.ref(`users/${selectedDonationTarget}`).once('value');
-                        if (userSnapshot.exists()) {
-                            users[selectedDonationTarget] = userSnapshot.val();
-                        }
-                    } catch (error) {
-                        console.warn('Failed to load target user from Firebase:', error);
-                    }
-                }
-            }
-
-            if (users[selectedDonationTarget]) {
-                users[selectedDonationTarget].cookies = (users[selectedDonationTarget].cookies || 0) + amount;
+            try {
+                // First, load the target player's current data from Firebase
+                let targetPlayerData = null;
                 
-                // Save to Firebase
                 if (firebaseInitialized) {
-                    try {
-                        await database.ref(`users/${selectedDonationTarget}/cookies`).set(users[selectedDonationTarget].cookies);
-                        
-                        // Send notification to target player
-                        const notificationData = {
-                            id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                            recipient: selectedDonationTarget,
-                            message: `${currentUser} תרם לך ${formatNumber(amount)} עוגיות! 🎁`,
-                            timestamp: Date.now(),
-                            type: 'donation'
-                        };
-                        
-                        await database.ref(`notifications/${selectedDonationTarget}/${notificationData.id}`).set(notificationData);
-                    } catch (error) {
-                        console.warn('Failed to save donation to Firebase:', error);
+                    const userSnapshot = await database.ref(`users/${selectedDonationTarget}`).once('value');
+                    if (userSnapshot.exists()) {
+                        targetPlayerData = userSnapshot.val();
                     }
+                } else if (users[selectedDonationTarget]) {
+                    targetPlayerData = users[selectedDonationTarget];
                 }
-            }
 
-            // Save current user data
-            await saveUserData();
-            updateDisplay();
-            
-            messageDiv.innerHTML = `<div class="success-message">העברת ל${selectedDonationTarget} ${formatNumber(amount)} עוגיות!</div>`;
-            
-            setTimeout(() => {
-                closeModal('donationAmountModal');
-                showNotification(`תרמת ${formatNumber(amount)} עוגיות ל${selectedDonationTarget}! 🎁`, 'success');
-            }, 2000);
+                if (!targetPlayerData) {
+                    messageDiv.innerHTML = '<div class="error-message">לא ניתן למצוא את השחקן</div>';
+                    return;
+                }
+
+                // Deduct from current user
+                cookies -= amount;
+                totalCookiesBaked += amount; // Add to total for achievements
+
+                // Add to target player's cookies
+                const targetNewCookies = (targetPlayerData.cookies || 0) + amount;
+                const targetNewTotal = (targetPlayerData.totalCookiesBaked || 0) + amount;
+
+                // Update target player data
+                targetPlayerData.cookies = targetNewCookies;
+                targetPlayerData.totalCookiesBaked = targetNewTotal;
+                targetPlayerData.lastUpdate = Date.now();
+
+                // Update local cache
+                users[selectedDonationTarget] = targetPlayerData;
+
+                // Save both users to Firebase
+                if (firebaseInitialized) {
+                    // Save target player
+                    await database.ref(`users/${selectedDonationTarget}`).set(targetPlayerData);
+                    
+                    // Save current user
+                    await saveUserData();
+
+                    // Send notification message via chat
+                    const notificationMessage = {
+                        id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        sender: 'מערכת',
+                        message: `🎁 ${currentUser} תרם ל${selectedDonationTarget} ${formatNumber(amount)} עוגיות!`,
+                        timestamp: Date.now(),
+                        isSystemMessage: true
+                    };
+
+                    await database.ref(`chat/${notificationMessage.id}`).set(notificationMessage);
+
+                    // Also send a direct notification
+                    const directNotification = {
+                        id: Date.now() + '_notif_' + Math.random().toString(36).substr(2, 9),
+                        recipient: selectedDonationTarget,
+                        sender: currentUser,
+                        amount: amount,
+                        message: `${currentUser} תרם לך ${formatNumber(amount)} עוגיות! 🎁`,
+                        timestamp: Date.now(),
+                        type: 'donation'
+                    };
+
+                    await database.ref(`notifications/${selectedDonationTarget}/${directNotification.id}`).set(directNotification);
+                }
+
+                // Update display
+                updateDisplay();
+                
+                messageDiv.innerHTML = `<div class="success-message">העברת ל${selectedDonationTarget} ${formatNumber(amount)} עוגיות בהצלחה!</div>`;
+                
+                setTimeout(() => {
+                    closeModal('donationAmountModal');
+                    showNotification(`תרמת ${formatNumber(amount)} עוגיות ל${selectedDonationTarget}! 🎁`, 'success');
+                }, 1500);
+
+            } catch (error) {
+                console.error('Donation failed:', error);
+                messageDiv.innerHTML = '<div class="error-message">שגיאה בתרומה, נסה שוב</div>';
+            }
         }
 
         function showNotification(message, type = 'info') {
@@ -2197,7 +2242,7 @@ async function leaveClub() {
             }, 4000);
         }
 
-        // Check for notifications
+        // Check for notifications when user logs in or periodically
         async function checkNotifications() {
             if (!firebaseInitialized || !currentUser) return;
             
@@ -2208,7 +2253,21 @@ async function leaveClub() {
                     
                     for (let notificationId in notifications) {
                         const notification = notifications[notificationId];
+                        
+                        // Show notification popup
                         showNotification(notification.message, 'success');
+                        
+                        // If it's a donation, make sure to update local data
+                        if (notification.type === 'donation' && notification.amount) {
+                            // Reload user data to get the updated cookies
+                            const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
+                            if (userSnapshot.exists()) {
+                                const updatedUserData = userSnapshot.val();
+                                cookies = updatedUserData.cookies || cookies;
+                                totalCookiesBaked = updatedUserData.totalCookiesBaked || totalCookiesBaked;
+                                updateDisplay();
+                            }
+                        }
                         
                         // Remove notification after showing
                         await database.ref(`notifications/${currentUser}/${notificationId}`).remove();
@@ -2216,6 +2275,62 @@ async function leaveClub() {
                 }
             } catch (error) {
                 console.warn('Failed to check notifications:', error);
+            }
+        }
+
+        // Enhanced load user data to ensure fresh data
+        async function loadUserData() {
+            if (users[currentUser]) {
+                const userData = users[currentUser];
+                
+                // If Firebase is available, get fresh data
+                if (firebaseInitialized) {
+                    try {
+                        const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
+                        if (userSnapshot.exists()) {
+                            const freshData = userSnapshot.val();
+                            users[currentUser] = freshData;
+                            Object.assign(userData, freshData);
+                        }
+                    } catch (error) {
+                        console.warn('Failed to load fresh user data:', error);
+                    }
+                }
+
+                cookies = userData.cookies || 0;
+                totalClicks = userData.totalClicks || 0;
+                totalCookiesBaked = userData.totalCookiesBaked || 0;
+                prestigeLevel = userData.prestigeLevel || 0;
+                prestigeMultiplier = userData.prestigeMultiplier || 1;
+                
+                if (userData.buildings) {
+                    for (let key in userData.buildings) {
+                        if (buildings[key]) {
+                            buildings[key].count = userData.buildings[key].count || 0;
+                        }
+                    }
+                }
+                
+                if (userData.clickUpgrades) {
+                    for (let key in userData.clickUpgrades) {
+                        if (clickUpgrades[key]) {
+                            clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
+                        }
+                    }
+                }
+                
+                if (userData.upgrades) {
+                    for (let key in userData.upgrades) {
+                        if (upgrades[key]) {
+                            upgrades[key].purchased = userData.upgrades[key].purchased || false;
+                        }
+                    }
+                }
+
+                currentClub = userData.club;
+                if (currentClub && clubs[currentClub]) {
+                    updateClubButton();
+                }
             }
         }
 
