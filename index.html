@@ -27,6 +27,11 @@
             overflow-x: hidden;
         }
 
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         .login-screen {
             position: fixed;
             top: 0;
@@ -96,7 +101,6 @@
             width: auto;
             margin-left: 8px;
         }
-
         .club-buttons {
             position: fixed;
             top: 20px;
@@ -124,6 +128,73 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
+        .donate-button {
+            position: fixed;
+            top: 20px;
+            left: 250px;
+            background: linear-gradient(45deg, #27AE60, #2ECC71);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .donate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .settings-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #34495E, #2C3E50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .settings-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-button {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(45deg, #9B59B6, #8E44AD);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #A569BD, #9B59B6);
+        }
         .modal {
             position: fixed;
             top: 0;
@@ -186,92 +257,223 @@
         .close-button {
             background: linear-gradient(45deg, #E74C3C, #C0392B) !important;
         }
-
-        .club-info {
-            text-align: right;
-            margin: 20px 0;
+        .settings-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .club-name {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .settings-section h4 {
             color: #2C3E50;
-            margin-bottom: 10px;
-        }
-
-        .club-code {
-            font-size: 1.2rem;
-            color: #8E44AD;
-            margin-bottom: 10px;
-        }
-
-        .club-stats {
-            font-size: 1.1rem;
-            color: #27AE60;
             margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
         }
 
-        .member-list {
-            background: rgba(255, 255, 255, 0.3);
+        .settings-input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .settings-input:focus {
+            border-color: #3498DB;
+            outline: none;
+        }
+
+        .gender-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .gender-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .gender-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .gender-option.selected {
+            background: rgba(52, 152, 219, 0.3);
+            border-color: #3498DB;
+        }
+
+        .settings-button-small {
+            background: linear-gradient(45deg, #3498DB, #2980B9);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .settings-button-small:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-button {
+            background: linear-gradient(45deg, #E74C3C, #C0392B) !important;
+            margin-top: 20px;
+        }
+
+        .current-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #2C3E50;
+            font-weight: bold;
+        }
+        .admin-section {
+            background: rgba(155, 89, 182, 0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border: 2px solid rgba(155, 89, 182, 0.3);
+        }
+
+        .admin-section h4 {
+            color: #8E44AD;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #9B59B6;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .admin-input:focus {
+            border-color: #8E44AD;
+            outline: none;
+            box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
+        }
+
+        .admin-button-large {
+            background: linear-gradient(45deg, #9B59B6, #8E44AD);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-button-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-warning {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.3);
             padding: 15px;
             border-radius: 10px;
-            margin-top: 15px;
-        }
-
-        .member-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .member-name {
-            font-weight: bold;
-            color: #2C3E50;
-        }
-
-        .member-role {
-            font-size: 0.9rem;
-            color: #8E44AD;
-            background: rgba(142, 68, 173, 0.2);
-            padding: 3px 8px;
-            border-radius: 8px;
-        }
-
-        .error-message {
+            margin: 15px 0;
+            text-align: center;
             color: #E74C3C;
             font-weight: bold;
-            margin: 10px 0;
         }
 
-        .success-message {
+        .admin-transfer-section {
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid rgba(46, 204, 113, 0.3);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+        }
+
+        .admin-transfer-section h4 {
             color: #27AE60;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
             font-weight: bold;
+        }
+
+        .admin-transfer-input {
+            width: 100%;
+            padding: 12px;
             margin: 10px 0;
-        }
-
-        .firebase-status {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            z-index: 1000;
-        }
-
-        .firebase-connected {
-            color: #27AE60;
             border: 2px solid #27AE60;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
         }
 
-        .firebase-disconnected {
-            color: #E74C3C;
-            border: 2px solid #E74C3C;
+        .admin-transfer-input:focus {
+            border-color: #2ECC71;
+            outline: none;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
         }
 
+        .admin-transfer-button {
+            background: linear-gradient(45deg, #27AE60, #2ECC71);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-transfer-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .password-requirement {
+            background: rgba(52, 152, 219, 0.1);
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            color: #3498DB;
+            font-size: 0.9rem;
+        }
         .chat-container {
             position: fixed;
             bottom: 20px;
@@ -392,13 +594,6 @@
             font-size: 1.2rem;
             cursor: pointer;
         }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .game-container {
             display: flex;
             width: 100%;
@@ -474,7 +669,6 @@
             position: relative;
             margin: 30px 0;
         }
-
         .cookie {
             width: 250px;
             height: 250px;
@@ -568,7 +762,6 @@
                 transform: translateY(-120px) scale(1.5);
             }
         }
-
         .shop {
             width: 400px;
             background: rgba(255, 255, 255, 0.15);
@@ -634,28 +827,137 @@
             transform: scale(1.1);
         }
 
-        .donate-button {
-            position: fixed;
-            top: 20px;
-            left: 250px;
-            background: linear-gradient(45deg, #27AE60, #2ECC71);
-            color: white;
-            padding: 10px 20px;
-            border: none;
+        .shop h2 {
+            color: #2C3E50;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
             border-radius: 15px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .shop-section {
+            margin-bottom: 25px;
+        }
+
+        .shop-section h3 {
+            color: #34495E;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .shop-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .donate-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        .shop-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
         }
 
+        .shop-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .shop-item:hover::before {
+            left: 100%;
+        }
+
+        .shop-item:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .shop-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            background: rgba(200, 200, 200, 0.1) !important;
+            border-color: rgba(150, 150, 150, 0.3) !important;
+        }
+
+        .shop-item.disabled:hover {
+            box-shadow: none !important;
+        }
+
+        .shop-item.disabled::before {
+            display: none;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2C3E50;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .item-count {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            color: #34495E;
+            margin-bottom: 10px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .item-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #E67E22;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 8px;
+            border-radius: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .item-production {
+            font-size: 0.9rem;
+            color: #27AE60;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+        }
         .player-list {
             max-height: 300px;
             overflow-y: auto;
@@ -745,145 +1047,6 @@
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
             100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-
-        .shop h2 {
-            color: #2C3E50;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.3);
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .shop-section {
-            margin-bottom: 25px;
-        }
-
-        .shop-section h3 {
-            color: #34495E;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .shop-item {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shop-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .shop-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .shop-item:hover::before {
-            left: 100%;
-        }
-
-        .shop-item:active {
-            transform: translateY(0) scale(0.98);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .shop-item.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
-            background: rgba(200, 200, 200, 0.1) !important;
-            border-color: rgba(150, 150, 150, 0.3) !important;
-        }
-
-        .shop-item.disabled:hover {
-            box-shadow: none !important;
-        }
-
-        .shop-item.disabled::before {
-            display: none;
-        }
-
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .item-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2C3E50;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
-        }
-
-        .item-emoji {
-            font-size: 1.5rem;
-            margin-left: 8px;
-        }
-
-        .item-count {
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .item-description {
-            font-size: 0.95rem;
-            color: #34495E;
-            margin-bottom: 10px;
-            font-weight: 500;
-            line-height: 1.3;
-        }
-
-        .item-price {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #E67E22;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.4);
-            padding: 8px;
-            border-radius: 10px;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
-        }
-
-        .item-production {
-            font-size: 0.9rem;
-            color: #27AE60;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 5px;
-        }
-
         .floating-cookies {
             position: fixed;
             top: 0;
@@ -952,10 +1115,6 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .prestige-button:active {
-            transform: translateY(0);
-        }
-
         .golden-cookie {
             position: fixed;
             width: 60px;
@@ -993,6 +1152,95 @@
                 opacity: 0;
                 transform: translateY(-100px) scale(0);
             }
+        }
+        .error-message {
+            color: #E74C3C;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .success-message {
+            color: #27AE60;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .firebase-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+
+        .firebase-connected {
+            color: #27AE60;
+            border: 2px solid #27AE60;
+        }
+
+        .firebase-disconnected {
+            color: #E74C3C;
+            border: 2px solid #E74C3C;
+        }
+
+        .loading {
+            color: #3498DB;
+            border: 2px solid #3498DB;
+        }
+
+        .club-info {
+            text-align: right;
+            margin: 20px 0;
+        }
+
+        .club-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+
+        .club-code {
+            font-size: 1.2rem;
+            color: #8E44AD;
+            margin-bottom: 10px;
+        }
+
+        .club-stats {
+            font-size: 1.1rem;
+            color: #27AE60;
+            margin-bottom: 15px;
+        }
+
+        .member-list {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: #2C3E50;
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            color: #8E44AD;
+            background: rgba(142, 68, 173, 0.2);
+            padding: 3px 8px;
+            border-radius: 8px;
         }
 
         @media (max-width: 768px) {
@@ -1047,6 +1295,9 @@
 
     <!-- Settings Button -->
     <button class="settings-button" onclick="openSettingsModal()">⚙️ הגדרות</button>
+
+    <!-- Admin Button -->
+    <button class="admin-button" onclick="openAdminModal()">👑 מסך יוצר</button>
 
     <!-- Shop Toggle Button (hidden by default) -->
     <button class="shop-toggle" id="shopToggle" onclick="toggleShop()" style="display: none;">חנות</button>
@@ -1163,6 +1414,40 @@
         </div>
     </div>
 
+    <!-- Enhanced Admin Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h3>👑 מסך יוצר המשחק</h3>
+            
+            <div class="admin-warning">
+                ⚠️ אזור מוגבל ליוצרי המשחק בלבד ⚠️
+            </div>
+
+            <div class="admin-section">
+                <h4>🔐 אימות יוצר</h4>
+                <input type="password" class="admin-input" id="adminPasswordInput" placeholder="הזן סיסמת יוצר">
+                <div class="password-requirement">
+                    💡 נדרשת סיסמת יוצר מיוחדת לגישה למסך זה
+                </div>
+                <button class="admin-button-large" onclick="verifyAdmin()">אמת גישה</button>
+            </div>
+
+            <div class="admin-transfer-section" id="adminActionsSection" style="display: none;">
+                <h4>💰 העברת עוגיות לשחקן</h4>
+                <input type="text" class="admin-transfer-input" id="targetPlayerInput" placeholder="שם משתמש של השחקן המקבל">
+                <input type="password" class="admin-transfer-input" id="targetPlayerPasswordInput" placeholder="סיסמה של השחקן (לאימות)">
+                <input type="number" class="admin-transfer-input" id="cookieAmountInput" placeholder="מספר עוגיות להעברה" min="1">
+                <div style="background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center; color: #27AE60; font-size: 0.9rem;">
+                    💡 ההעברה תתבצע ללא הגבלה וללא ניכוי מהיוצר
+                </div>
+                <button class="admin-transfer-button" onclick="adminTransferCookies()">העבר עוגיות</button>
+            </div>
+
+            <button class="close-button" onclick="closeModal('adminModal')">סגור</button>
+            <div id="adminMessage"></div>
+        </div>
+    </div>
+
     <div class="floating-cookies" id="floatingCookies"></div>
     
     <!-- Firebase Status -->
@@ -1180,7 +1465,7 @@
             <button class="chat-send-btn" onclick="sendMessage()">שלח</button>
         </div>
     </div>
-    
+
     <div class="game-container">
         <div class="main-game">
             <div class="stats">
@@ -1230,317 +1515,17 @@
     </div>
 
     <script>
-async function leaveClub() {
-            if (!currentClub) return;
-
-            const club = clubs[currentClub];
-            if (club.founder === currentUser) {
-                if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
-                    // Delete club from Firebase
-                    if (firebaseInitialized) {
-                        try {
-                            await database.ref(`clubs/${currentClub}`).remove();
-                        } catch (error) {
-                            console.warn('Failed to delete club from Firebase:', error);
-                        }
-                    }
-
-                    delete clubs[currentClub];
-                    
-                    // Remove club from all members
-                    for (let username in users) {
-                        if (users[username].club === currentClub) {
-                            users[username].club = null;
-                            // Update in Firebase
-                            if (firebaseInitialized) {
-                                try {
-                                    await database.ref(`users/${username}/club`).remove();
-                                } catch (error) {
-                                    console.warn('Failed to update user club in Firebase:', error);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                club.members = club.members.filter(member => member.username !== currentUser);
-                
-                // Update club in Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`clubs/${currentClub}/members`).set(club.members);
-                    } catch (error) {
-                        console.warn('Failed to update club members in Firebase:', error);
-                    }
-                }
-            }
-
-            currentClub = null;
-            users[currentUser].club = null;
-            
-            // Update user in Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`users/${currentUser}/club`).remove();
-                } catch (error) {
-                    console.warn('Failed to update user club in Firebase:', error);
-                }
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-            
-            updateClubButton();
-            closeModal('clubInfoModal');
-        }
-
-        async function showClubInfo() {
-            if (!currentClub) return;
-
-            let club = clubs[currentClub];
-
-            // Try to get fresh data from Firebase
-            if (firebaseInitialized) {
-                try {
-                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
-                    if (clubSnapshot.exists()) {
-                        club = clubSnapshot.val();
-                        clubs[currentClub] = club; // Update local cache
-                    }
-                } catch (error) {
-                    console.warn('Failed to fetch club info from Firebase:', error);
-                }
-            }
-
-            if (!club) return;
-
-            document.getElementById('clubInfoName').textContent = club.name;
-            document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
-            
-            // Calculate total clicks from all members
-            let totalClubClicks = 0;
-            for (const member of club.members) {
-                if (users[member.username]) {
-                    totalClubClicks += users[member.username].totalClicks || 0;
-                } else if (firebaseInitialized) {
-                    // Try to fetch member data from Firebase
-                    try {
-                        const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
-                        if (memberSnapshot.exists()) {
-                            const memberData = memberSnapshot.val();
-                            users[member.username] = memberData; // Cache locally
-                            totalClubClicks += memberData.totalClicks || 0;
-                        }
-                    } catch (error) {
-                        console.warn('Failed to fetch member data from Firebase:', error);
-                    }
-                }
-            }
-            
-            document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
-            
-            // Show members
-            const memberListDiv = document.getElementById('memberList');
-            memberListDiv.innerHTML = '';
-            club.members.forEach(member => {
-                const memberDiv = document.createElement('div');
-                memberDiv.className = 'member-item';
-                memberDiv.innerHTML = `
-                    <span class="member-name">${member.username}</span>
-                    <span class="member-role">${member.role}</span>
-                `;
-                memberListDiv.appendChild(memberDiv);
-            });
-
-            document.getElementById('clubInfoModal').style.display = 'flex';
-        }
-
-        // Chat Functions
-        function toggleChat() {
-            const chatContainer = document.getElementById('chatContainer');
-            const chatToggle = document.getElementById('chatToggle');
-            
-            if (chatContainer.classList.contains('minimized')) {
-                chatContainer.classList.remove('minimized');
-                chatToggle.textContent = '−';
-            } else {
-                chatContainer.classList.add('minimized');
-                chatToggle.textContent = '+';
-            }
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message || !currentUser) return;
-            
-            const messageData = {
-                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                sender: currentUser,
-                message: message,
-                timestamp: Date.now()
-            };
-
-            // Add to local cache
-            chatMessages.push(messageData);
-            if (chatMessages.length > 50) {
-                chatMessages = chatMessages.slice(-50);
-            }
-
-            // Send to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`chat/${messageData.id}`).set(messageData);
-                } catch (error) {
-                    console.warn('Failed to send message to Firebase:', error);
-                }
-            }
-
-            input.value = '';
-            displayChatMessages();
-        }
-
-        function displayChatMessages() {
-            const chatMessagesDiv = document.getElementById('chatMessages');
-            chatMessagesDiv.innerHTML = '';
-
-            chatMessages.slice(-20).forEach(msg => {
-                const messageDiv = document.createElement('div');
-                
-                // Check if it's a system message
-                if (msg.isSystemMessage) {
-                    messageDiv.className = 'chat-message system-message';
-                    messageDiv.style.background = 'linear-gradient(45deg, #F39C12, #E67E22)';
-                    messageDiv.style.color = 'white';
-                    messageDiv.style.textAlign = 'center';
-                    messageDiv.style.margin = '10px 5px';
-                    messageDiv.style.fontWeight = 'bold';
-                } else {
-                    messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
-                }
-                
-                const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                if (msg.isSystemMessage) {
-                    messageDiv.innerHTML = `
-                        <div>${msg.message}</div>
-                        <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 3px;">${time}</div>
-                    `;
-                } else {
-                    messageDiv.innerHTML = `
-                        ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
-                        <div>${msg.message}</div>
-                        <div class="message-time">${time}</div>
-                    `;
-                }
-
-                chatMessagesDiv.appendChild(messageDiv);
-            });
-
-            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-        }
-
-        async function setupChatListener() {
-            if (!firebaseInitialized) return;
-
-            try {
-                chatListener = database.ref('chat').limitToLast(50);
-                chatListener.on('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        chatMessages = Object.values(snapshot.val());
-                        displayChatMessages();
-                    }
-                });
-            } catch (error) {
-                console.warn('Failed to setup chat listener:', error);
-            }
-        }
-
-        // Chat input event listener
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-        });
-
-        // Auto-save with Firebase sync
-        setInterval(async () => {
-            await saveUserData();
-            if (currentUser) {
-                checkNotifications();
-            }
-        }, 30000);
-
-        // Check for remembered user and load initial data
-        window.onload = async function() {
-            await loadInitialData();
-            
-            const rememberedUser = localStorage.getItem('rememberedUser');
-            if (rememberedUser && users[rememberedUser]) {
-                currentUser = rememberedUser;
-                await loadUserData();
-                document.getElementById('loginScreen').style.display = 'none';
-                startGame();
-            } else {
-                // Still setup chat for viewing even if not logged in
-                setupChatListener();
-                displayChatMessages();
-            }
-        };
-
-        // Sync with Firebase every 2 minutes for fresh club data
-        setInterval(async () => {
-            if (firebaseInitialized && currentClub) {
-                try {
-                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
-                    if (clubSnapshot.exists()) {
-                        const freshClubData = clubSnapshot.val();
-                        clubs[currentClub] = freshClubData;
-                        localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-                    }
-                } catch (error) {
-                    console.warn('Failed to sync club data:', error);
-                }
-            }
-        }, 120000);
-
-        function startGame() {
-            calculateClickPower();
-            calculateCPS();
-            updateDisplay();
-            createShopItems();
-            createFloatingCookies();
-            checkAchievements();
-            setupChatListener();
-            displayChatMessages();
-            checkNotifications();
-        }
-
-
-
-
-
         // Firebase Configuration
         const firebaseConfig = {
-    apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
-    authDomain: "my-login-system-d583d.firebaseapp.com",
-    databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "my-login-system-d583d",
-    storageBucket: "my-login-system-d583d.firebasestorage.app",
-    messagingSenderId: "873530338056",
-    appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
-    measurementId: "G-W9EBGS5PQ5"
-  };
+            apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
+            authDomain: "my-login-system-d583d.firebaseapp.com",
+            databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "my-login-system-d583d",
+            storageBucket: "my-login-system-d583d.firebasestorage.app",
+            messagingSenderId: "873530338056",
+            appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
+            measurementId: "G-W9EBGS5PQ5"
+        };
 
         // Initialize Firebase
         let database;
@@ -1567,6 +1552,7 @@ async function leaveClub() {
             }
         }
 
+        // Game Variables
         let cookies = 0;
         let cookiesPerSecond = 0;
         let clickPower = 1;
@@ -1585,6 +1571,362 @@ async function leaveClub() {
         let chatMessages = []; // Local chat cache
         let chatListener = null;
         let selectedDonationTarget = null;
+
+        const buildings = {
+            cursor: {
+                name: "סמן אוטומטי",
+                emoji: "👆",
+                description: "לוחץ על העוגייה אוטומטית",
+                baseCost: 15,
+                cps: 0.1,
+                count: 0
+            },
+            grandma: {
+                name: "סבתא",
+                emoji: "👵",
+                description: "סבתא מנוסה שאופה עוגיות טעימות",
+                baseCost: 100,
+                cps: 1,
+                count: 0
+            },
+            farm: {
+                name: "חווה",
+                emoji: "🚜",
+                description: "חווה לגידול עוגיות אורגניות",
+                baseCost: 1100,
+                cps: 8,
+                count: 0
+            },
+            mine: {
+                name: "מכרה",
+                emoji: "⛏️",
+                description: "מכרה עמוק לחפירת עוגיות נדירות",
+                baseCost: 12000,
+                cps: 47,
+                count: 0
+            },
+            factory: {
+                name: "מפעל",
+                emoji: "🏭",
+                description: "מפעל אוטומטי לייצור עוגיות",
+                baseCost: 130000,
+                cps: 260,
+                count: 0
+            },
+            bank: {
+                name: "בנק",
+                emoji: "🏦",
+                description: "בנק שמייצר עוגיות מריבית",
+                baseCost: 1400000,
+                cps: 1400,
+                count: 0
+            },
+temple: {
+                name: "מקדש",
+                emoji: "🏛️",
+                description: "מקדש קדוש לעוגיות",
+                baseCost: 20000000,
+                cps: 7800,
+                count: 0
+            },
+            wizardTower: {
+                name: "מגדל קוסמים",
+                emoji: "🧙",
+                description: "קוסמים שמזמנים עוגיות מהאוויר",
+                baseCost: 330000000,
+                cps: 44000,
+                count: 0
+            },
+            shipment: {
+                name: "חללית",
+                emoji: "🚀",
+                description: "חללית שמביאה עוגיות מהחלל",
+                baseCost: 5100000000,
+                cps: 260000,
+                count: 0
+            },
+            alchemyLab: {
+                name: "מעבדה אלכימית",
+                emoji: "⚗️",
+                description: "מעבדה להפיכת חומרים לעוגיות",
+                baseCost: 75000000000,
+                cps: 1600000,
+                count: 0
+            },
+            portal: {
+                name: "פורטל",
+                emoji: "🌀",
+                description: "פורטל לממדים אחרים מלאי עוגיות",
+                baseCost: 1000000000000,
+                cps: 10000000,
+                count: 0
+            },
+            timeMachine: {
+                name: "מכונת זמן",
+                emoji: "⏰",
+                description: "מכונת זמן שמביאה עוגיות מהעתיד",
+                baseCost: 14000000000000,
+                cps: 65000000,
+                count: 0
+            }
+        };
+
+        const clickUpgrades = {
+            clickPower1: {
+                name: "אצבע חזקה",
+                emoji: "👆",
+                description: "כל לחיצה מביאה +1 עוגיה נוספת",
+                baseCost: 50,
+                clickBonus: 1,
+                level: 0
+            },
+            clickPower2: {
+                name: "יד ברזל",
+                emoji: "✊",
+                description: "כל לחיצה מביאה +5 עוגיות נוספות",
+                baseCost: 500,
+                clickBonus: 5,
+                level: 0
+            },
+            clickPower3: {
+                name: "זרוע טיטניום",
+                emoji: "🦾",
+                description: "כל לחיצה מביאה +25 עוגיות נוספות",
+                baseCost: 5000,
+                clickBonus: 25,
+                level: 0
+            },
+            clickPower4: {
+                name: "כוח על-אנושי",
+                emoji: "⚡",
+                description: "כל לחיצה מביאה +100 עוגיות נוספות",
+                baseCost: 50000,
+                clickBonus: 100,
+                level: 0
+            },
+            clickPower5: {
+                name: "אצבע אלוהית",
+                emoji: "🌟",
+                description: "כל לחיצה מביאה +500 עוגיות נוספות",
+                baseCost: 500000,
+                clickBonus: 500,
+                level: 0
+            }
+        };
+
+        const upgrades = {
+            reinforcedIndex: {
+                name: "אצבע מחוזקת",
+                emoji: "💪",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 100,
+                condition: () => buildings.cursor.count >= 1,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            carpalTunnelPrevention: {
+                name: "מניעת תסמונת התעלה",
+                emoji: "🖱️",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 500,
+                condition: () => buildings.cursor.count >= 5,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            ambidextrous: {
+                name: "דו-צדדי",
+                emoji: "👐",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 10000,
+                condition: () => buildings.cursor.count >= 25,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            forwardsFromGrandma: {
+                name: "מתכונים מסבתא",
+                emoji: "📧",
+                description: "כפולה x2 לכל הסבתות",
+                cost: 1000,
+                condition: () => buildings.grandma.count >= 1,
+                effect: () => { buildings.grandma.cps *= 2; },
+                purchased: false
+            },
+            steelPlatedRollingPins: {
+                name: "מערוכי מתכת",
+                emoji: "🍴",
+                description: "כפולה x2 לכל הסבתות",
+                cost: 5000,
+                condition: () => buildings.grandma.count >= 5,
+                effect: () => { buildings.grandma.cps *= 2; },
+                purchased: false
+            },
+            lubrication: {
+                name: "שיפור מכונות",
+                emoji: "🛠️",
+                description: "כפולה x2 לכל המפעלים",
+                cost: 650000,
+                condition: () => buildings.factory.count >= 1,
+                effect: () => { buildings.factory.cps *= 2; },
+                purchased: false
+            },
+            goldenTouch: {
+                name: "מגע הזהב",
+                emoji: "✨",
+                description: "כפולה x3 לכל הייצור",
+                cost: 10000000,
+                condition: () => goldenCookieClicks >= 5,
+                effect: () => { 
+                    for (let key in buildings) {
+                        buildings[key].cps *= 3;
+                    }
+                },
+                purchased: false
+            }
+        };
+
+        const achievements = [
+            { id: 'first_click', name: 'הלחיצה הראשונה', emoji: '👆', desc: 'לחצת על העוגייה!', condition: () => totalCookiesBaked >= 1 },
+            { id: 'hundred_cookies', name: 'מאה עוגיות', emoji: '💯', desc: 'הגעת ל-100 עוגיות!', condition: () => totalCookiesBaked >= 100 },
+            { id: 'first_building', name: 'הבנייה הראשונה', emoji: '🏗️', desc: 'קנית את הבניין הראשון!', condition: () => Object.values(buildings).some(b => b.count > 0) },
+            { id: 'thousand_cookies', name: 'אלף עוגיות', emoji: '🎯', desc: 'הגעת ל-1,000 עוגיות!', condition: () => totalCookiesBaked >= 1000 },
+            { id: 'ten_thousand_cookies', name: 'עשרת אלפים עוגיות', emoji: '🏆', desc: 'הגעת ל-10,000 עוגיות!', condition: () => totalCookiesBaked >= 10000 },
+            { id: 'hundred_thousand_cookies', name: 'מאה אלף עוגיות', emoji: '🎖️', desc: 'הגעת ל-100,000 עוגיות!', condition: () => totalCookiesBaked >= 100000 },
+            { id: 'million_cookies', name: 'מיליון עוגיות', emoji: '💎', desc: 'הגעת למיליון עוגיות!', condition: () => totalCookiesBaked >= 1000000 },
+            { id: 'first_golden', name: 'עוגיית הזהב הראשונה', emoji: '🌟', desc: 'לחצת על עוגיית זהב!', condition: () => goldenCookieClicks >= 1 },
+            { id: 'golden_master', name: 'מאסטר הזהב', emoji: '👑', desc: 'לחצת על 10 עוגיות זהב!', condition: () => goldenCookieClicks >= 10 },
+            { id: 'hundred_buildings', name: 'מאה בניינים', emoji: '🏙️', desc: 'יש לך 100 בניינים!', condition: () => Object.values(buildings).reduce((sum, b) => sum + b.count, 0) >= 100 },
+            { id: 'first_prestige', name: 'יוקרה ראשונה', emoji: '⭐', desc: 'עשית איפוס יוקרה!', condition: () => prestigeLevel >= 1 }
+        ];
+
+        let unlockedAchievements = [];
+
+        // Enhanced Admin Functions
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminActionsSection').style.display = 'none';
+            document.getElementById('adminMessage').innerHTML = '';
+            // Clear all input fields
+            document.getElementById('targetPlayerInput').value = '';
+            document.getElementById('targetPlayerPasswordInput').value = '';
+            document.getElementById('cookieAmountInput').value = '';
+        }
+
+        function verifyAdmin() {
+            const password = document.getElementById('adminPasswordInput').value;
+            const messageDiv = document.getElementById('adminMessage');
+            
+            if (password === 'גיארון7865') {
+                document.getElementById('adminActionsSection').style.display = 'block';
+                messageDiv.innerHTML = '<div class="success-message">🎉 גישת יוצר אומתה בהצלחה!</div>';
+                document.getElementById('adminPasswordInput').value = '';
+            } else {
+                messageDiv.innerHTML = '<div class="error-message">❌ סיסמה שגויה - גישה נדחתה</div>';
+            }
+        }
+
+        async function adminTransferCookies() {
+            const targetPlayer = document.getElementById('targetPlayerInput').value.trim();
+            const targetPassword = document.getElementById('targetPlayerPasswordInput').value;
+            const amount = parseInt(document.getElementById('cookieAmountInput').value);
+            const messageDiv = document.getElementById('adminMessage');
+            
+            if (!targetPlayer) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש</div>';
+                return;
+            }
+            
+            if (!targetPassword) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן סיסמה של השחקן</div>';
+                return;
+            }
+            
+            if (!amount || amount <= 0) {
+                messageDiv.innerHTML = '<div class="error-message">אנא הזן מספר עוגיות תקין</div>';
+                return;
+            }
+
+            try {
+                // Check if target player exists and verify password
+                let targetPlayerData = null;
+                
+                if (firebaseInitialized) {
+                    const userSnapshot = await database.ref(`users/${targetPlayer}`).once('value');
+                    if (userSnapshot.exists()) {
+                        targetPlayerData = userSnapshot.val();
+                    }
+                } else if (users[targetPlayer]) {
+                    targetPlayerData = users[targetPlayer];
+                }
+
+                if (!targetPlayerData) {
+                    messageDiv.innerHTML = '<div class="error-message">שחקן לא נמצא במערכת</div>';
+                    return;
+                }
+
+                // Verify player's password
+                if (targetPlayerData.password !== targetPassword) {
+                    messageDiv.innerHTML = '<div class="error-message">סיסמה שגויה לשחקן זה</div>';
+                    return;
+                }
+
+                // Add cookies to target player (no deduction from admin)
+                const targetNewCookies = (targetPlayerData.cookies || 0) + amount;
+                const targetNewTotal = (targetPlayerData.totalCookiesBaked || 0) + amount;
+
+                // Update target player data
+                targetPlayerData.cookies = targetNewCookies;
+                targetPlayerData.totalCookiesBaked = targetNewTotal;
+                targetPlayerData.lastUpdate = Date.now();
+
+                // Update local cache
+                users[targetPlayer] = targetPlayerData;
+
+                // Save to Firebase
+                if (firebaseInitialized) {
+                    // Save target player
+                    await database.ref(`users/${targetPlayer}`).set(targetPlayerData);
+
+                    // Send notification message via chat
+                    const adminNotificationMessage = {
+                        id: Date.now() + '_admin_' + Math.random().toString(36).substr(2, 9),
+                        sender: 'מערכת',
+                        message: `👑 יוצר המשחק העביר ל${targetPlayer} ${formatNumber(amount)} עוגיות!`,
+                        timestamp: Date.now(),
+                        isSystemMessage: true
+                    };
+
+                    await database.ref(`chat/${adminNotificationMessage.id}`).set(adminNotificationMessage);
+
+                    // Send direct notification to player
+                    const directNotification = {
+                        id: Date.now() + '_admin_notif_' + Math.random().toString(36).substr(2, 9),
+                        recipient: targetPlayer,
+                        sender: 'יוצר המשחק',
+                        amount: amount,
+                        message: `יוצר המשחק העביר לך ${formatNumber(amount)} עוגיות! 🎁👑`,
+                        timestamp: Date.now(),
+                        type: 'admin_transfer'
+                    };
+
+                    await database.ref(`notifications/${targetPlayer}/${directNotification.id}`).set(directNotification);
+                }
+
+                // Save to localStorage
+                localStorage.setItem('cookieUsers', JSON.stringify(users));
+
+                // Clear inputs
+                document.getElementById('targetPlayerInput').value = '';
+                document.getElementById('targetPlayerPasswordInput').value = '';
+                document.getElementById('cookieAmountInput').value = '';
+                
+                messageDiv.innerHTML = `<div class="success-message">✅ הועברו ${formatNumber(amount)} עוגיות ל${targetPlayer} בהצלחה!<br>🎉 השחקן יקבל הודעה על ההעברה</div>`;
+
+            } catch (error) {
+                console.error('Admin transfer failed:', error);
+                messageDiv.innerHTML = '<div class="error-message">שגיאה בהעברת העוגיות</div>';
+            }
+        }
 
         // Load saved data from localStorage and Firebase
         async function loadInitialData() {
@@ -1656,6 +1998,89 @@ async function leaveClub() {
             }
         }
 
+        async function loadUserData() {
+            if (users[currentUser]) {
+                const userData = users[currentUser];
+                
+                // If Firebase is available, get fresh data
+                if (firebaseInitialized) {
+                    try {
+                        const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
+                        if (userSnapshot.exists()) {
+                            const freshData = userSnapshot.val();
+                            users[currentUser] = freshData;
+                            Object.assign(userData, freshData);
+                        }
+                    } catch (error) {
+                        console.warn('Failed to load fresh user data:', error);
+                    }
+                }
+
+                cookies = userData.cookies || 0;
+                totalClicks = userData.totalClicks || 0;
+                totalCookiesBaked = userData.totalCookiesBaked || 0;
+                prestigeLevel = userData.prestigeLevel || 0;
+                prestigeMultiplier = userData.prestigeMultiplier || 1;
+                
+                if (userData.buildings) {
+                    for (let key in userData.buildings) {
+                        if (buildings[key]) {
+                            buildings[key].count = userData.buildings[key].count || 0;
+                        }
+                    }
+                }
+                
+                if (userData.clickUpgrades) {
+                    for (let key in userData.clickUpgrades) {
+                        if (clickUpgrades[key]) {
+                            clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
+                        }
+                    }
+                }
+                
+                if (userData.upgrades) {
+                    for (let key in userData.upgrades) {
+                        if (upgrades[key]) {
+                            upgrades[key].purchased = userData.upgrades[key].purchased || false;
+                        }
+                    }
+                }
+
+                currentClub = userData.club;
+                if (currentClub && clubs[currentClub]) {
+                    updateClubButton();
+                }
+            }
+        }
+
+        async function saveUserData() {
+            if (currentUser && users[currentUser]) {
+                users[currentUser].cookies = cookies;
+                users[currentUser].totalClicks = totalClicks;
+                users[currentUser].totalCookiesBaked = totalCookiesBaked;
+                users[currentUser].buildings = JSON.parse(JSON.stringify(buildings));
+                users[currentUser].clickUpgrades = JSON.parse(JSON.stringify(clickUpgrades));
+                users[currentUser].upgrades = JSON.parse(JSON.stringify(upgrades));
+                users[currentUser].prestigeLevel = prestigeLevel;
+                users[currentUser].prestigeMultiplier = prestigeMultiplier;
+                users[currentUser].club = currentClub;
+                users[currentUser].lastSave = Date.now();
+
+                // Save to localStorage immediately
+                localStorage.setItem('cookieUsers', JSON.stringify(users));
+
+                // Try to save to Firebase
+                if (firebaseInitialized) {
+                    try {
+                        await database.ref(`users/${currentUser}`).update(users[currentUser]);
+                    } catch (error) {
+                        console.warn('Failed to save user data to Firebase:', error);
+                    }
+                }
+            }
+        }
+
+        // Login and Registration Functions
         async function login() {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
@@ -1773,79 +2198,548 @@ async function leaveClub() {
             }
             
             messageDiv.innerHTML = '<div class="success-message">נרשמת בהצלחה!</div>';
-            setTimeout(() => {7
+            setTimeout(() => {
                 document.getElementById('loginScreen').style.display = 'none';
                 startGame();
             }, 1000);
         }
 
-        function loadUserData() {
-            if (users[currentUser]) {
-                const userData = users[currentUser];
-                cookies = userData.cookies || 0;
-                totalClicks = userData.totalClicks || 0;
-                totalCookiesBaked = userData.totalCookiesBaked || 0;
-                prestigeLevel = userData.prestigeLevel || 0;
-                prestigeMultiplier = userData.prestigeMultiplier || 1;
-                
-                if (userData.buildings) {
-                    for (let key in userData.buildings) {
-                        if (buildings[key]) {
-                            buildings[key].count = userData.buildings[key].count || 0;
-                        }
-                    }
-                }
-                
-                if (userData.clickUpgrades) {
-                    for (let key in userData.clickUpgrades) {
-                        if (clickUpgrades[key]) {
-                            clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
-                        }
-                    }
-                }
-                
-                if (userData.upgrades) {
-                    for (let key in userData.upgrades) {
-                        if (upgrades[key]) {
-                            upgrades[key].purchased = userData.upgrades[key].purchased || false;
-                        }
-                    }
-                }
+        // Game utility functions
+        function formatNumber(num) {
+            if (num < 1000) return Math.floor(num).toString();
+            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
+            return (num / 1000000000000).toFixed(1) + 'T';
+        }
 
-                currentClub = userData.club;
-                if (currentClub && clubs[currentClub]) {
-                    updateClubButton();
-                }
+        function calculateClickPower() {
+            clickPower = 1; // Base click power
+            for (let key in clickUpgrades) {
+                clickPower += clickUpgrades[key].level * clickUpgrades[key].clickBonus;
             }
         }
 
-        async function saveUserData() {
-            if (currentUser && users[currentUser]) {
-                users[currentUser].cookies = cookies;
-                users[currentUser].totalClicks = totalClicks;
-                users[currentUser].totalCookiesBaked = totalCookiesBaked;
-                users[currentUser].buildings = JSON.parse(JSON.stringify(buildings));
-                users[currentUser].clickUpgrades = JSON.parse(JSON.stringify(clickUpgrades));
-                users[currentUser].upgrades = JSON.parse(JSON.stringify(upgrades));
-                users[currentUser].prestigeLevel = prestigeLevel;
-                users[currentUser].prestigeMultiplier = prestigeMultiplier;
-                users[currentUser].club = currentClub;
-                users[currentUser].lastSave = Date.now();
+        function updateDisplay() {
+            document.getElementById('cookieCount').textContent = formatNumber(cookies);
+            document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
+            document.getElementById('cpcDisplay').textContent = `+${formatNumber(Math.floor(clickPower * prestigeMultiplier))} עוגיות ללחיצה`;
+            document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
+        }
 
-                // Save to localStorage immediately
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                // Try to save to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`users/${currentUser}`).update(users[currentUser]);
-                    } catch (error) {
-                        console.warn('Failed to save user data to Firebase:', error);
-                    }
-                }
+        function calculateCPS() {
+            cookiesPerSecond = 0;
+            for (let key in buildings) {
+                cookiesPerSecond += buildings[key].count * buildings[key].cps * prestigeMultiplier;
             }
         }
 
+        function getCost(building) {
+            return Math.floor(building.baseCost * Math.pow(1.15, building.count));
+        }
+
+        function getClickUpgradeCost(upgrade) {
+            return Math.floor(upgrade.baseCost * Math.pow(2, upgrade.level));
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification-popup';
+            if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #E74C3C, #C0392B)';
+            } else if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #27AE60, #2ECC71)';
+            }
+            
+            notification.innerHTML = `
+                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
+                    ${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}
+                </div>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 4000);
+        }
+
+        // Check for notifications when user logs in or periodically
+        async function checkNotifications() {
+            if (!firebaseInitialized || !currentUser) return;
+            
+            try {
+                const notificationsSnapshot = await database.ref(`notifications/${currentUser}`).once('value');
+                if (notificationsSnapshot.exists()) {
+                    const notifications = notificationsSnapshot.val();
+                    
+                    for (let notificationId in notifications) {
+                        const notification = notifications[notificationId];
+                        
+                        // Show notification popup
+                        showNotification(notification.message, 'success');
+                        
+                        // If it's a donation or admin transfer, make sure to update local data
+                        if ((notification.type === 'donation' || notification.type === 'admin_transfer') && notification.amount) {
+                            // Reload user data to get the updated cookies
+                            const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
+                            if (userSnapshot.exists()) {
+                                const updatedUserData = userSnapshot.val();
+                                cookies = updatedUserData.cookies || cookies;
+                                totalCookiesBaked = updatedUserData.totalCookiesBaked || totalCookiesBaked;
+                                updateDisplay();
+                            }
+                        }
+                        
+                        // Remove notification after showing
+                        await database.ref(`notifications/${currentUser}/${notificationId}`).remove();
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to check notifications:', error);
+            }
+        }
+
+        // Start the game
+        async function startGame() {
+            await loadInitialData();
+            await checkNotifications(); // Check for any pending notifications
+            calculateClickPower();
+            calculateCPS();
+            updateDisplay();
+            createShopItems();
+            setupChatListener();
+            
+            // Set up auto-save
+            setInterval(saveUserData, 30000); // Save every 30 seconds
+            
+            // Set up periodic notification check
+            setInterval(checkNotifications, 60000); // Check every minute
+            
+            // Update cookies per second
+            setInterval(() => {
+                if (cookiesPerSecond > 0) {
+                    cookies += cookiesPerSecond / 10; // Update 10 times per second
+                    totalCookiesBaked += cookiesPerSecond / 10;
+                    updateDisplay();
+                    checkAchievements();
+                }
+            }, 100);
+            
+            // Generate floating cookies
+            createFloatingCookies();
+            
+            // Set up cookie click handler
+            document.getElementById('cookie').addEventListener('click', clickCookie);
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener('load', async () => {
+            await loadInitialData();
+            
+            // Check for remembered user
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser && users[rememberedUser]) {
+                document.getElementById('usernameInput').value = rememberedUser;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+function clickCookie(event) {
+            const gainedCookies = Math.floor(clickPower * prestigeMultiplier);
+            cookies += gainedCookies;
+            totalCookiesBaked += gainedCookies;
+            totalClicks++;
+            
+            updateDisplay();
+            createShopItems();
+            checkAchievements();
+            
+            // Create click effect
+            createClickEffect(event.clientX, event.clientY, gainedCookies);
+            createParticles(event.clientX, event.clientY, '#FFD700');
+        }
+
+        function createClickEffect(x, y, amount) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.textContent = `+${formatNumber(amount)}`;
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                if (document.body.contains(effect)) {
+                    document.body.removeChild(effect);
+                }
+            }, 1200);
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = (x + Math.random() * 20 - 10) + 'px';
+                particle.style.top = (y + Math.random() * 20 - 10) + 'px';
+                particle.style.background = color;
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (document.body.contains(particle)) {
+                        document.body.removeChild(particle);
+                    }
+                }, 2000);
+            }
+        }
+
+        function createFloatingCookies() {
+            const container = document.getElementById('floatingCookies');
+            
+            setInterval(() => {
+                const cookie = document.createElement('div');
+                cookie.className = 'floating-cookie';
+                cookie.style.left = Math.random() * window.innerWidth + 'px';
+                cookie.style.animationDuration = (15 + Math.random() * 20) + 's';
+                container.appendChild(cookie);
+                
+                setTimeout(() => {
+                    if (container.contains(cookie)) {
+                        container.removeChild(cookie);
+                    }
+                }, 30000);
+            }, 3000);
+        }
+
+        function createShopItems() {
+            // Buildings
+            const buildingContainer = document.getElementById('buildingItems');
+            buildingContainer.innerHTML = '';
+            
+            for (let key in buildings) {
+                const building = buildings[key];
+                const cost = getCost(building);
+                const canAfford = cookies >= cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${building.emoji} ${building.name}</span>
+                        <span class="item-count">${building.count}</span>
+                    </div>
+                    <div class="item-description">${building.description}</div>
+                    <div class="item-production">מייצר: ${formatNumber(building.cps * prestigeMultiplier)} עוגיות/שנייה</div>
+                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyBuilding(key);
+                }
+                
+                buildingContainer.appendChild(item);
+            }
+
+            // Click Upgrades
+            const clickUpgradeContainer = document.getElementById('clickUpgradeItems');
+            clickUpgradeContainer.innerHTML = '';
+            
+            for (let key in clickUpgrades) {
+                const upgrade = clickUpgrades[key];
+                const cost = getClickUpgradeCost(upgrade);
+                const canAfford = cookies >= cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
+                        <span class="item-count">רמה ${upgrade.level}</span>
+                    </div>
+                    <div class="item-description">${upgrade.description}</div>
+                    <div class="item-production">נוכחי: +${formatNumber(upgrade.level * upgrade.clickBonus)} ללחיצה</div>
+                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyClickUpgrade(key);
+                }
+                
+                clickUpgradeContainer.appendChild(item);
+            }
+
+            // Upgrades
+            const upgradeContainer = document.getElementById('upgradeItems');
+            upgradeContainer.innerHTML = '';
+            
+            for (let key in upgrades) {
+                const upgrade = upgrades[key];
+                if (upgrade.purchased || !upgrade.condition()) continue;
+                
+                const canAfford = cookies >= upgrade.cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
+                        <span class="item-count">🆕</span>
+                    </div>
+                    <div class="item-description">${upgrade.description}</div>
+                    <div class="item-price">💰 ${formatNumber(upgrade.cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyUpgrade(key);
+                }
+                
+                upgradeContainer.appendChild(item);
+            }
+
+            // Achievements
+            const achievementContainer = document.getElementById('achievementItems');
+            achievementContainer.innerHTML = '';
+            
+            achievements.forEach(achievement => {
+                const unlocked = unlockedAchievements.includes(achievement.id);
+                const item = document.createElement('div');
+                item.className = `shop-item ${unlocked ? '' : 'disabled'}`;
+                item.style.cursor = 'default';
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${achievement.emoji} ${achievement.name}</span>
+                        <span class="item-count">${unlocked ? '✅' : '❌'}</span>
+                    </div>
+                    <div class="item-description">${achievement.desc}</div>
+                `;
+                achievementContainer.appendChild(item);
+            });
+        }
+
+        function buyBuilding(buildingKey) {
+            const building = buildings[buildingKey];
+            const cost = getCost(building);
+            
+            if (cookies >= cost) {
+                cookies -= cost;
+                building.count++;
+                totalCookiesBaked += cost;
+                calculateClickPower();
+                calculateCPS();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#4ECDC4');
+            }
+        }
+
+        function buyClickUpgrade(upgradeKey) {
+            const upgrade = clickUpgrades[upgradeKey];
+            const cost = getClickUpgradeCost(upgrade);
+            
+            if (cookies >= cost) {
+                cookies -= cost;
+                upgrade.level++;
+                totalCookiesBaked += cost;
+                calculateClickPower();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#E74C3C');
+                showAchievement({name: 'שדרוג לחיצה!', desc: `${upgrade.name} - רמה ${upgrade.level}`, emoji: upgrade.emoji});
+            }
+        }
+
+        function buyUpgrade(upgradeKey) {
+            const upgrade = upgrades[upgradeKey];
+            
+            if (cookies >= upgrade.cost && !upgrade.purchased) {
+                cookies -= upgrade.cost;
+                totalCookiesBaked += upgrade.cost;
+                upgrade.purchased = true;
+                upgrade.effect();
+                calculateCPS();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#E74C3C');
+                showAchievement({name: 'שדרוג נקנה!', desc: `קנית: ${upgrade.name}`, emoji: '⚡'});
+            }
+        }
+
+        function toggleShop() {
+            const shop = document.getElementById('shop');
+            const shopToggle = document.getElementById('shopToggle');
+            
+            if (shop.classList.contains('hidden')) {
+                shop.classList.remove('hidden');
+                shopToggle.style.display = 'none';
+            } else {
+                shop.classList.add('hidden');
+                shopToggle.style.display = 'block';
+            }
+        }
+
+        function checkAchievements() {
+            achievements.forEach(achievement => {
+                if (!unlockedAchievements.includes(achievement.id) && achievement.condition()) {
+                    unlockedAchievements.push(achievement.id);
+                    showAchievement(achievement);
+                }
+            });
+        }
+
+        function showAchievement(achievement) {
+            const popup = document.getElementById('achievementPopup');
+            popup.innerHTML = `
+                <div style="font-size: 2rem; margin-bottom: 10px;">${achievement.emoji}</div>
+                <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">${achievement.name}</div>
+                <div style="font-size: 1rem;">${achievement.desc}</div>
+            `;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 4000);
+        }
+
+        function prestige() {
+            if (totalCookiesBaked >= 1000000) {
+                if (confirm('האם אתה בטוח שברצונך לעשות איפוס יוקרה? זה יאפס את כל ההתקדמות אבל יגדיל את הכפולה!')) {
+                    prestigeLevel++;
+                    prestigeMultiplier = 1 + (prestigeLevel * 0.1);
+                    
+                    // Reset everything
+                    cookies = 0;
+                    for (let key in buildings) {
+                        buildings[key].count = 0;
+                    }
+                    for (let key in clickUpgrades) {
+                        clickUpgrades[key].level = 0;
+                    }
+                    for (let key in upgrades) {
+                        upgrades[key].purchased = false;
+                    }
+                    
+                    calculateClickPower();
+                    calculateCPS();
+                    updateDisplay();
+                    createShopItems();
+                    showAchievement({name: 'יוקרה!', desc: `רמת יוקרה ${prestigeLevel}`, emoji: '⭐'});
+                }
+            } else {
+                showNotification('נדרש מיליון עוגיות לפחות לאיפוס יוקרה!', 'error');
+            }
+        }
+
+        // Chat Functions
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            const chatToggle = document.getElementById('chatToggle');
+            
+            if (chatContainer.classList.contains('minimized')) {
+                chatContainer.classList.remove('minimized');
+                chatToggle.textContent = '−';
+            } else {
+                chatContainer.classList.add('minimized');
+                chatToggle.textContent = '+';
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message || !currentUser) return;
+            
+            const messageData = {
+                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                sender: currentUser,
+                message: message,
+                timestamp: Date.now()
+            };
+
+            // Add to local cache
+            chatMessages.push(messageData);
+            if (chatMessages.length > 50) {
+                chatMessages = chatMessages.slice(-50);
+            }
+
+            // Send to Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`chat/${messageData.id}`).set(messageData);
+                } catch (error) {
+                    console.warn('Failed to send message to Firebase:', error);
+                }
+            }
+
+            input.value = '';
+            displayChatMessages();
+        }
+
+        function displayChatMessages() {
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatMessagesDiv.innerHTML = '';
+
+            chatMessages.slice(-20).forEach(msg => {
+                const messageDiv = document.createElement('div');
+                
+                // Check if it's a system message
+                if (msg.isSystemMessage) {
+                    messageDiv.className = 'chat-message system-message';
+                    messageDiv.style.background = 'linear-gradient(45deg, #F39C12, #E67E22)';
+                    messageDiv.style.color = 'white';
+                    messageDiv.style.textAlign = 'center';
+                    messageDiv.style.margin = '10px 5px';
+                    messageDiv.style.fontWeight = 'bold';
+                } else {
+                    messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
+                }
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                if (msg.isSystemMessage) {
+                    messageDiv.innerHTML = `
+                        <div>${msg.message}</div>
+                        <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 3px;">${time}</div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
+                        <div>${msg.message}</div>
+                        <div class="message-time">${time}</div>
+                    `;
+                }
+
+                chatMessagesDiv.appendChild(messageDiv);
+            });
+
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        function setupChatListener() {
+            if (!firebaseInitialized) return;
+
+            try {
+                chatListener = database.ref('chat').limitToLast(50);
+                chatListener.on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        chatMessages = Object.values(snapshot.val());
+                        displayChatMessages();
+                    }
+                });
+            } catch (error) {
+                console.warn('Failed to setup chat listener:', error);
+            }
+        }
+
+        // Club Functions
         async function generateClubCode() {
             let code;
             let attempts = 0;
@@ -2028,46 +2922,113 @@ async function leaveClub() {
                 showClubInfo();
             }, 2000);
         }
-
-        function leaveClub() {
+        async function leaveClub() {
             if (!currentClub) return;
 
             const club = clubs[currentClub];
             if (club.founder === currentUser) {
                 if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
+                    // Delete club from Firebase
+                    if (firebaseInitialized) {
+                        try {
+                            await database.ref(`clubs/${currentClub}`).remove();
+                        } catch (error) {
+                            console.warn('Failed to delete club from Firebase:', error);
+                        }
+                    }
+
                     delete clubs[currentClub];
+                    
                     // Remove club from all members
                     for (let username in users) {
                         if (users[username].club === currentClub) {
                             users[username].club = null;
+                            // Update in Firebase
+                            if (firebaseInitialized) {
+                                try {
+                                    await database.ref(`users/${username}/club`).remove();
+                                } catch (error) {
+                                    console.warn('Failed to update user club in Firebase:', error);
+                                }
+                            }
                         }
                     }
                 }
             } else {
                 club.members = club.members.filter(member => member.username !== currentUser);
+                
+                // Update club in Firebase
+                if (firebaseInitialized) {
+                    try {
+                        await database.ref(`clubs/${currentClub}/members`).set(club.members);
+                    } catch (error) {
+                        console.warn('Failed to update club members in Firebase:', error);
+                    }
+                }
             }
 
             currentClub = null;
             users[currentUser].club = null;
-            saveData();
+            
+            // Update user in Firebase
+            if (firebaseInitialized) {
+                try {
+                    await database.ref(`users/${currentUser}/club`).remove();
+                } catch (error) {
+                    console.warn('Failed to update user club in Firebase:', error);
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cookieUsers', JSON.stringify(users));
+            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
+            
             updateClubButton();
             closeModal('clubInfoModal');
         }
 
-        function showClubInfo() {
-            if (!currentClub || !clubs[currentClub]) return;
+        async function showClubInfo() {
+            if (!currentClub) return;
 
-            const club = clubs[currentClub];
+            let club = clubs[currentClub];
+
+            // Try to get fresh data from Firebase
+            if (firebaseInitialized) {
+                try {
+                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
+                    if (clubSnapshot.exists()) {
+                        club = clubSnapshot.val();
+                        clubs[currentClub] = club; // Update local cache
+                    }
+                } catch (error) {
+                    console.warn('Failed to fetch club info from Firebase:', error);
+                }
+            }
+
+            if (!club) return;
+
             document.getElementById('clubInfoName').textContent = club.name;
             document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
             
-            // Calculate total clicks
+            // Calculate total clicks from all members
             let totalClubClicks = 0;
-            club.members.forEach(member => {
+            for (const member of club.members) {
                 if (users[member.username]) {
                     totalClubClicks += users[member.username].totalClicks || 0;
+                } else if (firebaseInitialized) {
+                    // Try to fetch member data from Firebase
+                    try {
+                        const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
+                        if (memberSnapshot.exists()) {
+                            const memberData = memberSnapshot.val();
+                            users[member.username] = memberData; // Cache locally
+                            totalClubClicks += memberData.totalClicks || 0;
+                        }
+                    } catch (error) {
+                        console.warn('Failed to fetch member data from Firebase:', error);
+                    }
                 }
-            });
+            }
             
             document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
             
@@ -2101,19 +3062,7 @@ async function leaveClub() {
             }
         }
 
-        function toggleShop() {
-            const shop = document.getElementById('shop');
-            const shopToggle = document.getElementById('shopToggle');
-            
-            if (shop.classList.contains('hidden')) {
-                shop.classList.remove('hidden');
-                shopToggle.style.display = 'none';
-            } else {
-                shop.classList.add('hidden');
-                shopToggle.style.display = 'block';
-            }
-        }
-
+        // Donation Functions
         function openDonateModal() {
             if (!currentUser) {
                 showNotification('יש להתחבר כדי לתרום עוגיות', 'error');
@@ -2227,7 +3176,7 @@ async function leaveClub() {
                     // Save current user
                     await saveUserData();
 
-                    // Send notification message via chat
+// Send notification message via chat
                     const notificationMessage = {
                         id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                         sender: 'מערכת',
@@ -2268,67 +3217,7 @@ async function leaveClub() {
             }
         }
 
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = 'notification-popup';
-            if (type === 'error') {
-                notification.style.background = 'linear-gradient(135deg, #E74C3C, #C0392B)';
-            } else if (type === 'success') {
-                notification.style.background = 'linear-gradient(135deg, #27AE60, #2ECC71)';
-            }
-            
-            notification.innerHTML = `
-                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
-                    ${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}
-                </div>
-                <div>${message}</div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 4000);
-        }
-
-        // Check for notifications when user logs in or periodically
-        async function checkNotifications() {
-            if (!firebaseInitialized || !currentUser) return;
-            
-            try {
-                const notificationsSnapshot = await database.ref(`notifications/${currentUser}`).once('value');
-                if (notificationsSnapshot.exists()) {
-                    const notifications = notificationsSnapshot.val();
-                    
-                    for (let notificationId in notifications) {
-                        const notification = notifications[notificationId];
-                        
-                        // Show notification popup
-                        showNotification(notification.message, 'success');
-                        
-                        // If it's a donation, make sure to update local data
-                        if (notification.type === 'donation' && notification.amount) {
-                            // Reload user data to get the updated cookies
-                            const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
-                            if (userSnapshot.exists()) {
-                                const updatedUserData = userSnapshot.val();
-                                cookies = updatedUserData.cookies || cookies;
-                                totalCookiesBaked = updatedUserData.totalCookiesBaked || totalCookiesBaked;
-                                updateDisplay();
-                            }
-                        }
-                        
-                        // Remove notification after showing
-                        await database.ref(`notifications/${currentUser}/${notificationId}`).remove();
-                    }
-                }
-            } catch (error) {
-                console.warn('Failed to check notifications:', error);
-            }
-        }
-
+        // Settings Functions
         function openSettingsModal() {
             if (!currentUser) {
                 showNotification('יש להתחבר כדי לגשת להגדרות', 'error');
@@ -2339,7 +3228,7 @@ async function leaveClub() {
             document.getElementById('currentUsername').textContent = currentUser;
             const userData = users[currentUser] || {};
             const genderText = userData.gender === 'male' ? 'בן' : 
-                             userData.gender === 'female' ? 'בת' : 'לא נבחר';
+                            userData.gender === 'female' ? 'בת' : 'לא נבחר';
             document.getElementById('currentGender').textContent = genderText;
             
             // Set current gender selection
@@ -2364,18 +3253,6 @@ async function leaveClub() {
             
             document.getElementById('settingsModal').style.display = 'flex';
         }
-
-        // Add event listeners for gender selection
-        document.addEventListener('DOMContentLoaded', function() {
-            const genderOptions = document.querySelectorAll('.gender-option');
-            genderOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    genderOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    this.querySelector('input[type="radio"]').checked = true;
-                });
-            });
-        });
 
         async function changeUsername() {
             const newUsername = document.getElementById('newUsernameInput').value.trim();
@@ -2541,7 +3418,7 @@ async function leaveClub() {
             }
         }
 
-        async function logout() {
+        function logout() {
             if (confirm('האם אתה בטוח שברצונך להתנתק?')) {
                 // Clear current user data
                 currentUser = null;
@@ -2594,696 +3471,28 @@ async function leaveClub() {
                 
                 showNotification('התנתקת בהצלחה', 'success');
             }
-        
-            if (users[currentUser]) {
-                const userData = users[currentUser];
-                
-                // If Firebase is available, get fresh data
-                if (firebaseInitialized) {
-                    try {
-                        const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
-                        if (userSnapshot.exists()) {
-                            const freshData = userSnapshot.val();
-                            users[currentUser] = freshData;
-                            Object.assign(userData, freshData);
-                        }
-                    } catch (error) {
-                        console.warn('Failed to load fresh user data:', error);
-                    }
-                }
-
-                cookies = userData.cookies || 0;
-                totalClicks = userData.totalClicks || 0;
-                totalCookiesBaked = userData.totalCookiesBaked || 0;
-                prestigeLevel = userData.prestigeLevel || 0;
-                prestigeMultiplier = userData.prestigeMultiplier || 1;
-                
-                if (userData.buildings) {
-                    for (let key in userData.buildings) {
-                        if (buildings[key]) {
-                            buildings[key].count = userData.buildings[key].count || 0;
-                        }
-                    }
-                }
-                
-                if (userData.clickUpgrades) {
-                    for (let key in userData.clickUpgrades) {
-                        if (clickUpgrades[key]) {
-                            clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
-                        }
-                    }
-                }
-                
-                if (userData.upgrades) {
-                    for (let key in userData.upgrades) {
-                        if (upgrades[key]) {
-                            upgrades[key].purchased = userData.upgrades[key].purchased || false;
-                        }
-                    }
-                }
-
-                currentClub = userData.club;
-                if (currentClub && clubs[currentClub]) {
-                    updateClubButton();
-                }
-            }
         }
 
-        // Check for remembered user
-        window.onload = function() {
-            const rememberedUser = localStorage.getItem('rememberedUser');
-            if (rememberedUser && users[rememberedUser]) {
-                currentUser = rememberedUser;
-                loadUserData();
-                document.getElementById('loginScreen').style.display = 'none';
-                startGame();
-            }
-        };
-
-        const buildings = {
-            cursor: {
-                name: "סמן אוטומטי",
-                emoji: "👆",
-                description: "לוחץ על העוגייה אוטומטית",
-                baseCost: 15,
-                cps: 0.1,
-                count: 0
-            },
-            grandma: {
-                name: "סבתא",
-                emoji: "👵",
-                description: "סבתא מנוסה שאופה עוגיות טעימות",
-                baseCost: 100,
-                cps: 1,
-                count: 0
-            },
-            farm: {
-                name: "חווה",
-                emoji: "🚜",
-                description: "חווה לגידול עוגיות אורגניות",
-                baseCost: 1100,
-                cps: 8,
-                count: 0
-            },
-            mine: {
-                name: "מכרה",
-                emoji: "⛏️",
-                description: "מכרה עמוק לחפירת עוגיות נדירות",
-                baseCost: 12000,
-                cps: 47,
-                count: 0
-            },
-            factory: {
-                name: "מפעל",
-                emoji: "🏭",
-                description: "מפעל אוטומטי לייצור עוגיות",
-                baseCost: 130000,
-                cps: 260,
-                count: 0
-            },
-            bank: {
-                name: "בנק",
-                emoji: "🏦",
-                description: "בנק שמייצר עוגיות מריבית",
-                baseCost: 1400000,
-                cps: 1400,
-                count: 0
-            },
-            temple: {
-                name: "מקדש",
-                emoji: "🏛️",
-                description: "מקדש קדוש לעוגיות",
-                baseCost: 20000000,
-                cps: 7800,
-                count: 0
-            },
-            wizardTower: {
-                name: "מגדל קוסמים",
-                emoji: "🧙",
-                description: "קוסמים שמזמנים עוגיות מהאוויר",
-                baseCost: 330000000,
-                cps: 44000,
-                count: 0
-            },
-            shipment: {
-                name: "חללית",
-                emoji: "🚀",
-                description: "חללית שמביאה עוגיות מהחלל",
-                baseCost: 5100000000,
-                cps: 260000,
-                count: 0
-            },
-            alchemyLab: {
-                name: "מעבדה אלכימית",
-                emoji: "⚗️",
-                description: "מעבדה להפיכת חומרים לעוגיות",
-                baseCost: 75000000000,
-                cps: 1600000,
-                count: 0
-            },
-            portal: {
-                name: "פורטל",
-                emoji: "🌀",
-                description: "פורטל לממדים אחרים מלאי עוגיות",
-                baseCost: 1000000000000,
-                cps: 10000000,
-                count: 0
-            },
-            timeMachine: {
-                name: "מכונת זמן",
-                emoji: "⏰",
-                description: "מכונת זמן שמביאה עוגיות מהעתיד",
-                baseCost: 14000000000000,
-                cps: 65000000,
-                count: 0
-            }
-        };
-
-        const clickUpgrades = {
-            clickPower1: {
-                name: "אצבע חזקה",
-                emoji: "👆",
-                description: "כל לחיצה מביאה +1 עוגיה נוספת",
-                baseCost: 50,
-                clickBonus: 1,
-                level: 0
-            },
-            clickPower2: {
-                name: "יד ברזל",
-                emoji: "✊",
-                description: "כל לחיצה מביאה +5 עוגיות נוספות",
-                baseCost: 500,
-                clickBonus: 5,
-                level: 0
-            },
-            clickPower3: {
-                name: "זרוע טיטניום",
-                emoji: "🦾",
-                description: "כל לחיצה מביאה +25 עוגיות נוספות",
-                baseCost: 5000,
-                clickBonus: 25,
-                level: 0
-            },
-            clickPower4: {
-                name: "כוח על-אנושי",
-                emoji: "⚡",
-                description: "כל לחיצה מביאה +100 עוגיות נוספות",
-                baseCost: 50000,
-                clickBonus: 100,
-                level: 0
-            },
-            clickPower5: {
-                name: "אצבע אלוהית",
-                emoji: "🌟",
-                description: "כל לחיצה מביאה +500 עוגיות נוספות",
-                baseCost: 500000,
-                clickBonus: 500,
-                level: 0
-            }
-        };
-
-        const upgrades = {
-            reinforcedIndex: {
-                name: "אצבע מחוזקת",
-                emoji: "💪",
-                description: "כפולה x2 לכל הסמנים",
-                cost: 100,
-                condition: () => buildings.cursor.count >= 1,
-                effect: () => { buildings.cursor.cps *= 2; },
-                purchased: false
-            },
-            carpalTunnelPrevention: {
-                name: "מניעת תסמונת התעלה",
-                emoji: "🖱️",
-                description: "כפולה x2 לכל הסמנים",
-                cost: 500,
-                condition: () => buildings.cursor.count >= 5,
-                effect: () => { buildings.cursor.cps *= 2; },
-                purchased: false
-            },
-            ambidextrous: {
-                name: "דו-צדדי",
-                emoji: "👐",
-                description: "כפולה x2 לכל הסמנים",
-                cost: 10000,
-                condition: () => buildings.cursor.count >= 25,
-                effect: () => { buildings.cursor.cps *= 2; },
-                purchased: false
-            },
-            forwardsFromGrandma: {
-                name: "מתכונים מסבתא",
-                emoji: "📧",
-                description: "כפולה x2 לכל הסבתות",
-                cost: 1000,
-                condition: () => buildings.grandma.count >= 1,
-                effect: () => { buildings.grandma.cps *= 2; },
-                purchased: false
-            },
-            steelPlatedRollingPins: {
-                name: "מערוכי מתכת",
-                emoji: "🍴",
-                description: "כפולה x2 לכל הסבתות",
-                cost: 5000,
-                condition: () => buildings.grandma.count >= 5,
-                effect: () => { buildings.grandma.cps *= 2; },
-                purchased: false
-            },
-            lubrication: {
-                name: "שיפור מכונות",
-                emoji: "🛠️",
-                description: "כפולה x2 לכל המפעלים",
-                cost: 650000,
-                condition: () => buildings.factory.count >= 1,
-                effect: () => { buildings.factory.cps *= 2; },
-                purchased: false
-            },
-            goldenTouch: {
-                name: "מגע הזהב",
-                emoji: "✨",
-                description: "כפולה x3 לכל הייצור",
-                cost: 10000000,
-                condition: () => goldenCookieClicks >= 5,
-                effect: () => { 
-                    for (let key in buildings) {
-                        buildings[key].cps *= 3;
-                    }
-                },
-                purchased: false
-            }
-        };
-
-        const achievements = [
-            { id: 'first_click', name: 'הלחיצה הראשונה', emoji: '👆', desc: 'לחצת על העוגייה!', condition: () => totalCookiesBaked >= 1 },
-            { id: 'hundred_cookies', name: 'מאה עוגיות', emoji: '💯', desc: 'הגעת ל-100 עוגיות!', condition: () => totalCookiesBaked >= 100 },
-            { id: 'first_building', name: 'הבנייה הראשונה', emoji: '🏗️', desc: 'קנית את הבניין הראשון!', condition: () => Object.values(buildings).some(b => b.count > 0) },
-            { id: 'thousand_cookies', name: 'אלף עוגיות', emoji: '🎯', desc: 'הגעת ל-1,000 עוגיות!', condition: () => totalCookiesBaked >= 1000 },
-            { id: 'ten_thousand_cookies', name: 'עשרת אלפים עוגיות', emoji: '🏆', desc: 'הגעת ל-10,000 עוגיות!', condition: () => totalCookiesBaked >= 10000 },
-            { id: 'hundred_thousand_cookies', name: 'מאה אלף עוגיות', emoji: '🎖️', desc: 'הגעת ל-100,000 עוגיות!', condition: () => totalCookiesBaked >= 100000 },
-            { id: 'million_cookies', name: 'מיליון עוגיות', emoji: '💎', desc: 'הגעת למיליון עוגיות!', condition: () => totalCookiesBaked >= 1000000 },
-            { id: 'first_golden', name: 'עוגיית הזהב הראשונה', emoji: '🌟', desc: 'לחצת על עוגיית זהב!', condition: () => goldenCookieClicks >= 1 },
-            { id: 'golden_master', name: 'מאסטר הזהב', emoji: '👑', desc: 'לחצת על 10 עוגיות זהב!', condition: () => goldenCookieClicks >= 10 },
-            { id: 'hundred_buildings', name: 'מאה בניינים', emoji: '🏙️', desc: 'יש לך 100 בניינים!', condition: () => Object.values(buildings).reduce((sum, b) => sum + b.count, 0) >= 100 },
-            { id: 'first_prestige', name: 'יוקרה ראשונה', emoji: '⭐', desc: 'עשית איפוס יוקרה!', condition: () => prestigeLevel >= 1 }
-        ];
-
-        let unlockedAchievements = [];
-
-        function formatNumber(num) {
-            if (num < 1000) return Math.floor(num).toString();
-            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
-            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
-            return (num / 1000000000000).toFixed(1) + 'T';
-        }
-
-        function calculateClickPower() {
-            clickPower = 1; // Base click power
-            for (let key in clickUpgrades) {
-                clickPower += clickUpgrades[key].level * clickUpgrades[key].clickBonus;
-            }
-        }
-
-        function updateDisplay() {
-            document.getElementById('cookieCount').textContent = formatNumber(cookies);
-            document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
-            document.getElementById('cpcDisplay').textContent = `+${formatNumber(Math.floor(clickPower * prestigeMultiplier))} עוגיות ללחיצה`;
-            document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
-        }
-
-        function calculateCPS() {
-            cookiesPerSecond = 0;
-            for (let key in buildings) {
-                cookiesPerSecond += buildings[key].count * buildings[key].cps * prestigeMultiplier;
-            }
-        }
-
-        function getCost(building) {
-            return Math.floor(building.baseCost * Math.pow(1.15, building.count));
-        }
-
-        function getClickUpgradeCost(upgrade) {
-            return Math.floor(upgrade.baseCost * Math.pow(2, upgrade.level));
-        }
-
-        function createShopItems() {
-            // Buildings
-            const buildingContainer = document.getElementById('buildingItems');
-            buildingContainer.innerHTML = '';
-            
-            for (let key in buildings) {
-                const building = buildings[key];
-                const cost = getCost(building);
-                const canAfford = cookies >= cost;
-                
-                const item = document.createElement('div');
-                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${building.emoji} ${building.name}</span>
-                        <span class="item-count">${building.count}</span>
-                    </div>
-                    <div class="item-description">${building.description}</div>
-                    <div class="item-production">מייצר: ${formatNumber(building.cps * prestigeMultiplier)} עוגיות/שנייה</div>
-                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
-                `;
-                
-                if (canAfford) {
-                    item.onclick = () => buyBuilding(key);
-                }
-                
-                buildingContainer.appendChild(item);
-            }
-
-            // Click Upgrades
-            const clickUpgradeContainer = document.getElementById('clickUpgradeItems');
-            clickUpgradeContainer.innerHTML = '';
-            
-            for (let key in clickUpgrades) {
-                const upgrade = clickUpgrades[key];
-                const cost = getClickUpgradeCost(upgrade);
-                const canAfford = cookies >= cost;
-                
-                const item = document.createElement('div');
-                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
-                        <span class="item-count">רמה ${upgrade.level}</span>
-                    </div>
-                    <div class="item-description">${upgrade.description}</div>
-                    <div class="item-production">נוכחי: +${formatNumber(upgrade.level * upgrade.clickBonus)} ללחיצה</div>
-                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
-                `;
-                
-                if (canAfford) {
-                    item.onclick = () => buyClickUpgrade(key);
-                }
-                
-                clickUpgradeContainer.appendChild(item);
-            }
-
-            // Upgrades
-            const upgradeContainer = document.getElementById('upgradeItems');
-            upgradeContainer.innerHTML = '';
-            
-            for (let key in upgrades) {
-                const upgrade = upgrades[key];
-                if (upgrade.purchased || !upgrade.condition()) continue;
-                
-                const canAfford = cookies >= upgrade.cost;
-                
-                const item = document.createElement('div');
-                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
-                        <span class="item-count">🆕</span>
-                    </div>
-                    <div class="item-description">${upgrade.description}</div>
-                    <div class="item-price">💰 ${formatNumber(upgrade.cost)} עוגיות</div>
-                `;
-                
-                if (canAfford) {
-                    item.onclick = () => buyUpgrade(key);
-                }
-                
-                upgradeContainer.appendChild(item);
-            }
-
-            // Achievements
-            const achievementContainer = document.getElementById('achievementItems');
-            achievementContainer.innerHTML = '';
-            
-            achievements.forEach(achievement => {
-                const unlocked = unlockedAchievements.includes(achievement.id);
-                const item = document.createElement('div');
-                item.className = `shop-item ${unlocked ? '' : 'disabled'}`;
-                item.style.cursor = 'default';
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${achievement.emoji} ${achievement.name}</span>
-                        <span class="item-count">${unlocked ? '✅' : '❌'}</span>
-                    </div>
-                    <div class="item-description">${achievement.desc}</div>
-                `;
-                achievementContainer.appendChild(item);
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const genderOptions = document.querySelectorAll('.gender-option');
+            genderOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    genderOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
             });
-        }
 
-        function buyClickUpgrade(upgradeKey) {
-            const upgrade = clickUpgrades[upgradeKey];
-            const cost = getClickUpgradeCost(upgrade);
-            
-            if (cookies >= cost) {
-                cookies -= cost;
-                upgrade.level++;
-                totalCookiesBaked += cost;
-                calculateClickPower();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                createParticles(event.clientX, event.clientY, '#E74C3C');
-                showAchievement({name: 'שדרוג לחיצה!', desc: `${upgrade.name} - רמה ${upgrade.level}`, emoji: upgrade.emoji});
-            }
-        }
-
-        function buyBuilding(buildingKey) {
-            const building = buildings[buildingKey];
-            const cost = getCost(building);
-            
-            if (cookies >= cost) {
-                cookies -= cost;
-                building.count++;
-                totalCookiesBaked += cost;
-                // Reset click upgrades
-                for (let key in clickUpgrades) {
-                    clickUpgrades[key].level = 0;
-                }
-                
-                calculateClickPower();
-                calculateCPS();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                createParticles(event.clientX, event.clientY, '#4ECDC4');
-            }
-        }
-
-        function buyUpgrade(upgradeKey) {
-            const upgrade = upgrades[upgradeKey];
-            
-            if (cookies >= upgrade.cost && !upgrade.purchased) {
-                cookies -= upgrade.cost;
-                totalCookiesBaked += upgrade.cost;
-                upgrade.purchased = true;
-                upgrade.effect();
-                calculateCPS();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                createParticles(event.clientX, event.clientY, '#E74C3C');
-                showAchievement({name: 'שדרוג נקנה!', desc: `קנית: ${upgrade.name}`, emoji: '⚡'});
-            }
-        }
-
-        function createClickEffect(x, y) {
-            const effect = document.createElement('div');
-            effect.className = 'click-effect';
-            effect.textContent = `+${formatNumber(clickPower * prestigeMultiplier)}`;
-            effect.style.left = (x - 25) + 'px';
-            effect.style.top = (y - 25) + 'px';
-            document.body.appendChild(effect);
-            
-            setTimeout(() => {
-                if (document.body.contains(effect)) {
-                    document.body.removeChild(effect);
-                }
-            }, 1200);
-        }
-
-        function createParticles(x, y, color) {
-            for (let i = 0; i < 8; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.background = color;
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                particle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px)`;
-                document.body.appendChild(particle);
-                
-                setTimeout(() => {
-                    if (document.body.contains(particle)) {
-                        document.body.removeChild(particle);
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
                     }
-                }, 2000);
+                });
             }
-        }
-
-        function checkAchievements() {
-            achievements.forEach(achievement => {
-                if (!unlockedAchievements.includes(achievement.id) && achievement.condition()) {
-                    unlockedAchievements.push(achievement.id);
-                    showAchievement(achievement);
-                }
-            });
-        }
-
-        function showAchievement(achievement) {
-            const popup = document.getElementById('achievementPopup');
-            const text = document.getElementById('achievementText');
-            text.innerHTML = `<strong>🏆 הישג חדש!</strong><br>${achievement.emoji} ${achievement.name}<br>${achievement.desc}`;
-            popup.classList.add('show');
-            
-            setTimeout(() => {
-                popup.classList.remove('show');
-            }, 4000);
-        }
-
-        function createFloatingCookies() {
-            const container = document.getElementById('floatingCookies');
-            
-            for (let i = 0; i < 20; i++) {
-                const cookie = document.createElement('div');
-                cookie.className = 'floating-cookie';
-                cookie.style.left = Math.random() * 100 + '%';
-                cookie.style.animationDelay = Math.random() * 25 + 's';
-                cookie.style.animationDuration = (20 + Math.random() * 10) + 's';
-                container.appendChild(cookie);
-            }
-        }
-
-        function spawnGoldenCookie() {
-            if (Date.now() - lastGoldenCookie < 30000) return; // 30 seconds cooldown
-            
-            const goldenCookie = document.createElement('div');
-            goldenCookie.className = 'golden-cookie';
-            goldenCookie.style.left = Math.random() * (window.innerWidth - 60) + 'px';
-            goldenCookie.style.top = Math.random() * (window.innerHeight - 60) + 'px';
-            
-            goldenCookie.onclick = function() {
-                goldenCookieClicks++;
-                const bonus = Math.floor(cookies * 0.15) + Math.floor(cookiesPerSecond * 77);
-                cookies += bonus;
-                totalCookiesBaked += bonus;
-                createClickEffect(event.clientX, event.clientY);
-                createParticles(event.clientX, event.clientY, '#FFD700');
-                showAchievement({name: 'עוגיית זהב!', desc: `+${formatNumber(bonus)} עוגיות!`, emoji: '🌟'});
-                document.body.removeChild(goldenCookie);
-                lastGoldenCookie = Date.now();
-                checkAchievements();
-            };
-            
-            document.body.appendChild(goldenCookie);
-            
-            // Remove after 13 seconds
-            setTimeout(() => {
-                if (document.body.contains(goldenCookie)) {
-                    document.body.removeChild(goldenCookie);
-                }
-            }, 13000);
-        }
-
-        function prestige() {
-            if (totalCookiesBaked < 1000000) {
-                showAchievement({name: 'לא מוכן!', desc: 'צריך לפחות מיליון עוגיות כדי לעשות איפוס יוקרה', emoji: '❌'});
-                return;
-            }
-            
-            if (confirm('האם אתה בטוח שאתה רוצה לעשות איפוס יוקרה? זה יאפס את כל הקניות אבל יתן לך בונוס קבוע!')) {
-                prestigeLevel++;
-                prestigeMultiplier = 1 + (prestigeLevel * 0.1);
-                
-                // Reset everything except prestige
-                cookies = 0;
-                cookiesPerSecond = 0;
-                totalCookiesBaked = 0;
-                
-                // Reset buildings
-                for (let key in buildings) {
-                    buildings[key].count = 0;
-                    buildings[key].cps = buildings[key].baseCost === 15 ? 0.1 : 
-                                        buildings[key].baseCost === 100 ? 1 :
-                                        buildings[key].baseCost === 1100 ? 8 :
-                                        buildings[key].baseCost === 12000 ? 47 :
-                                        buildings[key].baseCost === 130000 ? 260 :
-                                        buildings[key].baseCost === 1400000 ? 1400 :
-                                        buildings[key].baseCost === 20000000 ? 7800 :
-                                        buildings[key].baseCost === 330000000 ? 44000 :
-                                        buildings[key].baseCost === 5100000000 ? 260000 :
-                                        buildings[key].baseCost === 75000000000 ? 1600000 :
-                                        buildings[key].baseCost === 1000000000000 ? 10000000 : 65000000;
-                }
-                
-                // Reset upgrades
-                for (let key in upgrades) {
-                    upgrades[key].purchased = false;
-                }
-                
-                calculateCPS();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                showAchievement({name: 'איפוס יוקרה!', desc: `רמת יוקרה: ${prestigeLevel}`, emoji: '⭐'});
-            }
-        }
-
-        // Event listeners
-        document.getElementById('cookie').addEventListener('click', function(e) {
-            const clickValue = clickPower * prestigeMultiplier;
-            cookies += clickValue;
-            totalCookiesBaked += clickValue;
-            totalClicks++;
-            updateDisplay();
-            createClickEffect(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, '#FFD700');
-            checkAchievements();
-            saveUserData();
         });
-
-        // Game loops
-        setInterval(() => {
-            const cpsGain = cookiesPerSecond / 10;
-            cookies += cpsGain;
-            totalCookiesBaked += cpsGain;
-            updateDisplay();
-            checkAchievements();
-        }, 100);
-
-        setInterval(() => {
-            createShopItems();
-        }, 1000);
-
-        // Golden cookie spawner
-        setInterval(() => {
-            if (Math.random() < 0.3 && cookiesPerSecond > 0) { // 30% chance every 10 seconds if producing
-                spawnGoldenCookie();
-            }
-        }, 10000);
-
-        // Auto-save
-        setInterval(() => {
-            const gameData = {
-                cookies,
-                totalCookiesBaked,
-                buildings,
-                upgrades,
-                unlockedAchievements,
-                prestigeLevel,
-                prestigeMultiplier,
-                goldenCookieClicks
-            };
-            // In a real implementation, you'd save to localStorage here
-            // localStorage.setItem('cookieClickerSave', JSON.stringify(gameData));
-        }, 30000);
-
-        // Initialize game
-        // Game will start only after login
-        // calculateClickPower();
-        // calculateCPS();
-        // updateDisplay();
-        // createShopItems();
-        // createFloatingCookies();
-        // checkAchievements();
     </script>
 </body>
 </html>
