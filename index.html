@@ -1,3945 +1,1045 @@
-    <!DOCTYPE html>
-    <html lang="he" dir="rtl">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>🍪 משחק האימפריית עוגיות 🍪</title>
-        
-        <!-- Firebase SDK -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-app-compat.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-database-compat.min.js"></script>
-        
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family: 'Comic Sans MS', cursive, sans-serif;
-                background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7);
-                background-size: 400% 400%;
-                animation: gradientShift 10s ease infinite;
-                min-height: 100vh;
-                display: flex;
-                direction: rtl;
-                overflow-x: hidden;
-            }
-
-            @keyframes gradientShift {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-            .login-screen {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-            }
-
-            .login-form {
-                background: rgba(255, 255, 255, 0.95);
-                padding: 40px;
-                border-radius: 20px;
-                text-align: center;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                border: 2px solid rgba(255, 255, 255, 0.5);
-                min-width: 350px;
-            }
-
-            .login-form h2 {
-                color: #2C3E50;
-                margin-bottom: 25px;
-                font-size: 2rem;
-            }
-
-            .login-form input {
-                width: 100%;
-                padding: 12px;
-                margin: 10px 0;
-                border: 2px solid #ddd;
-                border-radius: 10px;
-                font-size: 1rem;
-                text-align: center;
-            }
-
-            .login-form button {
-                background: linear-gradient(45deg, #4ECDC4, #45B7D1);
-                color: white;
-                padding: 12px 25px;
-                border: none;
-                border-radius: 10px;
-                font-size: 1.1rem;
-                cursor: pointer;
-                margin: 10px 5px;
-                transition: all 0.3s ease;
-            }
-
-            .login-form button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .remember-me {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 15px 0;
-                font-size: 1rem;
-                color: #2C3E50;
-            }
-
-            .remember-me input {
-                width: auto;
-                margin-left: 8px;
-            }
-            .club-buttons {
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                z-index: 1000;
-                display: flex;
-                gap: 10px;
-            }
-
-            .club-button {
-                background: linear-gradient(45deg, #8E44AD, #E74C3C);
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 15px;
-                font-size: 1rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .club-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .donate-button {
-                position: fixed;
-                top: 20px;
-                left: 250px;
-                background: linear-gradient(45deg, #27AE60, #2ECC71);
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 15px;
-                font-size: 1rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-                z-index: 1000;
-            }
-
-            .donate-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .settings-button {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(45deg, #34495E, #2C3E50);
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 15px;
-                font-size: 1rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-                z-index: 1000;
-            }
-
-            .settings-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .admin-button {
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                background: linear-gradient(45deg, #9B59B6, #8E44AD);
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 15px;
-                font-size: 1rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-                z-index: 1000;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-            }
-
-            .admin-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-                background: linear-gradient(45deg, #A569BD, #9B59B6);
-            }
-            .modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: none;
-                justify-content: center;
-                align-items: center;
-                z-index: 5000;
-            }
-
-            .modal-content {
-                background: rgba(255, 255, 255, 0.95);
-                padding: 30px;
-                border-radius: 20px;
-                text-align: center;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                border: 2px solid rgba(255, 255, 255, 0.5);
-                min-width: 400px;
-                max-width: 500px;
-                max-height: 80vh;
-                overflow-y: auto;
-            }
-
-            .modal h3 {
-                color: #2C3E50;
-                margin-bottom: 20px;
-                font-size: 1.8rem;
-            }
-
-            .modal input {
-                width: 100%;
-                padding: 12px;
-                margin: 10px 0;
-                border: 2px solid #ddd;
-                border-radius: 10px;
-                font-size: 1rem;
-                text-align: center;
-            }
-
-            .modal button {
-                background: linear-gradient(45deg, #4ECDC4, #45B7D1);
-                color: white;
-                padding: 12px 25px;
-                border: none;
-                border-radius: 10px;
-                font-size: 1.1rem;
-                cursor: pointer;
-                margin: 10px 5px;
-                transition: all 0.3s ease;
-            }
-
-            .modal button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .close-button {
-                background: linear-gradient(45deg, #E74C3C, #C0392B) !important;
-            }
-            .settings-section {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 20px;
-                margin: 15px 0;
-                border-radius: 15px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-
-            .settings-section h4 {
-                color: #2C3E50;
-                margin-bottom: 15px;
-                font-size: 1.3rem;
-                text-align: center;
-            }
-
-            .settings-input {
-                width: 100%;
-                padding: 10px;
-                margin: 8px 0;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                font-size: 1rem;
-                text-align: center;
-            }
-
-            .settings-input:focus {
-                border-color: #3498DB;
-                outline: none;
-            }
-
-            .gender-selector {
-                display: flex;
-                justify-content: center;
-                gap: 20px;
-                margin: 15px 0;
-            }
-
-            .gender-option {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 10px 15px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 10px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                border: 2px solid transparent;
-            }
-
-            .gender-option:hover {
-                background: rgba(255, 255, 255, 0.2);
-            }
-
-            .gender-option.selected {
-                background: rgba(52, 152, 219, 0.3);
-                border-color: #3498DB;
-            }
-
-            .settings-button-small {
-                background: linear-gradient(45deg, #3498DB, #2980B9);
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 8px;
-                font-size: 1rem;
-                cursor: pointer;
-                margin: 5px;
-                transition: all 0.3s ease;
-                width: 100%;
-            }
-
-            .settings-button-small:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            }
-
-            .logout-button {
-                background: linear-gradient(45deg, #E74C3C, #C0392B) !important;
-                margin-top: 20px;
-            }
-
-            .current-info {
-                background: rgba(255, 255, 255, 0.2);
-                padding: 10px;
-                border-radius: 8px;
-                margin-bottom: 10px;
-                text-align: center;
-                color: #2C3E50;
-                font-weight: bold;
-            }
-            .admin-section {
-                background: rgba(155, 89, 182, 0.1);
-                padding: 20px;
-                margin: 15px 0;
-                border-radius: 15px;
-                border: 2px solid rgba(155, 89, 182, 0.3);
-            }
-
-            .admin-section h4 {
-                color: #8E44AD;
-                margin-bottom: 15px;
-                font-size: 1.3rem;
-                text-align: center;
-                font-weight: bold;
-            }
-
-            .admin-input {
-                width: 100%;
-                padding: 12px;
-                margin: 10px 0;
-                border: 2px solid #9B59B6;
-                border-radius: 10px;
-                font-size: 1rem;
-                text-align: center;
-                background: rgba(255, 255, 255, 0.9);
-            }
-
-            .admin-input:focus {
-                border-color: #8E44AD;
-                outline: none;
-                box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
-            }
-
-            .admin-button-large {
-                background: linear-gradient(45deg, #9B59B6, #8E44AD);
-                color: white;
-                padding: 15px 30px;
-                border: none;
-                border-radius: 12px;
-                font-size: 1.2rem;
-                font-weight: bold;
-                cursor: pointer;
-                width: 100%;
-                margin-top: 15px;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .admin-button-large:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .admin-warning {
-                background: rgba(231, 76, 60, 0.1);
-                border: 2px solid rgba(231, 76, 60, 0.3);
-                padding: 15px;
-                border-radius: 10px;
-                margin: 15px 0;
-                text-align: center;
-                color: #E74C3C;
-                font-weight: bold;
-            }
-
-            .admin-transfer-section {
-                background: rgba(46, 204, 113, 0.1);
-                border: 2px solid rgba(46, 204, 113, 0.3);
-                padding: 20px;
-                margin: 15px 0;
-                border-radius: 15px;
-            }
-
-            .admin-transfer-section h4 {
-                color: #27AE60;
-                margin-bottom: 15px;
-                font-size: 1.3rem;
-                text-align: center;
-                font-weight: bold;
-            }
-
-            .admin-transfer-input {
-                width: 100%;
-                padding: 12px;
-                margin: 10px 0;
-                border: 2px solid #27AE60;
-                border-radius: 10px;
-                font-size: 1rem;
-                text-align: center;
-                background: rgba(255, 255, 255, 0.9);
-            }
-
-            .admin-transfer-input:focus {
-                border-color: #2ECC71;
-                outline: none;
-                box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
-            }
-
-            .admin-transfer-button {
-                background: linear-gradient(45deg, #27AE60, #2ECC71);
-                color: white;
-                padding: 15px 30px;
-                border: none;
-                border-radius: 12px;
-                font-size: 1.2rem;
-                font-weight: bold;
-                cursor: pointer;
-                width: 100%;
-                margin-top: 15px;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .admin-transfer-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .password-requirement {
-                background: rgba(52, 152, 219, 0.1);
-                border: 2px solid rgba(52, 152, 219, 0.3);
-                padding: 10px;
-                border-radius: 8px;
-                margin: 10px 0;
-                text-align: center;
-                color: #3498DB;
-                font-size: 0.9rem;
-            }
-            .chat-container {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                width: 350px;
-                height: 400px;
-                background: rgba(255, 255, 255, 0.95);
-                border-radius: 15px;
-                border: 2px solid rgba(255, 255, 255, 0.5);
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                display: flex;
-                flex-direction: column;
-                z-index: 1000;
-                transition: all 0.3s ease;
-            }
-
-            .chat-container.minimized {
-                height: 50px;
-                overflow: hidden;
-            }
-
-            .chat-header {
-                background: linear-gradient(45deg, #4ECDC4, #45B7D1);
-                color: white;
-                padding: 12px 15px;
-                border-radius: 13px 13px 0 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                cursor: pointer;
-                font-weight: bold;
-            }
-
-            .chat-messages {
-                flex: 1;
-                padding: 10px;
-                overflow-y: auto;
-                direction: rtl;
-                background: rgba(255, 255, 255, 0.8);
-            }
-
-            .chat-message {
-                margin-bottom: 8px;
-                padding: 8px 12px;
-                border-radius: 10px;
-                font-size: 0.9rem;
-                word-wrap: break-word;
-            }
-
-            .chat-message.own {
-                background: linear-gradient(45deg, #4ECDC4, #45B7D1);
-                color: white;
-                margin-left: 20px;
-                text-align: right;
-            }
-
-            .chat-message.other {
-                background: rgba(108, 117, 125, 0.1);
-                color: #2C3E50;
-                margin-right: 20px;
-            }
-
-            .message-sender {
-                font-weight: bold;
-                font-size: 0.8rem;
-                margin-bottom: 3px;
-                opacity: 0.8;
-            }
-
-            .message-time {
-                font-size: 0.7rem;
-                opacity: 0.6;
-                margin-top: 3px;
-            }
-
-            .chat-input-container {
-                display: flex;
-                padding: 10px;
-                background: rgba(255, 255, 255, 0.9);
-                border-radius: 0 0 13px 13px;
-                gap: 8px;
-            }
-
-            .chat-input {
-                flex: 1;
-                padding: 8px 12px;
-                border: 2px solid #ddd;
-                border-radius: 20px;
-                font-size: 0.9rem;
-                outline: none;
-                direction: rtl;
-            }
-
-            .chat-input:focus {
-                border-color: #4ECDC4;
-            }
-
-            .chat-send-btn {
-                background: linear-gradient(45deg, #4ECDC4, #45B7D1);
-                color: white;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 20px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: all 0.3s ease;
-            }
-
-            .chat-send-btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            }
-
-            .chat-toggle {
-                background: none;
-                border: none;
-                color: white;
-                font-size: 1.2rem;
-                cursor: pointer;
-            }
-            .game-container {
-                display: flex;
-                width: 100%;
-                min-height: 100vh;
-            }
-
-            .main-game {
-                flex: 1;
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-            }
-
-            .stats {
-                background: rgba(255, 255, 255, 0.25);
-                backdrop-filter: blur(15px);
-                border-radius: 25px;
-                padding: 25px;
-                margin-bottom: 30px;
-                text-align: center;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-                min-width: 300px;
-            }
-
-            .cookie-count {
-                font-size: 3.5rem;
-                background: linear-gradient(45deg, #FFD700, #FF8C00);
-                background-clip: text;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                font-weight: bold;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-                margin-bottom: 10px;
-                animation: pulse 2s infinite;
-            }
-
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.05); }
-            }
-
-            .cookies-per-second {
-                font-size: 1.3rem;
-                color: #2C3E50;
-                font-weight: bold;
-                background: rgba(255, 255, 255, 0.7);
-                padding: 8px 16px;
-                border-radius: 15px;
-                margin-bottom: 10px;
-            }
-
-            .cookies-per-click {
-                font-size: 1.2rem;
-                color: #E74C3C;
-                font-weight: bold;
-                background: rgba(255, 255, 255, 0.7);
-                padding: 8px 16px;
-                border-radius: 15px;
-                margin-bottom: 10px;
-            }
-
-            .prestige-info {
-                font-size: 1.1rem;
-                color: #8E44AD;
-                font-weight: bold;
-            }
-
-            .cookie-container {
-                position: relative;
-                margin: 30px 0;
-            }
-            .cookie {
-                width: 250px;
-                height: 250px;
-                background: radial-gradient(circle at 30% 30%, #DEB887, #D2691E, #8B4513);
-                border-radius: 50%;
-                cursor: pointer;
-                transition: all 0.15s ease;
-                position: relative;
-                border: 8px solid #654321;
-                box-shadow: 
-                    0 0 0 4px #8B4513,
-                    0 15px 30px rgba(0, 0, 0, 0.3),
-                    inset 0 5px 10px rgba(255, 255, 255, 0.2);
-                animation: cookieFloat 4s ease-in-out infinite;
-            }
-
-            @keyframes cookieFloat {
-                0%, 100% { transform: translateY(0px) rotate(0deg); }
-                50% { transform: translateY(-10px) rotate(2deg); }
-            }
-
-            .cookie:hover {
-                transform: scale(1.1) rotate(5deg);
-                box-shadow: 
-                    0 0 0 4px #8B4513,
-                    0 20px 40px rgba(0, 0, 0, 0.4),
-                    inset 0 5px 10px rgba(255, 255, 255, 0.3),
-                    0 0 20px rgba(255, 215, 0, 0.5);
-            }
-
-            .cookie:active {
-                transform: scale(0.9) rotate(-3deg);
-                box-shadow: 
-                    0 0 0 4px #8B4513,
-                    0 5px 15px rgba(0, 0, 0, 0.3),
-                    inset 0 5px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .cookie::before {
-                content: '';
-                position: absolute;
-                top: 15%;
-                left: 15%;
-                width: 18px;
-                height: 18px;
-                background: #3C2414;
-                border-radius: 50%;
-                box-shadow: 
-                    40px 20px 0 -2px #3C2414,
-                    -5px 45px 0 -3px #3C2414,
-                    60px 60px 0 -4px #3C2414,
-                    15px 75px 0 -2px #3C2414,
-                    75px 35px 0 -3px #3C2414,
-                    30px 50px 0 -1px #3C2414,
-                    50px 85px 0 -2px #3C2414,
-                    85px 65px 0 -3px #3C2414,
-                    10px 25px 0 -1px #3C2414,
-                    65px 15px 0 -2px #3C2414;
-            }
-
-            .cookie::after {
-                content: '';
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                width: 60px;
-                height: 40px;
-                background: radial-gradient(ellipse, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-                border-radius: 50%;
-                transform: rotate(-20deg);
-            }
-
-            .click-effect {
-                position: absolute;
-                color: #FFD700;
-                font-size: 2.5rem;
-                font-weight: bold;
-                pointer-events: none;
-                animation: floatUp 1.2s ease-out forwards;
-                z-index: 1000;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            }
-
-            @keyframes floatUp {
-                0% {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
-                100% {
-                    opacity: 0;
-                    transform: translateY(-120px) scale(1.5);
-                }
-            }
-            .shop {
-                width: 400px;
-                background: rgba(255, 255, 255, 0.15);
-                backdrop-filter: blur(15px);
-                border-left: 2px solid rgba(255, 255, 255, 0.3);
-                padding: 20px;
-                overflow-y: auto;
-                max-height: 100vh;
-                border-radius: 20px 0 0 20px;
-                position: relative;
-                transition: all 0.3s ease;
-            }
-
-            .shop.hidden {
-                transform: translateX(100%);
-                opacity: 0;
-                pointer-events: none;
-            }
-
-            .shop-toggle {
-                position: fixed;
-                right: 20px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: linear-gradient(45deg, #8E44AD, #E74C3C);
-                color: white;
-                border: none;
-                padding: 15px 20px;
-                border-radius: 15px 0 0 15px;
-                font-size: 1rem;
-                font-weight: bold;
-                cursor: pointer;
-                z-index: 1001;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .shop-toggle:hover {
-                transform: translateY(-50%) translateX(-5px);
-            }
-
-            .shop-close {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                background: #E74C3C;
-                color: white;
-                border: none;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 1.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10;
-                transition: all 0.3s ease;
-            }
-
-            .shop-close:hover {
-                background: #C0392B;
-                transform: scale(1.1);
-            }
-
-            .shop h2 {
-                color: #2C3E50;
-                font-size: 2.2rem;
-                margin-bottom: 20px;
-                text-align: center;
-                text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-                background: rgba(255, 255, 255, 0.3);
-                padding: 15px;
-                border-radius: 15px;
-                border: 2px solid rgba(255, 255, 255, 0.4);
-            }
-
-            .shop-section {
-                margin-bottom: 25px;
-            }
-
-            .shop-section h3 {
-                color: #34495E;
-                font-size: 1.4rem;
-                margin-bottom: 15px;
-                text-align: center;
-                background: rgba(255, 255, 255, 0.2);
-                padding: 10px;
-                border-radius: 10px;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-            }
-            .shop-item {
-                background: rgba(255, 255, 255, 0.2);
-                border-radius: 15px;
-                padding: 15px;
-                margin-bottom: 12px;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                transition: all 0.3s ease;
-                cursor: pointer;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .shop-item::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-                transition: left 0.5s ease;
-            }
-
-            .shop-item:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: translateY(-3px) scale(1.02);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-                border-color: rgba(255, 255, 255, 0.5);
-            }
-
-            .shop-item:hover::before {
-                left: 100%;
-            }
-
-            .shop-item:active {
-                transform: translateY(0) scale(0.98);
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            }
-
-            .shop-item.disabled {
-                opacity: 0.4;
-                cursor: not-allowed;
-                transform: none !important;
-                background: rgba(200, 200, 200, 0.1) !important;
-                border-color: rgba(150, 150, 150, 0.3) !important;
-            }
-
-            .shop-item.disabled:hover {
-                box-shadow: none !important;
-            }
-
-            .shop-item.disabled::before {
-                display: none;
-            }
-
-            .item-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-
-            .item-name {
-                font-size: 1.2rem;
-                font-weight: bold;
-                color: #2C3E50;
-                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
-            }
-
-            .item-count {
-                background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-                color: white;
-                padding: 4px 12px;
-                border-radius: 15px;
-                font-size: 0.9rem;
-                font-weight: bold;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            }
-
-            .item-description {
-                font-size: 0.95rem;
-                color: #34495E;
-                margin-bottom: 10px;
-                font-weight: 500;
-                line-height: 1.3;
-            }
-
-            .item-price {
-                font-size: 1.1rem;
-                font-weight: bold;
-                color: #E67E22;
-                text-align: center;
-                background: rgba(255, 255, 255, 0.4);
-                padding: 8px;
-                border-radius: 10px;
-                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
-            }
-
-            .item-production {
-                font-size: 0.9rem;
-                color: #27AE60;
-                font-weight: bold;
-                text-align: center;
-                margin-top: 5px;
-            }
-            .player-list {
-                max-height: 300px;
-                overflow-y: auto;
-                margin: 20px 0;
-            }
-
-            .player-item {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 12px 15px;
-                margin: 8px 0;
-                border-radius: 10px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                border: 2px solid rgba(255, 255, 255, 0.2);
-            }
-
-            .player-item:hover {
-                background: rgba(255, 255, 255, 0.2);
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            }
-
-            .player-name {
-                font-weight: bold;
-                color: #2C3E50;
-                font-size: 1.1rem;
-            }
-
-            .player-status {
-                font-size: 0.9rem;
-                color: #27AE60;
-                margin-top: 3px;
-            }
-
-            .donation-amount {
-                width: 100%;
-                padding: 12px;
-                margin: 15px 0;
-                border: 2px solid #ddd;
-                border-radius: 10px;
-                font-size: 1.1rem;
-                text-align: center;
-                direction: ltr;
-            }
-
-            .donation-amount:focus {
-                border-color: #27AE60;
-                outline: none;
-            }
-
-            .donation-confirm {
-                background: linear-gradient(45deg, #27AE60, #2ECC71);
-                color: white;
-                padding: 12px 25px;
-                border: none;
-                border-radius: 10px;
-                font-size: 1.1rem;
-                cursor: pointer;
-                width: 100%;
-                margin-top: 10px;
-                transition: all 0.3s ease;
-            }
-
-            .donation-confirm:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .notification-popup {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: linear-gradient(135deg, #3498DB, #2980B9);
-                color: white;
-                padding: 20px 25px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                z-index: 10000;
-                min-width: 300px;
-                text-align: center;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                animation: popupShow 0.3s ease;
-            }
-
-            @keyframes popupShow {
-                0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-                100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            }
-            .floating-cookies {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                pointer-events: none;
-                z-index: -1;
-            }
-
-            .floating-cookie {
-                position: absolute;
-                width: 35px;
-                height: 35px;
-                background: radial-gradient(circle, #DEB887, #D2691E);
-                border-radius: 50%;
-                opacity: 0.15;
-                animation: float 25s infinite linear;
-            }
-
-            @keyframes float {
-                0% {
-                    transform: translateY(100vh) rotate(0deg);
-                }
-                100% {
-                    transform: translateY(-100px) rotate(360deg);
-                }
-            }
-
-            .achievement-popup {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #4CAF50, #45a049);
-                color: white;
-                padding: 20px 25px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                transform: translateX(450px);
-                transition: transform 0.6s ease;
-                z-index: 1000;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                min-width: 250px;
-            }
-
-            .achievement-popup.show {
-                transform: translateX(0);
-            }
-
-            .prestige-button {
-                background: linear-gradient(45deg, #8E44AD, #E74C3C);
-                color: white;
-                padding: 12px 25px;
-                border: none;
-                border-radius: 20px;
-                font-size: 1.1rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                margin-top: 15px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .prestige-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .golden-cookie {
-                position: fixed;
-                width: 60px;
-                height: 60px;
-                background: radial-gradient(circle, #FFD700, #FFA500);
-                border-radius: 50%;
-                cursor: pointer;
-                z-index: 500;
-                animation: goldenFloat 3s ease-in-out infinite;
-                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-                border: 3px solid #FF8C00;
-            }
-
-            @keyframes goldenFloat {
-                0%, 100% { transform: scale(1) rotate(0deg); }
-                50% { transform: scale(1.1) rotate(10deg); }
-            }
-
-            .particle {
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                background: #FFD700;
-                border-radius: 50%;
-                pointer-events: none;
-                animation: particleFloat 2s ease-out forwards;
-            }
-
-            @keyframes particleFloat {
-                0% {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
-                100% {
-                    opacity: 0;
-                    transform: translateY(-100px) scale(0);
-                }
-            }
-            .error-message {
-                color: #E74C3C;
-                font-weight: bold;
-                margin: 10px 0;
-            }
-
-            .success-message {
-                color: #27AE60;
-                font-weight: bold;
-                margin: 10px 0;
-            }
-
-            .firebase-status {
-                position: fixed;
-                bottom: 20px;
-                left: 20px;
-                background: rgba(255, 255, 255, 0.9);
-                padding: 10px 15px;
-                border-radius: 10px;
-                font-size: 0.9rem;
-                z-index: 1000;
-            }
-
-            .firebase-connected {
-                color: #27AE60;
-                border: 2px solid #27AE60;
-            }
-
-            .firebase-disconnected {
-                color: #E74C3C;
-                border: 2px solid #E74C3C;
-            }
-
-            .loading {
-                color: #3498DB;
-                border: 2px solid #3498DB;
-            }
-
-            .club-info {
-                text-align: right;
-                margin: 20px 0;
-            }
-
-            .club-name {
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #2C3E50;
-                margin-bottom: 10px;
-            }
-
-            .club-code {
-                font-size: 1.2rem;
-                color: #8E44AD;
-                margin-bottom: 10px;
-            }
-
-            .club-stats {
-                font-size: 1.1rem;
-                color: #27AE60;
-                margin-bottom: 15px;
-            }
-
-            .member-list {
-                background: rgba(255, 255, 255, 0.3);
-                padding: 15px;
-                border-radius: 10px;
-                margin-top: 15px;
-            }
-
-            .member-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            }
-
-            .member-name {
-                font-weight: bold;
-                color: #2C3E50;
-            }
-
-            .member-role {
-                font-size: 0.9rem;
-                color: #8E44AD;
-                background: rgba(142, 68, 173, 0.2);
-                padding: 3px 8px;
-                border-radius: 8px;
-            }
-
-            @media (max-width: 768px) {
-                .game-container {
-                    flex-direction: column;
-                }
-                
-                .shop {
-                    width: 100%;
-                    max-height: 50vh;
-                    border-radius: 20px 20px 0 0;
-                    border-left: none;
-                    border-top: 2px solid rgba(255, 255, 255, 0.3);
-                }
-                
-                .cookie {
-                    width: 180px;
-                    height: 180px;
-                }
-                
-                .cookie-count {
-                    font-size: 2.5rem;
-                }
-            }
-
-
-    .leaderboard-button {
-        position: fixed;
-        top: 140px;
-        right: 20px;
-        background: linear-gradient(45deg, #27AE60, #2ECC71);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 15px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .leaderboard-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        background: linear-gradient(45deg, #2ECC71, #27AE60);
-    }
-
-    .leaderboard-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 5000;
-    }
-
-    .leaderboard-content {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 30px;
-        border-radius: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        min-width: 90%;
-        max-width: 1200px;
-        max-height: 90vh;
-        overflow-y: auto;
-        direction: rtl;
-        position: relative;
-    }
-
-    .leaderboard-header {
-        text-align: center;
-        color: #2C3E50;
-        margin-bottom: 30px;
-        font-size: 2rem;
-        font-weight: bold;
-    }
-
-    .leaderboard-container {
-        display: flex;
-        gap: 40px;
-        justify-content: space-around;
-        align-items: flex-start;
-    }
-
-    .leaderboard-section {
-        flex: 1;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 20px;
-        border-radius: 15px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .leaderboard-title {
-        text-align: center;
-        color: #2C3E50;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 20px;
-        background: rgba(255, 255, 255, 0.3);
-        padding: 10px;
-        border-radius: 10px;
-    }
-
-    .leaderboard-table {
-        width: 100%;
-        border-collapse: collapse;
-        direction: rtl;
-    }
-
-    .leaderboard-table th {
-        background: linear-gradient(45deg, #3498DB, #2980B9);
-        color: white;
-        padding: 12px 8px;
-        text-align: center;
-        font-weight: bold;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .leaderboard-table td {
-        padding: 10px 8px;
-        text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 0.8);
-    }
-
-    .leaderboard-table tr:nth-child(even) td {
-        background: rgba(255, 255, 255, 0.6);
-    }
-
-    .leaderboard-table tr:hover td {
-        background: rgba(76, 175, 80, 0.2);
-    }
-
-    .rank-1 {
-        background: linear-gradient(45deg, #FFD700, #FFA500) !important;
-        color: #8B4513;
-        font-weight: bold;
-    }
-
-    .rank-2 {
-        background: linear-gradient(45deg, #C0C0C0, #A9A9A9) !important;
-        color: #2C3E50;
-        font-weight: bold;
-    }
-
-    .rank-3 {
-        background: linear-gradient(45deg, #CD7F32, #D2691E) !important;
-        color: white;
-        font-weight: bold;
-    }
-
-    .current-user {
-        background: linear-gradient(45deg, #E74C3C, #C0392B) !important;
-        color: white;
-        font-weight: bold;
-    }
-
-    .leaderboard-close {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        background: #E74C3C;
-        color: white;
-        border: none;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.4rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-    }
-
-    .leaderboard-close:hover {
-        background: #C0392B;
-        transform: scale(1.1);
-    }
-
-    @media (max-width: 768px) {
-        .leaderboard-container {
-            flex-direction: column;
-            gap: 20px;
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍪 משחק האימפריית עוגיות 🍪</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .leaderboard-content {
-            min-width: 95%;
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .game-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .main-game {
+            flex: 1;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
-        
-        .leaderboard-table th,
-        .leaderboard-table td {
-            padding: 8px 4px;
+
+        .stats {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            min-width: 300px;
+        }
+
+        .cookie-count {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #FFD700, #FF8C00);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .cookies-per-second {
+            font-size: 1.3rem;
+            color: #2C3E50;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .prestige-info {
+            font-size: 1.1rem;
+            color: #8E44AD;
+            font-weight: bold;
+        }
+
+        .cookie-container {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .cookie {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle at 30% 30%, #DEB887, #D2691E, #8B4513);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            border: 8px solid #654321;
+            box-shadow: 
+                0 0 0 4px #8B4513,
+                0 15px 30px rgba(0, 0, 0, 0.3),
+                inset 0 5px 10px rgba(255, 255, 255, 0.2);
+            animation: cookieFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes cookieFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .cookie:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 
+                0 0 0 4px #8B4513,
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                inset 0 5px 10px rgba(255, 255, 255, 0.3),
+                0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .cookie:active {
+            transform: scale(0.9) rotate(-3deg);
+            box-shadow: 
+                0 0 0 4px #8B4513,
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .cookie::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 18px;
+            height: 18px;
+            background: #3C2414;
+            border-radius: 50%;
+            box-shadow: 
+                40px 20px 0 -2px #3C2414,
+                -5px 45px 0 -3px #3C2414,
+                60px 60px 0 -4px #3C2414,
+                15px 75px 0 -2px #3C2414,
+                75px 35px 0 -3px #3C2414,
+                30px 50px 0 -1px #3C2414,
+                50px 85px 0 -2px #3C2414,
+                85px 65px 0 -3px #3C2414,
+                10px 25px 0 -1px #3C2414,
+                65px 15px 0 -2px #3C2414;
+        }
+
+        .cookie::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 60px;
+            height: 40px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+
+        .click-effect {
+            position: absolute;
+            color: #FFD700;
+            font-size: 2.5rem;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 1.2s ease-out forwards;
+            z-index: 1000;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) scale(1.5);
+            }
+        }
+
+        .shop {
+            width: 400px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-left: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100vh;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .shop h2 {
+            color: #2C3E50;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .shop-section {
+            margin-bottom: 25px;
+        }
+
+        .shop-section h3 {
+            color: #34495E;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .shop-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .shop-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .shop-item:hover::before {
+            left: 100%;
+        }
+
+        .shop-item:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .shop-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            background: rgba(200, 200, 200, 0.1) !important;
+            border-color: rgba(150, 150, 150, 0.3) !important;
+        }
+
+        .shop-item.disabled:hover {
+            box-shadow: none !important;
+        }
+
+        .shop-item.disabled::before {
+            display: none;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2C3E50;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .item-emoji {
+            font-size: 1.5rem;
+            margin-left: 8px;
+        }
+
+        .item-count {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
             font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
-    }
 
+        .item-description {
+            font-size: 0.95rem;
+            color: #34495E;
+            margin-bottom: 10px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
 
+        .item-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #E67E22;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 8px;
+            border-radius: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
 
+        .item-production {
+            font-size: 0.9rem;
+            color: #27AE60;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+        }
 
+        .floating-cookies {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
 
+        .floating-cookie {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #DEB887, #D2691E);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: float 25s infinite linear;
+        }
 
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
 
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(450px);
+            transition: transform 0.6s ease;
+            z-index: 1000;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 250px;
+        }
 
+        .achievement-popup.show {
+            transform: translateX(0);
+        }
 
+        .prestige-button {
+            background: linear-gradient(45deg, #8E44AD, #E74C3C);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
 
-        </style>
-    </head>
-    <body>
-        <!-- Login Screen -->
-        <div class="login-screen" id="loginScreen">
-            <div class="login-form">
-                <h2>🍪 ברוכים הבאים למשחק העוגיות! 🍪</h2>
-                <input type="text" id="usernameInput" placeholder="שם משתמש" maxlength="20">
-                <input type="password" id="passwordInput" placeholder="סיסמה">
-                <div class="remember-me">
-                    <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe">זכור אותי</label>
+        .prestige-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .prestige-button:active {
+            transform: translateY(0);
+        }
+
+        .golden-cookie {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 500;
+            animation: goldenFloat 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            border: 3px solid #FF8C00;
+        }
+
+        @keyframes goldenFloat {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(10deg); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .shop {
+                width: 100%;
+                max-height: 50vh;
+                border-radius: 20px 20px 0 0;
+                border-left: none;
+                border-top: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .cookie {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .cookie-count {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-cookies" id="floatingCookies"></div>
+    
+    <div class="game-container">
+        <div class="main-game">
+            <div class="stats">
+                <div style="font-size: 1.1rem; color: #2C3E50; font-weight: bold; margin-bottom: 15px; background: rgba(255, 255, 255, 0.4); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.5);">
+                    🎮 יוצרי המשחק: רון אברמוביץ' וגיא טריסטר 🎮
                 </div>
-                <button onclick="login()">התחבר</button>
-                <button onclick="register()">הרשם</button>
-                <div id="loginMessage"></div>
+                <div class="cookie-count" id="cookieCount">0</div>
+                <div class="cookies-per-second" id="cpsDisplay">0 עוגיות לשנייה</div>
+                <div class="prestige-info" id="prestigeInfo">רמת יוקרה: 0 | כפולה: x1</div>
+                <button class="prestige-button" id="prestigeButton" onclick="prestige()">🌟 איפוס יוקרה 🌟</button>
+            </div>
+            
+            <div class="cookie-container">
+                <div class="cookie" id="cookie"></div>
             </div>
         </div>
-
-        <!-- Club Buttons -->
-        <div class="club-buttons">
-            <button class="club-button" onclick="openJoinClubModal()">🏆 הצטרף למועדון</button>
-            <button class="club-button" onclick="openCreateClubModal()">⭐ צור מועדון</button>
-        </div
-    
-         class="leaderboard-content">
-            <button class="leaderboard-close" onclick="closeLeaderboardModal()">×</button>
-            <h2 class="leaderboard-header">🏆 טבלת מובילים 🏆</h2>
+        
+        <div class="shop">
+            <h2>🛒 חנות האימפריה 🛒</h2>
             
-            <div class="leaderboard-container">
-           <button class="leaderboard-button" onclick="openLeaderboardModal()">🏆 טבלת מובילים</button>
-                <!-- טבלת מובילים של מועדונים -->
-                <div class="leaderboard-section">
-                    <h3 class="leaderboard-title">🏛️ טבלת מועדונים</h3>
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr>
-                                <th>מקום</th>
-                                <th>שם המועדון</th>
-                                <th>סך עוגיות</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clubLeaderboard">
-                            <!-- יוכנס דינמית -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- טבלת מובילים של שחקנים -->
-                <div class="leaderboard-section">
-                    <h3 class="leaderboard-title">👤 טבלת שחקנים</h3>
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr>
-                                <th>מקום</th>
-                                <th>שם השחקן</th>
-                                <th>מספר עוגיות</th>
-                            </tr>
-                        </thead>
-                        <tbody id="playerLeaderboard">
-                            <!-- יוכנס דינמית -->
-                        </tbody>
-                    </table>
-                </div>
+            <div class="shop-section">
+                <h3>🏭 מבנים</h3>
+                <div id="buildingItems"></div>
+            </div>
+            
+            <div class="shop-section">
+                <h3>⚡ שדרוגים</h3>
+                <div id="upgradeItems"></div>
+            </div>
+            
+            <div class="shop-section">
+                <h3>🎯 הישגים</h3>
+                <div id="achievementItems"></div>
             </div>
         </div>
     </div>
-        
 
+    <div class="achievement-popup" id="achievementPopup">
+        <div id="achievementText"></div>
+    </div>
 
+    <script>
+        let cookies = 0;
+        let cookiesPerSecond = 0;
+        let clickPower = 1;
+        let prestigeLevel = 0;
+        let prestigeMultiplier = 1;
+        let totalCookiesBaked = 0;
+        let goldenCookieClicks = 0;
+        let lastGoldenCookie = 0;
 
+        const buildings = {
+            cursor: {
+                name: "סמן אוטומטי",
+                emoji: "👆",
+                description: "לוחץ על העוגייה אוטומטית",
+                baseCost: 15,
+                cps: 0.1,
+                count: 0
+            },
+            grandma: {
+                name: "סבתא",
+                emoji: "👵",
+                description: "סבתא מנוסה שאופה עוגיות טעימות",
+                baseCost: 100,
+                cps: 1,
+                count: 0
+            },
+            farm: {
+                name: "חווה",
+                emoji: "🚜",
+                description: "חווה לגידול עוגיות אורגניות",
+                baseCost: 1100,
+                cps: 8,
+                count: 0
+            },
+            mine: {
+                name: "מכרה",
+                emoji: "⛏️",
+                description: "מכרה עמוק לחפירת עוגיות נדירות",
+                baseCost: 12000,
+                cps: 47,
+                count: 0
+            },
+            factory: {
+                name: "מפעל",
+                emoji: "🏭",
+                description: "מפעל אוטומטי לייצור עוגיות",
+                baseCost: 130000,
+                cps: 260,
+                count: 0
+            },
+            bank: {
+                name: "בנק",
+                emoji: "🏦",
+                description: "בנק שמייצר עוגיות מריבית",
+                baseCost: 1400000,
+                cps: 1400,
+                count: 0
+            },
+            temple: {
+                name: "מקדש",
+                emoji: "🏛️",
+                description: "מקדש קדוש לעוגיות",
+                baseCost: 20000000,
+                cps: 7800,
+                count: 0
+            },
+            wizardTower: {
+                name: "מגדל קוסמים",
+                emoji: "🧙",
+                description: "קוסמים שמזמנים עוגיות מהאוויר",
+                baseCost: 330000000,
+                cps: 44000,
+                count: 0
+            },
+            shipment: {
+                name: "חללית",
+                emoji: "🚀",
+                description: "חללית שמביאה עוגיות מהחלל",
+                baseCost: 5100000000,
+                cps: 260000,
+                count: 0
+            },
+            alchemyLab: {
+                name: "מעבדה אלכימית",
+                emoji: "⚗️",
+                description: "מעבדה להפיכת חומרים לעוגיות",
+                baseCost: 75000000000,
+                cps: 1600000,
+                count: 0
+            },
+            portal: {
+                name: "פורטל",
+                emoji: "🌀",
+                description: "פורטל לממדים אחרים מלאי עוגיות",
+                baseCost: 1000000000000,
+                cps: 10000000,
+                count: 0
+            },
+            timeMachine: {
+                name: "מכונת זמן",
+                emoji: "⏰",
+                description: "מכונת זמן שמביאה עוגיות מהעתיד",
+                baseCost: 14000000000000,
+                cps: 65000000,
+                count: 0
+            }
+        };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- Donate Button -->
-        <button class="donate-button" onclick="openDonateModal()">🎁 תרום עוגיות</button>
-
-        <!-- Settings Button -->
-        <button class="settings-button" onclick="openSettingsModal()">⚙️ הגדרות</button>
-
-        <!-- Admin Button -->
-        <button class="admin-button" onclick="openAdminModal()">👑 מסך יוצר</button>
-
-        <!-- Leaderboard Button -->
-<button class="leaderboard-button" onclick="openLeaderboardModal()">🏆 טבלת מובילים</button>
-
-
-
-        <!-- Shop Toggle Button (hidden by default) -->
-        <button class="shop-toggle" id="shopToggle" onclick="toggleShop()" style="display: none;">חנות</button>
-
-        <!-- Join Club Modal -->
-        <div class="modal" id="joinClubModal">
-            <div class="modal-content">
-                <h3>🏆 הצטרפות למועדון</h3>
-                <p>הקלד קוד מועדון (4 ספרות):</p>
-                <input type="text" id="clubCodeInput" placeholder="קוד מועדון" maxlength="4" pattern="[0-9]{4}">
-                <button onclick="joinClub()">אישור</button>
-                <button class="close-button" onclick="closeModal('joinClubModal')">ביטול</button>
-                <div id="joinClubMessage"></div>
-            </div>
-        </div>
-
-        <!-- Create Club Modal -->
-        <div class="modal" id="createClubModal">
-            <div class="modal-content">
-                <h3>⭐ יצירת מועדון</h3>
-                <p>שם מועדון:</p>
-                <input type="text" id="clubNameInput" placeholder="שם המועדון" maxlength="30">
-                <button onclick="createClub()">צור</button>
-                <button class="close-button" onclick="closeModal('createClubModal')">ביטול</button>
-                <div id="createClubMessage"></div>
-            </div>
-        </div>
-
-        <!-- Club Info Modal -->
-        <div class="modal" id="clubInfoModal">
-            <div class="modal-content">
-                <h3>🏆 פרטי המועדון</h3>
-                <div class="club-info">
-                    <div class="club-name" id="clubInfoName"></div>
-                    <div class="club-code" id="clubInfoCode"></div>
-                    <div class="club-stats" id="clubInfoStats"></div>
-                    <div class="member-list">
-                        <h4>חברי המועדון:</h4>
-                        <div id="memberList"></div>
-                    </div>
-                </div>
-                <button onclick="leaveClub()">עזוב מועדון</button>
-                <button class="close-button" onclick="closeModal('clubInfoModal')">סגור</button>
-            </div>
-        </div>
-
-        <!-- Donate Modal -->
-        <div class="modal" id="donateModal">
-            <div class="modal-content">
-                <h3>🎁 תרום עוגיות לשחקן</h3>
-                <p>בחר שחקן לתרומה:</p>
-                <div class="player-list" id="playerList"></div>
-                <button class="close-button" onclick="closeModal('donateModal')">ביטול</button>
-                <div id="donateMessage"></div>
-            </div>
-        </div>
-
-        <!-- Donation Amount Modal -->
-        <div class="modal" id="donationAmountModal">
-            <div class="modal-content">
-                <h3>🎁 תרום עוגיות</h3>
-                <p>תרומה לשחקן: <strong id="donationTargetPlayer"></strong></p>
-                <p>יש לך: <strong id="currentCookiesDisplay"></strong> עוגיות</p>
-                <input type="number" class="donation-amount" id="donationAmountInput" placeholder="הזן מספר עוגיות" min="1">
-                <button class="donation-confirm" onclick="confirmDonation()">אשר תרומה</button>
-                <button class="close-button" onclick="closeModal('donationAmountModal')">ביטול</button>
-                <div id="donationMessage"></div>
-            </div>
-        </div>
-
-        <!-- Settings Modal -->
-        <div class="modal" id="settingsModal">
-            <div class="modal-content">
-                <h3>⚙️ הגדרות חשבון</h3>
-                
-                <div class="settings-section">
-                    <h4>👤 פרטי חשבון</h4>
-                    <div class="current-info">
-                        שם משתמש נוכחי: <span id="currentUsername"></span>
-                    </div>
-                    <input type="text" class="settings-input" id="newUsernameInput" placeholder="שם משתמש חדש" maxlength="20">
-                    <button class="settings-button-small" onclick="changeUsername()">שנה שם משתמש</button>
-                </div>
-
-                <div class="settings-section">
-                    <h4>🔒 שינוי סיסמה</h4>
-                    <input type="password" class="settings-input" id="currentPasswordInput" placeholder="סיסמה נוכחית">
-                    <input type="password" class="settings-input" id="newPasswordInput" placeholder="סיסמה חדשה">
-                    <input type="password" class="settings-input" id="confirmPasswordInput" placeholder="אשר סיסמה חדשה">
-                    <button class="settings-button-small" onclick="changePassword()">שנה סיסמה</button>
-                </div>
-
-                <div class="settings-section">
-                    <h4>👫 מגדר</h4>
-                    <div class="current-info">
-                        מגדר נוכחי: <span id="currentGender">לא נבחר</span>
-                    </div>
-                    <div class="gender-selector">
-                        <label class="gender-option" id="maleOption">
-                            <input type="radio" name="gender" value="male">
-                            <span>👦 בן</span>
-                        </label>
-                        <label class="gender-option" id="femaleOption">
-                            <input type="radio" name="gender" value="female">
-                            <span>👧 בת</span>
-                        </label>
-                    </div>
-                    <button class="settings-button-small" onclick="changeGender()">עדכן מגדר</button>
-                </div>
-
-                <button class="settings-button-small logout-button" onclick="logout()">🚪 התנתק מהחשבון</button>
-                <button class="close-button" onclick="closeModal('settingsModal')">סגור</button>
-                <div id="settingsMessage"></div>
-            </div>
-        </div>
-
-        <!-- Enhanced Admin Modal -->
-        <div class="modal" id="adminModal">
-            <div class="modal-content">
-                <h3>👑 מסך יוצר המשחק</h3>
-                
-                <div class="admin-warning">
-                    ⚠️ אזור מוגבל ליוצרי המשחק בלבד ⚠️
-                </div>
-
-                <div class="admin-section">
-                    <h4>🔐 אימות יוצר</h4>
-                    <input type="password" class="admin-input" id="adminPasswordInput" placeholder="הזן סיסמת יוצר">
-                    <div class="password-requirement">
-                        💡 נדרשת סיסמת יוצר מיוחדת לגישה למסך זה
-                    </div>
-                    <button class="admin-button-large" onclick="verifyAdmin()">אמת גישה</button>
-                </div>
-
-                <div class="admin-transfer-section" id="adminActionsSection" style="display: none;">
-                    <h4>💰 העברת עוגיות לשחקן</h4>
-                    <input type="text" class="admin-transfer-input" id="targetPlayerInput" placeholder="שם משתמש של השחקן המקבל">
-                    <input type="password" class="admin-transfer-input" id="targetPlayerPasswordInput" placeholder="סיסמה של השחקן (לאימות)">
-                    <input type="number" class="admin-transfer-input" id="cookieAmountInput" placeholder="מספר עוגיות להעברה" min="1">
-                    <div style="background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center; color: #27AE60; font-size: 0.9rem;">
-                        💡 ההעברה תתבצע ללא הגבלה וללא ניכוי מהיוצר
-                    </div>
-                    <button class="admin-transfer-button" onclick="adminTransferCookies()">העבר עוגיות</button>
-                </div>
-
-                <button class="close-button" onclick="closeModal('adminModal')">סגור</button>
-                <div id="adminMessage"></div>
-            </div>
-        </div>
-
-        <div class="floating-cookies" id="floatingCookies"></div>
-        
-        <!-- Firebase Status -->
-        <div class="firebase-status loading" id="firebaseStatus">🔄 מתחבר ל-Firebase...</div>
-        
-        <!-- Global Chat -->
-        <div class="chat-container" id="chatContainer">
-            <div class="chat-header" onclick="toggleChat()">
-                <span>💬 צ'ט גלובלי</span>
-                <button class="chat-toggle" id="chatToggle">−</button>
-            </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="chat-input-container">
-                <input type="text" class="chat-input" id="chatInput" placeholder="הקלד הודעה..." maxlength="200">
-                <button class="chat-send-btn" onclick="sendMessage()">שלח</button>
-            </div>
-        </div>
-
-        <div class="game-container">
-            <div class="main-game">
-                <div class="stats">
-                    <div style="font-size: 1.1rem; color: #2C3E50; font-weight: bold; margin-bottom: 15px; background: rgba(255, 255, 255, 0.4); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.5);">
-                        🎮 יוצרי המשחק: רון אברמוביץ' וגיא טריסטר 🎮
-                    </div>
-                    <div class="cookie-count" id="cookieCount">0</div>
-                    <div class="cookies-per-second" id="cpsDisplay">0 עוגיות לשנייה</div>
-                    <div class="cookies-per-click" id="cpcDisplay">+1 עוגיות ללחיצה</div>
-                    <div class="prestige-info" id="prestigeInfo">רמת יוקרה: 0 | כפולה: x1</div>
-                    <button class="prestige-button" id="prestigeButton" onclick="prestige()">🌟 איפוס יוקרה 🌟</button>
-                </div>
-                
-                <div class="cookie-container">
-                    <div class="cookie" id="cookie"></div>
-                </div>
-            </div>
-            
-            <div class="shop" id="shop">
-                <button class="shop-close" onclick="toggleShop()">×</button>
-                <h2>🛒 חנות האימפריה 🛒</h2>
-                
-                <div class="shop-section">
-                    <h3>🏭 מבנים</h3>
-                    <div id="buildingItems"></div>
-                </div>
-                
-                <div class="shop-section">
-                    <h3>👆 שדרוגי לחיצה</h3>
-                    <div id="clickUpgradeItems"></div>
-                </div>
-                
-                <div class="shop-section">
-                    <h3>⚡ שדרוגים</h3>
-                    <div id="upgradeItems"></div>
-                </div>
-                
-                <div class="shop-section">
-                    <h3>🎯 הישגים</h3>
-                    <div id="achievementItems"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="achievement-popup" id="achievementPopup">
-            <div id="achievementText"></div>
-        </div>
-
-        <script>
-    // פונקציות לטבלת מובילים
-    async function openLeaderboardModal() {
-        document.getElementById('leaderboardModal').style.display = 'flex';
-        await loadLeaderboards();
-    }
-
-    function closeLeaderboardModal() {
-        document.getElementById('leaderboardModal').style.display = 'none';
-    }
-
-    async function loadLeaderboards() {
-        await loadPlayerLeaderboard();
-        await loadClubLeaderboard();
-    }
-
-    async function loadPlayerLeaderboard() {
-        const playerTableBody = document.getElementById('playerLeaderboard');
-        playerTableBody.innerHTML = '<tr><td colspan="3">טוען נתונים...</td></tr>';
-        
-        try {
-            // טען נתוני שחקנים מ-Firebase אם זמין
-            let allUsers = { ...users };
-            
-            if (firebaseInitialized) {
-                try {
-                    const usersSnapshot = await database.ref('users').once('value');
-                    if (usersSnapshot.exists()) {
-                        allUsers = { ...allUsers, ...usersSnapshot.val() };
+        const upgrades = {
+            reinforcedIndex: {
+                name: "אצבע מחוזקת",
+                emoji: "💪",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 100,
+                condition: () => buildings.cursor.count >= 1,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            carpalTunnelPrevention: {
+                name: "מניעת תסמונת התעלה",
+                emoji: "🖱️",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 500,
+                condition: () => buildings.cursor.count >= 5,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            ambidextrous: {
+                name: "דו-צדדי",
+                emoji: "👐",
+                description: "כפולה x2 לכל הסמנים",
+                cost: 10000,
+                condition: () => buildings.cursor.count >= 25,
+                effect: () => { buildings.cursor.cps *= 2; },
+                purchased: false
+            },
+            forwardsFromGrandma: {
+                name: "מתכונים מסבתא",
+                emoji: "📧",
+                description: "כפולה x2 לכל הסבתות",
+                cost: 1000,
+                condition: () => buildings.grandma.count >= 1,
+                effect: () => { buildings.grandma.cps *= 2; },
+                purchased: false
+            },
+            steelPlatedRollingPins: {
+                name: "מערוכי מתכת",
+                emoji: "🍴",
+                description: "כפולה x2 לכל הסבתות",
+                cost: 5000,
+                condition: () => buildings.grandma.count >= 5,
+                effect: () => { buildings.grandma.cps *= 2; },
+                purchased: false
+            },
+            lubrication: {
+                name: "שיפור מכונות",
+                emoji: "🛠️",
+                description: "כפולה x2 לכל המפעלים",
+                cost: 650000,
+                condition: () => buildings.factory.count >= 1,
+                effect: () => { buildings.factory.cps *= 2; },
+                purchased: false
+            },
+            goldenTouch: {
+                name: "מגע הזהב",
+                emoji: "✨",
+                description: "כפולה x3 לכל הייצור",
+                cost: 10000000,
+                condition: () => goldenCookieClicks >= 5,
+                effect: () => { 
+                    for (let key in buildings) {
+                        buildings[key].cps *= 3;
                     }
-                } catch (error) {
-                    console.warn('Failed to load users from Firebase for leaderboard:', error);
-                }
+                },
+                purchased: false
             }
-            
-            // המר לרשימה וסדר לפי סך העוגיות
-            const playerList = Object.entries(allUsers).map(([username, userData]) => ({
-                username,
-                totalCookies: userData.totalCookiesBaked || 0
-            }));
-            
-            // סדר בסדר יורד
-            playerList.sort((a, b) => b.totalCookies - a.totalCookies);
-            
-            // בנה את הטבלה
-            playerTableBody.innerHTML = '';
-            
-            for (let i = 0; i < Math.min(100, playerList.length); i++) {
-                const player = playerList[i];
-                const rank = i + 1;
-                const row = document.createElement('tr');
-                
-                // בדוק אם זה השחקן הנוכחי
-                const isCurrentUser = player.username === currentUser;
-                
-                // הוסף CSS מיוחד למקומות הראשונים
-                let specialClass = '';
-                if (rank === 1) specialClass = 'rank-1';
-                else if (rank === 2) specialClass = 'rank-2';
-                else if (rank === 3) specialClass = 'rank-3';
-                else if (isCurrentUser) specialClass = 'current-user';
-                
-                row.innerHTML = `
-                    <td class="${specialClass}">${rank}</td>
-                    <td class="${specialClass}">${player.username}${isCurrentUser ? ' (אתה)' : ''}</td>
-                    <td class="${specialClass}">${formatNumber(player.totalCookies)}</td>
-                `;
-                
-                playerTableBody.appendChild(row);
-            }
-            
-            // אם יש פחות מ-100 שחקנים, מלא את השאר במקומות ריקים
-            for (let i = playerList.length; i < 100; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${i + 1}</td>
-                    <td>---</td>
-                    <td>---</td>
-                `;
-                playerTableBody.appendChild(row);
-            }
-            
-        } catch (error) {
-            console.error('Error loading player leaderboard:', error);
-            playerTableBody.innerHTML = '<tr><td colspan="3">שגיאה בטעינת הנתונים</td></tr>';
+        };
+
+        const achievements = [
+            { id: 'first_click', name: 'הלחיצה הראשונה', emoji: '👆', desc: 'לחצת על העוגייה!', condition: () => totalCookiesBaked >= 1 },
+            { id: 'hundred_cookies', name: 'מאה עוגיות', emoji: '💯', desc: 'הגעת ל-100 עוגיות!', condition: () => totalCookiesBaked >= 100 },
+            { id: 'first_building', name: 'הבנייה הראשונה', emoji: '🏗️', desc: 'קנית את הבניין הראשון!', condition: () => Object.values(buildings).some(b => b.count > 0) },
+            { id: 'thousand_cookies', name: 'אלף עוגיות', emoji: '🎯', desc: 'הגעת ל-1,000 עוגיות!', condition: () => totalCookiesBaked >= 1000 },
+            { id: 'ten_thousand_cookies', name: 'עשרת אלפים עוגיות', emoji: '🏆', desc: 'הגעת ל-10,000 עוגיות!', condition: () => totalCookiesBaked >= 10000 },
+            { id: 'hundred_thousand_cookies', name: 'מאה אלף עוגיות', emoji: '🎖️', desc: 'הגעת ל-100,000 עוגיות!', condition: () => totalCookiesBaked >= 100000 },
+            { id: 'million_cookies', name: 'מיליון עוגיות', emoji: '💎', desc: 'הגעת למיליון עוגיות!', condition: () => totalCookiesBaked >= 1000000 },
+            { id: 'first_golden', name: 'עוגיית הזהב הראשונה', emoji: '🌟', desc: 'לחצת על עוגיית זהב!', condition: () => goldenCookieClicks >= 1 },
+            { id: 'golden_master', name: 'מאסטר הזהב', emoji: '👑', desc: 'לחצת על 10 עוגיות זהב!', condition: () => goldenCookieClicks >= 10 },
+            { id: 'hundred_buildings', name: 'מאה בניינים', emoji: '🏙️', desc: 'יש לך 100 בניינים!', condition: () => Object.values(buildings).reduce((sum, b) => sum + b.count, 0) >= 100 },
+            { id: 'first_prestige', name: 'יוקרה ראשונה', emoji: '⭐', desc: 'עשית איפוס יוקרה!', condition: () => prestigeLevel >= 1 }
+        ];
+
+        let unlockedAchievements = [];
+
+        function formatNumber(num) {
+            if (num < 1000) return Math.floor(num).toString();
+            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
+            return (num / 1000000000000).toFixed(1) + 'T';
         }
-    }
 
-    async function loadClubLeaderboard() {
-        const clubTableBody = document.getElementById('clubLeaderboard');
-        clubTableBody.innerHTML = '<tr><td colspan="3">טוען נתונים...</td></tr>';
-        
-        try {
-            // טען נתוני מועדונים ומשתמשים
-            let allClubs = { ...clubs };
-            let allUsers = { ...users };
-            
-            if (firebaseInitialized) {
-                try {
-                    const [clubsSnapshot, usersSnapshot] = await Promise.all([
-                        database.ref('clubs').once('value'),
-                        database.ref('users').once('value')
-                    ]);
-                    
-                    if (clubsSnapshot.exists()) {
-                        allClubs = { ...allClubs, ...clubsSnapshot.val() };
-                    }
-                    if (usersSnapshot.exists()) {
-                        allUsers = { ...allUsers, ...usersSnapshot.val() };
-                    }
-                } catch (error) {
-                    console.warn('Failed to load clubs/users from Firebase for leaderboard:', error);
-                }
+        function updateDisplay() {
+            document.getElementById('cookieCount').textContent = formatNumber(cookies);
+            document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
+            document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
+        }
+
+        function calculateCPS() {
+            cookiesPerSecond = 0;
+            for (let key in buildings) {
+                cookiesPerSecond += buildings[key].count * buildings[key].cps * prestigeMultiplier;
             }
+        }
+
+        function getCost(building) {
+            return Math.floor(building.baseCost * Math.pow(1.15, building.count));
+        }
+
+        function createShopItems() {
+            // Buildings
+            const buildingContainer = document.getElementById('buildingItems');
+            buildingContainer.innerHTML = '';
             
-            // חשב סך עוגיות לכל מועדון
-            const clubList = Object.entries(allClubs).map(([clubCode, clubData]) => {
-                let totalClubCookies = 0;
+            for (let key in buildings) {
+                const building = buildings[key];
+                const cost = getCost(building);
+                const canAfford = cookies >= cost;
                 
-                if (clubData.members) {
-                    clubData.members.forEach(member => {
-                        const memberData = allUsers[member.username];
-                        if (memberData) {
-                            totalClubCookies += memberData.totalCookiesBaked || 0;
-                        }
-                    });
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${building.emoji} ${building.name}</span>
+                        <span class="item-count">${building.count}</span>
+                    </div>
+                    <div class="item-description">${building.description}</div>
+                    <div class="item-production">מייצר: ${formatNumber(building.cps * prestigeMultiplier)} עוגיות/שנייה</div>
+                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyBuilding(key);
                 }
                 
-                return {
-                    clubCode,
-                    name: clubData.name,
-                    totalCookies: totalClubCookies
-                };
+                buildingContainer.appendChild(item);
+            }
+
+            // Upgrades
+            const upgradeContainer = document.getElementById('upgradeItems');
+            upgradeContainer.innerHTML = '';
+            
+            for (let key in upgrades) {
+                const upgrade = upgrades[key];
+                if (upgrade.purchased || !upgrade.condition()) continue;
+                
+                const canAfford = cookies >= upgrade.cost;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
+                        <span class="item-count">🆕</span>
+                    </div>
+                    <div class="item-description">${upgrade.description}</div>
+                    <div class="item-price">💰 ${formatNumber(upgrade.cost)} עוגיות</div>
+                `;
+                
+                if (canAfford) {
+                    item.onclick = () => buyUpgrade(key);
+                }
+                
+                upgradeContainer.appendChild(item);
+            }
+
+            // Achievements
+            const achievementContainer = document.getElementById('achievementItems');
+            achievementContainer.innerHTML = '';
+            
+            achievements.forEach(achievement => {
+                const unlocked = unlockedAchievements.includes(achievement.id);
+                const item = document.createElement('div');
+                item.className = `shop-item ${unlocked ? '' : 'disabled'}`;
+                item.style.cursor = 'default';
+                item.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${achievement.emoji} ${achievement.name}</span>
+                        <span class="item-count">${unlocked ? '✅' : '❌'}</span>
+                    </div>
+                    <div class="item-description">${achievement.desc}</div>
+                `;
+                achievementContainer.appendChild(item);
             });
-            
-            // סדר בסדר יורד
-            clubList.sort((a, b) => b.totalCookies - a.totalCookies);
-            
-            // בנה את הטבלה
-            clubTableBody.innerHTML = '';
-            
-            for (let i = 0; i < Math.min(100, clubList.length); i++) {
-                const club = clubList[i];
-                const rank = i + 1;
-                const row = document.createElement('tr');
-                
-                // בדוק אם זה המועדון של השחקן הנוכחי
-                const isCurrentClub = club.clubCode === currentClub;
-                
-                // הוסף CSS מיוחד למקומות הראשונים
-                let specialClass = '';
-                if (rank === 1) specialClass = 'rank-1';
-                else if (rank === 2) specialClass = 'rank-2';
-                else if (rank === 3) specialClass = 'rank-3';
-                else if (isCurrentClub) specialClass = 'current-user';
-                
-                row.innerHTML = `
-                    <td class="${specialClass}">${rank}</td>
-                    <td class="${specialClass}">${club.name}${isCurrentClub ? ' (המועדון שלך)' : ''}</td>
-                    <td class="${specialClass}">${formatNumber(club.totalCookies)}</td>
-                `;
-                
-                clubTableBody.appendChild(row);
-            }
-            
-            // אם יש פחות מ-100 מועדונים, מלא את השאר במקומות ריקים
-            for (let i = clubList.length; i < 100; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${i + 1}</td>
-                    <td>---</td>
-                    <td>---</td>
-                `;
-                clubTableBody.appendChild(row);
-            }
-            
-        } catch (error) {
-            console.error('Error loading club leaderboard:', error);
-            clubTableBody.innerHTML = '<tr><td colspan="3">שגיאה בטעינת הנתונים</td></tr>';
         }
-    }
 
-
-
-
-
-
-
-
-
-
-            // Firebase Configuration
-            const firebaseConfig = {
-                apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
-                authDomain: "my-login-system-d583d.firebaseapp.com",
-                databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
-                projectId: "my-login-system-d583d",
-                storageBucket: "my-login-system-d583d.firebasestorage.app",
-                messagingSenderId: "873530338056",
-                appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
-                measurementId: "G-W9EBGS5PQ5"
-            };
-
-            // Initialize Firebase
-            let database;
-            let firebaseInitialized = false;
-
-            try {
-                firebase.initializeApp(firebaseConfig);
-                database = firebase.database();
-                firebaseInitialized = true;
-                updateFirebaseStatus('connected');
-            } catch (error) {
-                console.warn('Firebase initialization failed, using localStorage fallback:', error);
-                updateFirebaseStatus('disconnected');
-            }
-
-            function updateFirebaseStatus(status) {
-                const statusElement = document.getElementById('firebaseStatus');
-                if (status === 'connected') {
-                    statusElement.className = 'firebase-status firebase-connected';
-                    statusElement.textContent = '✅ מחובר ל-Firebase';
-                } else {
-                    statusElement.className = 'firebase-status firebase-disconnected';
-                    statusElement.textContent = '❌ מצב אופליין (localStorage)';
-                }
-            }
-
-            // Game Variables
-            let cookies = 0;
-            let cookiesPerSecond = 0;
-            let clickPower = 1;
-            let prestigeLevel = 0;
-            let prestigeMultiplier = 1;
-            let totalCookiesBaked = 0;
-            let goldenCookieClicks = 0;
-            let lastGoldenCookie = 0;
-            let totalClicks = 0;
-
-            // User and Club System
-            let currentUser = null;
-            let currentClub = null;
-            let users = {}; // Local cache
-            let clubs = {}; // Local cache
-            let chatMessages = []; // Local chat cache
-            let chatListener = null;
-            let selectedDonationTarget = null;
-
-            const buildings = {
-                cursor: {
-                    name: "סמן אוטומטי",
-                    emoji: "👆",
-                    description: "לוחץ על העוגייה אוטומטית",
-                    baseCost: 15,
-                    cps: 0.1,
-                    count: 0
-                },
-                grandma: {
-                    name: "סבתא",
-                    emoji: "👵",
-                    description: "סבתא מנוסה שאופה עוגיות טעימות",
-                    baseCost: 100,
-                    cps: 1,
-                    count: 0
-                },
-                farm: {
-                    name: "חווה",
-                    emoji: "🚜",
-                    description: "חווה לגידול עוגיות אורגניות",
-                    baseCost: 1100,
-                    cps: 8,
-                    count: 0
-                },
-                mine: {
-                    name: "מכרה",
-                    emoji: "⛏️",
-                    description: "מכרה עמוק לחפירת עוגיות נדירות",
-                    baseCost: 12000,
-                    cps: 47,
-                    count: 0
-                },
-                factory: {
-                    name: "מפעל",
-                    emoji: "🏭",
-                    description: "מפעל אוטומטי לייצור עוגיות",
-                    baseCost: 130000,
-                    cps: 260,
-                    count: 0
-                },
-                bank: {
-                    name: "בנק",
-                    emoji: "🏦",
-                    description: "בנק שמייצר עוגיות מריבית",
-                    baseCost: 1400000,
-                    cps: 1400,
-                    count: 0
-                },
-    temple: {
-                    name: "מקדש",
-                    emoji: "🏛️",
-                    description: "מקדש קדוש לעוגיות",
-                    baseCost: 20000000,
-                    cps: 7800,
-                    count: 0
-                },
-                wizardTower: {
-                    name: "מגדל קוסמים",
-                    emoji: "🧙",
-                    description: "קוסמים שמזמנים עוגיות מהאוויר",
-                    baseCost: 330000000,
-                    cps: 44000,
-                    count: 0
-                },
-                shipment: {
-                    name: "חללית",
-                    emoji: "🚀",
-                    description: "חללית שמביאה עוגיות מהחלל",
-                    baseCost: 5100000000,
-                    cps: 260000,
-                    count: 0
-                },
-                alchemyLab: {
-                    name: "מעבדה אלכימית",
-                    emoji: "⚗️",
-                    description: "מעבדה להפיכת חומרים לעוגיות",
-                    baseCost: 75000000000,
-                    cps: 1600000,
-                    count: 0
-                },
-                portal: {
-                    name: "פורטל",
-                    emoji: "🌀",
-                    description: "פורטל לממדים אחרים מלאי עוגיות",
-                    baseCost: 1000000000000,
-                    cps: 10000000,
-                    count: 0
-                },
-                timeMachine: {
-                    name: "מכונת זמן",
-                    emoji: "⏰",
-                    description: "מכונת זמן שמביאה עוגיות מהעתיד",
-                    baseCost: 14000000000000,
-                    cps: 65000000,
-                    count: 0
-                }
-            };
-
-            const clickUpgrades = {
-                clickPower1: {
-                    name: "אצבע חזקה",
-                    emoji: "👆",
-                    description: "כל לחיצה מביאה +1 עוגיה נוספת",
-                    baseCost: 50,
-                    clickBonus: 1,
-                    level: 0
-                },
-                clickPower2: {
-                    name: "יד ברזל",
-                    emoji: "✊",
-                    description: "כל לחיצה מביאה +5 עוגיות נוספות",
-                    baseCost: 500,
-                    clickBonus: 5,
-                    level: 0
-                },
-                clickPower3: {
-                    name: "זרוע טיטניום",
-                    emoji: "🦾",
-                    description: "כל לחיצה מביאה +25 עוגיות נוספות",
-                    baseCost: 5000,
-                    clickBonus: 25,
-                    level: 0
-                },
-                clickPower4: {
-                    name: "כוח על-אנושי",
-                    emoji: "⚡",
-                    description: "כל לחיצה מביאה +100 עוגיות נוספות",
-                    baseCost: 50000,
-                    clickBonus: 100,
-                    level: 0
-                },
-                clickPower5: {
-                    name: "אצבע אלוהית",
-                    emoji: "🌟",
-                    description: "כל לחיצה מביאה +500 עוגיות נוספות",
-                    baseCost: 500000,
-                    clickBonus: 500,
-                    level: 0
-                }
-            };
-
-            const upgrades = {
-                reinforcedIndex: {
-                    name: "אצבע מחוזקת",
-                    emoji: "💪",
-                    description: "כפולה x2 לכל הסמנים",
-                    cost: 100,
-                    condition: () => buildings.cursor.count >= 1,
-                    effect: () => { buildings.cursor.cps *= 2; },
-                    purchased: false
-                },
-                carpalTunnelPrevention: {
-                    name: "מניעת תסמונת התעלה",
-                    emoji: "🖱️",
-                    description: "כפולה x2 לכל הסמנים",
-                    cost: 500,
-                    condition: () => buildings.cursor.count >= 5,
-                    effect: () => { buildings.cursor.cps *= 2; },
-                    purchased: false
-                },
-                ambidextrous: {
-                    name: "דו-צדדי",
-                    emoji: "👐",
-                    description: "כפולה x2 לכל הסמנים",
-                    cost: 10000,
-                    condition: () => buildings.cursor.count >= 25,
-                    effect: () => { buildings.cursor.cps *= 2; },
-                    purchased: false
-                },
-                forwardsFromGrandma: {
-                    name: "מתכונים מסבתא",
-                    emoji: "📧",
-                    description: "כפולה x2 לכל הסבתות",
-                    cost: 1000,
-                    condition: () => buildings.grandma.count >= 1,
-                    effect: () => { buildings.grandma.cps *= 2; },
-                    purchased: false
-                },
-                steelPlatedRollingPins: {
-                    name: "מערוכי מתכת",
-                    emoji: "🍴",
-                    description: "כפולה x2 לכל הסבתות",
-                    cost: 5000,
-                    condition: () => buildings.grandma.count >= 5,
-                    effect: () => { buildings.grandma.cps *= 2; },
-                    purchased: false
-                },
-                lubrication: {
-                    name: "שיפור מכונות",
-                    emoji: "🛠️",
-                    description: "כפולה x2 לכל המפעלים",
-                    cost: 650000,
-                    condition: () => buildings.factory.count >= 1,
-                    effect: () => { buildings.factory.cps *= 2; },
-                    purchased: false
-                },
-                goldenTouch: {
-                    name: "מגע הזהב",
-                    emoji: "✨",
-                    description: "כפולה x3 לכל הייצור",
-                    cost: 10000000,
-                    condition: () => goldenCookieClicks >= 5,
-                    effect: () => { 
-                        for (let key in buildings) {
-                            buildings[key].cps *= 3;
-                        }
-                    },
-                    purchased: false
-                }
-            };
-
-            const achievements = [
-                { id: 'first_click', name: 'הלחיצה הראשונה', emoji: '👆', desc: 'לחצת על העוגייה!', condition: () => totalCookiesBaked >= 1 },
-                { id: 'hundred_cookies', name: 'מאה עוגיות', emoji: '💯', desc: 'הגעת ל-100 עוגיות!', condition: () => totalCookiesBaked >= 100 },
-                { id: 'first_building', name: 'הבנייה הראשונה', emoji: '🏗️', desc: 'קנית את הבניין הראשון!', condition: () => Object.values(buildings).some(b => b.count > 0) },
-                { id: 'thousand_cookies', name: 'אלף עוגיות', emoji: '🎯', desc: 'הגעת ל-1,000 עוגיות!', condition: () => totalCookiesBaked >= 1000 },
-                { id: 'ten_thousand_cookies', name: 'עשרת אלפים עוגיות', emoji: '🏆', desc: 'הגעת ל-10,000 עוגיות!', condition: () => totalCookiesBaked >= 10000 },
-                { id: 'hundred_thousand_cookies', name: 'מאה אלף עוגיות', emoji: '🎖️', desc: 'הגעת ל-100,000 עוגיות!', condition: () => totalCookiesBaked >= 100000 },
-                { id: 'million_cookies', name: 'מיליון עוגיות', emoji: '💎', desc: 'הגעת למיליון עוגיות!', condition: () => totalCookiesBaked >= 1000000 },
-                { id: 'first_golden', name: 'עוגיית הזהב הראשונה', emoji: '🌟', desc: 'לחצת על עוגיית זהב!', condition: () => goldenCookieClicks >= 1 },
-                { id: 'golden_master', name: 'מאסטר הזהב', emoji: '👑', desc: 'לחצת על 10 עוגיות זהב!', condition: () => goldenCookieClicks >= 10 },
-                { id: 'hundred_buildings', name: 'מאה בניינים', emoji: '🏙️', desc: 'יש לך 100 בניינים!', condition: () => Object.values(buildings).reduce((sum, b) => sum + b.count, 0) >= 100 },
-                { id: 'first_prestige', name: 'יוקרה ראשונה', emoji: '⭐', desc: 'עשית איפוס יוקרה!', condition: () => prestigeLevel >= 1 }
-            ];
-
-            let unlockedAchievements = [];
-
-            // Enhanced Admin Functions
-            function openAdminModal() {
-                document.getElementById('adminModal').style.display = 'flex';
-                document.getElementById('adminPasswordInput').value = '';
-                document.getElementById('adminActionsSection').style.display = 'none';
-                document.getElementById('adminMessage').innerHTML = '';
-                // Clear all input fields
-                document.getElementById('targetPlayerInput').value = '';
-                document.getElementById('targetPlayerPasswordInput').value = '';
-                document.getElementById('cookieAmountInput').value = '';
-            }
-
-            function verifyAdmin() {
-                const password = document.getElementById('adminPasswordInput').value;
-                const messageDiv = document.getElementById('adminMessage');
-                
-                if (password === 'גיארון7865') {
-                    document.getElementById('adminActionsSection').style.display = 'block';
-                    messageDiv.innerHTML = '<div class="success-message">🎉 גישת יוצר אומתה בהצלחה!</div>';
-                    document.getElementById('adminPasswordInput').value = '';
-                } else {
-                    messageDiv.innerHTML = '<div class="error-message">❌ סיסמה שגויה - גישה נדחתה</div>';
-                }
-            }
-
-            async function adminTransferCookies() {
-                const targetPlayer = document.getElementById('targetPlayerInput').value.trim();
-                const targetPassword = document.getElementById('targetPlayerPasswordInput').value;
-                const amount = parseInt(document.getElementById('cookieAmountInput').value);
-                const messageDiv = document.getElementById('adminMessage');
-                
-                if (!targetPlayer) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש</div>';
-                    return;
-                }
-                
-                if (!targetPassword) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן סיסמה של השחקן</div>';
-                    return;
-                }
-                
-                if (!amount || amount <= 0) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן מספר עוגיות תקין</div>';
-                    return;
-                }
-
-                try {
-                    // Check if target player exists and verify password
-                    let targetPlayerData = null;
-                    
-                    if (firebaseInitialized) {
-                        const userSnapshot = await database.ref(`users/${targetPlayer}`).once('value');
-                        if (userSnapshot.exists()) {
-                            targetPlayerData = userSnapshot.val();
-                        }
-                    } else if (users[targetPlayer]) {
-                        targetPlayerData = users[targetPlayer];
-                    }
-
-                    if (!targetPlayerData) {
-                        messageDiv.innerHTML = '<div class="error-message">שחקן לא נמצא במערכת</div>';
-                        return;
-                    }
-
-                    // Verify player's password
-                    if (targetPlayerData.password !== targetPassword) {
-                        messageDiv.innerHTML = '<div class="error-message">סיסמה שגויה לשחקן זה</div>';
-                        return;
-                    }
-
-                    // Add cookies to target player (no deduction from admin)
-                    const targetNewCookies = (targetPlayerData.cookies || 0) + amount;
-                    const targetNewTotal = (targetPlayerData.totalCookiesBaked || 0) + amount;
-
-                    // Update target player data
-                    targetPlayerData.cookies = targetNewCookies;
-                    targetPlayerData.totalCookiesBaked = targetNewTotal;
-                    targetPlayerData.lastUpdate = Date.now();
-
-                    // Update local cache
-                    users[targetPlayer] = targetPlayerData;
-
-                    // Save to Firebase
-                    if (firebaseInitialized) {
-                        // Save target player
-                        await database.ref(`users/${targetPlayer}`).set(targetPlayerData);
-
-                        // Send notification message via chat
-                        const adminNotificationMessage = {
-                            id: Date.now() + '_admin_' + Math.random().toString(36).substr(2, 9),
-                            sender: 'מערכת',
-                            message: `👑 יוצר המשחק העביר ל${targetPlayer} ${formatNumber(amount)} עוגיות!`,
-                            timestamp: Date.now(),
-                            isSystemMessage: true
-                        };
-
-                        await database.ref(`chat/${adminNotificationMessage.id}`).set(adminNotificationMessage);
-
-                        // Send direct notification to player
-                        const directNotification = {
-                            id: Date.now() + '_admin_notif_' + Math.random().toString(36).substr(2, 9),
-                            recipient: targetPlayer,
-                            sender: 'יוצר המשחק',
-                            amount: amount,
-                            message: `יוצר המשחק העביר לך ${formatNumber(amount)} עוגיות! 🎁👑`,
-                            timestamp: Date.now(),
-                            type: 'admin_transfer'
-                        };
-
-                        await database.ref(`notifications/${targetPlayer}/${directNotification.id}`).set(directNotification);
-                    }
-
-                    // Save to localStorage
-                    localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                    // Clear inputs
-                    document.getElementById('targetPlayerInput').value = '';
-                    document.getElementById('targetPlayerPasswordInput').value = '';
-                    document.getElementById('cookieAmountInput').value = '';
-                    
-                    messageDiv.innerHTML = `<div class="success-message">✅ הועברו ${formatNumber(amount)} עוגיות ל${targetPlayer} בהצלחה!<br>🎉 השחקן יקבל הודעה על ההעברה</div>`;
-
-                } catch (error) {
-                    console.error('Admin transfer failed:', error);
-                    messageDiv.innerHTML = '<div class="error-message">שגיאה בהעברת העוגיות</div>';
-                }
-            }
-
-            // Load saved data from localStorage and Firebase
-            async function loadInitialData() {
-                // Load local cache first
-                if (localStorage.getItem('cookieUsers')) {
-                    users = JSON.parse(localStorage.getItem('cookieUsers'));
-                }
-                if (localStorage.getItem('cookieClubs')) {
-                    clubs = JSON.parse(localStorage.getItem('cookieClubs'));
-                }
-
-                // Try to sync with Firebase
-                if (firebaseInitialized) {
-                    try {
-                        // Load users from Firebase
-                        const usersSnapshot = await database.ref('users').once('value');
-                        if (usersSnapshot.exists()) {
-                            const firebaseUsers = usersSnapshot.val();
-                            users = { ...users, ...firebaseUsers };
-                        }
-
-                        // Load clubs from Firebase
-                        const clubsSnapshot = await database.ref('clubs').once('value');
-                        if (clubsSnapshot.exists()) {
-                            const firebaseClubs = clubsSnapshot.val();
-                            clubs = { ...clubs, ...firebaseClubs };
-                        }
-
-                        // Save merged data to localStorage
-                        localStorage.setItem('cookieUsers', JSON.stringify(users));
-                        localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-
-                        // Load chat messages
-                        const chatSnapshot = await database.ref('chat').limitToLast(50).once('value');
-                        if (chatSnapshot.exists()) {
-                            chatMessages = Object.values(chatSnapshot.val());
-                        }
-                    } catch (error) {
-                        console.warn('Failed to load from Firebase:', error);
-                    }
-                }
-            }
-
-            async function saveToFirebase(type, key, data) {
-                if (!firebaseInitialized) return false;
-                
-                try {
-                    await database.ref(`${type}/${key}`).set(data);
-                    return true;
-                } catch (error) {
-                    console.warn('Failed to save to Firebase:', error);
-                    return false;
-                }
-            }
-
-            async function saveData() {
-                // Always save to localStorage
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-                localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-
-                // Try to save to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref('users').set(users);
-                        await database.ref('clubs').set(clubs);
-                    } catch (error) {
-                        console.warn('Failed to sync with Firebase:', error);
-                    }
-                }
-            }
-
-            async function loadUserData() {
-                if (users[currentUser]) {
-                    const userData = users[currentUser];
-                    
-                    // If Firebase is available, get fresh data
-                    if (firebaseInitialized) {
-                        try {
-                            const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
-                            if (userSnapshot.exists()) {
-                                const freshData = userSnapshot.val();
-                                users[currentUser] = freshData;
-                                Object.assign(userData, freshData);
-                            }
-                        } catch (error) {
-                            console.warn('Failed to load fresh user data:', error);
-                        }
-                    }
-
-                    cookies = userData.cookies || 0;
-                    totalClicks = userData.totalClicks || 0;
-                    totalCookiesBaked = userData.totalCookiesBaked || 0;
-                    prestigeLevel = userData.prestigeLevel || 0;
-                    prestigeMultiplier = userData.prestigeMultiplier || 1;
-                    
-                    if (userData.buildings) {
-                        for (let key in userData.buildings) {
-                            if (buildings[key]) {
-                                buildings[key].count = userData.buildings[key].count || 0;
-                            }
-                        }
-                    }
-                    
-                    if (userData.clickUpgrades) {
-                        for (let key in userData.clickUpgrades) {
-                            if (clickUpgrades[key]) {
-                                clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
-                            }
-                        }
-                    }
-                    
-                    if (userData.upgrades) {
-                        for (let key in userData.upgrades) {
-                            if (upgrades[key]) {
-                                upgrades[key].purchased = userData.upgrades[key].purchased || false;
-                            }
-                        }
-                    }
-
-                    currentClub = userData.club;
-                    if (currentClub && clubs[currentClub]) {
-                        updateClubButton();
-                    }
-                }
-            }
-
-            async function saveUserData() {
-                if (currentUser && users[currentUser]) {
-                    users[currentUser].cookies = cookies;
-                    users[currentUser].totalClicks = totalClicks;
-                    users[currentUser].totalCookiesBaked = totalCookiesBaked;
-                    users[currentUser].buildings = JSON.parse(JSON.stringify(buildings));
-                    users[currentUser].clickUpgrades = JSON.parse(JSON.stringify(clickUpgrades));
-                    users[currentUser].upgrades = JSON.parse(JSON.stringify(upgrades));
-                    users[currentUser].prestigeLevel = prestigeLevel;
-                    users[currentUser].prestigeMultiplier = prestigeMultiplier;
-                    users[currentUser].club = currentClub;
-                    users[currentUser].lastSave = Date.now();
-
-                    // Save to localStorage immediately
-                    localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                    // Try to save to Firebase
-                    if (firebaseInitialized) {
-                        try {
-                            await database.ref(`users/${currentUser}`).update(users[currentUser]);
-                        } catch (error) {
-                            console.warn('Failed to save user data to Firebase:', error);
-                        }
-                    }
-                }
-            }
-
-            // Login and Registration Functions
-            async function login() {
-                const username = document.getElementById('usernameInput').value.trim();
-                const password = document.getElementById('passwordInput').value;
-                const remember = document.getElementById('rememberMe').checked;
-                const messageDiv = document.getElementById('loginMessage');
-
-                if (!username || !password) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
-                    return;
-                }
-
-                // Check if user exists (try Firebase first, then localStorage)
-                let userExists = false;
-                let userData = null;
-
-                if (firebaseInitialized) {
-                    try {
-                        const userSnapshot = await database.ref(`users/${username}`).once('value');
-                        if (userSnapshot.exists()) {
-                            userData = userSnapshot.val();
-                            userExists = true;
-                        }
-                    } catch (error) {
-                        console.warn('Firebase login check failed, using local data:', error);
-                    }
-                }
-
-                if (!userExists && users[username]) {
-                    userData = users[username];
-                    userExists = true;
-                }
-
-                if (userExists && userData.password === password) {
-                    currentUser = username;
-                    users[username] = userData; // Update local cache
-                    await loadUserData();
-                    if (remember) {
-                        localStorage.setItem('rememberedUser', username);
-                    }
-                    document.getElementById('loginScreen').style.display = 'none';
-                    startGame();
-                } else {
-                    messageDiv.innerHTML = '<div class="error-message">שם משתמש או סיסמה שגויים</div>';
-                }
-            }
-
-            async function register() {
-                const username = document.getElementById('usernameInput').value.trim();
-                const password = document.getElementById('passwordInput').value;
-                const remember = document.getElementById('rememberMe').checked;
-                const messageDiv = document.getElementById('registerMessage') || document.getElementById('loginMessage');
-
-                if (!username || !password) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
-                    return;
-                }
-
-                if (username.length < 3) {
-                    messageDiv.innerHTML = '<div class="error-message">שם המשתמש חייב להיות לפחות 3 תווים</div>';
-                    return;
-                }
-
-                // Check if user already exists
-                let userExists = false;
-                
-                if (firebaseInitialized) {
-                    try {
-                        const userSnapshot = await database.ref(`users/${username}`).once('value');
-                        userExists = userSnapshot.exists();
-                    } catch (error) {
-                        console.warn('Firebase registration check failed, using local data:', error);
-                    }
-                }
-
-                if (!userExists && users[username]) {
-                    userExists = true;
-                }
-
-                if (userExists) {
-                    messageDiv.innerHTML = '<div class="error-message">שם המשתמש כבר קיים</div>';
-                    return;
-                }
-
-                const newUser = {
-                    password: password,
-                    cookies: 0,
-                    totalClicks: 0,
-                    totalCookiesBaked: 0,
-                    buildings: JSON.parse(JSON.stringify(buildings)),
-                    clickUpgrades: JSON.parse(JSON.stringify(clickUpgrades)),
-                    upgrades: JSON.parse(JSON.stringify(upgrades)),
-                    prestigeLevel: 0,
-                    prestigeMultiplier: 1,
-                    club: null,
-                    created: Date.now()
-                };
-
-                users[username] = newUser;
-                currentUser = username;
-
-                // Save to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`users/${username}`).set(newUser);
-                    } catch (error) {
-                        console.warn('Failed to save new user to Firebase:', error);
-                    }
-                }
-
-                // Save to localStorage
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-                
-                if (remember) {
-                    localStorage.setItem('rememberedUser', username);
-                }
-                
-                messageDiv.innerHTML = '<div class="success-message">נרשמת בהצלחה!</div>';
-                setTimeout(() => {
-                    document.getElementById('loginScreen').style.display = 'none';
-                    startGame();
-                }, 1000);
-            }
-
-            // Game utility functions
-            function formatNumber(num) {
-                if (num < 1000) return Math.floor(num).toString();
-                if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
-                if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
-                if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
-                return (num / 1000000000000).toFixed(1) + 'T';
-            }
-
-            function calculateClickPower() {
-                clickPower = 1; // Base click power
-                for (let key in clickUpgrades) {
-                    clickPower += clickUpgrades[key].level * clickUpgrades[key].clickBonus;
-                }
-            }
-
-            function updateDisplay() {
-                document.getElementById('cookieCount').textContent = formatNumber(cookies);
-                document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
-                document.getElementById('cpcDisplay').textContent = `+${formatNumber(Math.floor(clickPower * prestigeMultiplier))} עוגיות ללחיצה`;
-                document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
-            }
-
-            function calculateCPS() {
-                cookiesPerSecond = 0;
-                for (let key in buildings) {
-                    cookiesPerSecond += buildings[key].count * buildings[key].cps * prestigeMultiplier;
-                }
-            }
-
-            function getCost(building) {
-                return Math.floor(building.baseCost * Math.pow(1.15, building.count));
-            }
-
-            function getClickUpgradeCost(upgrade) {
-                return Math.floor(upgrade.baseCost * Math.pow(2, upgrade.level));
-            }
-
-            function showNotification(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.className = 'notification-popup';
-                if (type === 'error') {
-                    notification.style.background = 'linear-gradient(135deg, #E74C3C, #C0392B)';
-                } else if (type === 'success') {
-                    notification.style.background = 'linear-gradient(135deg, #27AE60, #2ECC71)';
-                }
-                
-                notification.innerHTML = `
-                    <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
-                        ${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}
-                    </div>
-                    <div>${message}</div>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    if (document.body.contains(notification)) {
-                        document.body.removeChild(notification);
-                    }
-                }, 4000);
-            }
-
-            // Check for notifications when user logs in or periodically
-            async function checkNotifications() {
-                if (!firebaseInitialized || !currentUser) return;
-                
-                try {
-                    const notificationsSnapshot = await database.ref(`notifications/${currentUser}`).once('value');
-                    if (notificationsSnapshot.exists()) {
-                        const notifications = notificationsSnapshot.val();
-                        
-                        for (let notificationId in notifications) {
-                            const notification = notifications[notificationId];
-                            
-                            // Show notification popup
-                            showNotification(notification.message, 'success');
-                            
-                            // If it's a donation or admin transfer, make sure to update local data
-                            if ((notification.type === 'donation' || notification.type === 'admin_transfer') && notification.amount) {
-                                // Reload user data to get the updated cookies
-                                const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
-                                if (userSnapshot.exists()) {
-                                    const updatedUserData = userSnapshot.val();
-                                    cookies = updatedUserData.cookies || cookies;
-                                    totalCookiesBaked = updatedUserData.totalCookiesBaked || totalCookiesBaked;
-                                    updateDisplay();
-                                }
-                            }
-                            
-                            // Remove notification after showing
-                            await database.ref(`notifications/${currentUser}/${notificationId}`).remove();
-                        }
-                    }
-                } catch (error) {
-                    console.warn('Failed to check notifications:', error);
-                }
-            }
-
-            // Start the game
-            async function startGame() {
-                await loadInitialData();
-                await checkNotifications(); // Check for any pending notifications
-                calculateClickPower();
+        function buyBuilding(buildingKey) {
+            const building = buildings[buildingKey];
+            const cost = getCost(building);
+            
+            if (cookies >= cost) {
+                cookies -= cost;
+                building.count++;
+                totalCookiesBaked += cost;
                 calculateCPS();
                 updateDisplay();
                 createShopItems();
-                setupChatListener();
-                
-                // Set up auto-save
-                setInterval(saveUserData, 30000); // Save every 30 seconds
-                
-                // Set up periodic notification check
-                setInterval(checkNotifications, 60000); // Check every minute
-                
-                // Update cookies per second
-                setInterval(() => {
-                    if (cookiesPerSecond > 0) {
-                        cookies += cookiesPerSecond / 10; // Update 10 times per second
-                        totalCookiesBaked += cookiesPerSecond / 10;
-                        updateDisplay();
-                        checkAchievements();
-                    }
-                }, 100);
-                
-                // Generate floating cookies
-                createFloatingCookies();
-                
-                // Set up cookie click handler
-                document.getElementById('cookie').addEventListener('click', clickCookie);
+                checkAchievements();
+                createParticles(event.clientX, event.clientY, '#4ECDC4');
             }
+        }
 
-            // Initialize the game when page loads
-            window.addEventListener('load', async () => {
-                await loadInitialData();
-                
-                // Check for remembered user
-                const rememberedUser = localStorage.getItem('rememberedUser');
-                if (rememberedUser && users[rememberedUser]) {
-                    document.getElementById('usernameInput').value = rememberedUser;
-                    document.getElementById('rememberMe').checked = true;
-                }
-            });
-
-    function clickCookie(event) {
-                const gainedCookies = Math.floor(clickPower * prestigeMultiplier);
-                cookies += gainedCookies;
-                totalCookiesBaked += gainedCookies;
-                totalClicks++;
-                
+        function buyUpgrade(upgradeKey) {
+            const upgrade = upgrades[upgradeKey];
+            
+            if (cookies >= upgrade.cost && !upgrade.purchased) {
+                cookies -= upgrade.cost;
+                totalCookiesBaked += upgrade.cost;
+                upgrade.purchased = true;
+                upgrade.effect();
+                calculateCPS();
                 updateDisplay();
                 createShopItems();
                 checkAchievements();
-                
-                // Create click effect
-                createClickEffect(event.clientX, event.clientY, gainedCookies);
-                createParticles(event.clientX, event.clientY, '#FFD700');
+                createParticles(event.clientX, event.clientY, '#E74C3C');
+                showAchievement({name: 'שדרוג נקנה!', desc: `קנית: ${upgrade.name}`, emoji: '⚡'});
             }
+        }
 
-            function createClickEffect(x, y, amount) {
-                const effect = document.createElement('div');
-                effect.className = 'click-effect';
-                effect.textContent = `+${formatNumber(amount)}`;
-                effect.style.left = x + 'px';
-                effect.style.top = y + 'px';
-                document.body.appendChild(effect);
-                
-                setTimeout(() => {
-                    if (document.body.contains(effect)) {
-                        document.body.removeChild(effect);
-                    }
-                }, 1200);
-            }
-
-            function createParticles(x, y, color) {
-                for (let i = 0; i < 5; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = (x + Math.random() * 20 - 10) + 'px';
-                    particle.style.top = (y + Math.random() * 20 - 10) + 'px';
-                    particle.style.background = color;
-                    document.body.appendChild(particle);
-                    
-                    setTimeout(() => {
-                        if (document.body.contains(particle)) {
-                            document.body.removeChild(particle);
-                        }
-                    }, 2000);
+        function createClickEffect(x, y) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.textContent = `+${formatNumber(clickPower * prestigeMultiplier)}`;
+            effect.style.left = (x - 25) + 'px';
+            effect.style.top = (y - 25) + 'px';
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                if (document.body.contains(effect)) {
+                    document.body.removeChild(effect);
                 }
-            }
+            }, 1200);
+        }
 
-            function createFloatingCookies() {
-                const container = document.getElementById('floatingCookies');
-                
-                setInterval(() => {
-                    const cookie = document.createElement('div');
-                    cookie.className = 'floating-cookie';
-                    cookie.style.left = Math.random() * window.innerWidth + 'px';
-                    cookie.style.animationDuration = (15 + Math.random() * 20) + 's';
-                    container.appendChild(cookie);
-                    
-                    setTimeout(() => {
-                        if (container.contains(cookie)) {
-                            container.removeChild(cookie);
-                        }
-                    }, 30000);
-                }, 3000);
-            }
-
-            function createShopItems() {
-                // Buildings
-                const buildingContainer = document.getElementById('buildingItems');
-                buildingContainer.innerHTML = '';
-                
-                for (let key in buildings) {
-                    const building = buildings[key];
-                    const cost = getCost(building);
-                    const canAfford = cookies >= cost;
-                    
-                    const item = document.createElement('div');
-                    item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                    item.innerHTML = `
-                        <div class="item-header">
-                            <span class="item-name">${building.emoji} ${building.name}</span>
-                            <span class="item-count">${building.count}</span>
-                        </div>
-                        <div class="item-description">${building.description}</div>
-                        <div class="item-production">מייצר: ${formatNumber(building.cps * prestigeMultiplier)} עוגיות/שנייה</div>
-                        <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
-                    `;
-                    
-                    if (canAfford) {
-                        item.onclick = () => buyBuilding(key);
-                    }
-                    
-                    buildingContainer.appendChild(item);
-                }
-
-                // Click Upgrades
-                const clickUpgradeContainer = document.getElementById('clickUpgradeItems');
-                clickUpgradeContainer.innerHTML = '';
-                
-                for (let key in clickUpgrades) {
-                    const upgrade = clickUpgrades[key];
-                    const cost = getClickUpgradeCost(upgrade);
-                    const canAfford = cookies >= cost;
-                    
-                    const item = document.createElement('div');
-                    item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                    item.innerHTML = `
-                        <div class="item-header">
-                            <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
-                            <span class="item-count">רמה ${upgrade.level}</span>
-                        </div>
-                        <div class="item-description">${upgrade.description}</div>
-                        <div class="item-production">נוכחי: +${formatNumber(upgrade.level * upgrade.clickBonus)} ללחיצה</div>
-                        <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
-                    `;
-                    
-                    if (canAfford) {
-                        item.onclick = () => buyClickUpgrade(key);
-                    }
-                    
-                    clickUpgradeContainer.appendChild(item);
-                }
-
-                // Upgrades
-                const upgradeContainer = document.getElementById('upgradeItems');
-                upgradeContainer.innerHTML = '';
-                
-                for (let key in upgrades) {
-                    const upgrade = upgrades[key];
-                    if (upgrade.purchased || !upgrade.condition()) continue;
-                    
-                    const canAfford = cookies >= upgrade.cost;
-                    
-                    const item = document.createElement('div');
-                    item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                    item.innerHTML = `
-                        <div class="item-header">
-                            <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
-                            <span class="item-count">🆕</span>
-                        </div>
-                        <div class="item-description">${upgrade.description}</div>
-                        <div class="item-price">💰 ${formatNumber(upgrade.cost)} עוגיות</div>
-                    `;
-                    
-                    if (canAfford) {
-                        item.onclick = () => buyUpgrade(key);
-                    }
-                    
-                    upgradeContainer.appendChild(item);
-                }
-
-                // Achievements
-                const achievementContainer = document.getElementById('achievementItems');
-                achievementContainer.innerHTML = '';
-                
-                achievements.forEach(achievement => {
-                    const unlocked = unlockedAchievements.includes(achievement.id);
-                    const item = document.createElement('div');
-                    item.className = `shop-item ${unlocked ? '' : 'disabled'}`;
-                    item.style.cursor = 'default';
-                    item.innerHTML = `
-                        <div class="item-header">
-                            <span class="item-name">${achievement.emoji} ${achievement.name}</span>
-                            <span class="item-count">${unlocked ? '✅' : '❌'}</span>
-                        </div>
-                        <div class="item-description">${achievement.desc}</div>
-                    `;
-                    achievementContainer.appendChild(item);
-                });
-            }
-
-            function buyBuilding(buildingKey) {
-                const building = buildings[buildingKey];
-                const cost = getCost(building);
-                
-                if (cookies >= cost) {
-                    cookies -= cost;
-                    building.count++;
-                    totalCookiesBaked += cost;
-                    calculateClickPower();
-                    calculateCPS();
-                    updateDisplay();
-                    createShopItems();
-                    checkAchievements();
-                    createParticles(event.clientX, event.clientY, '#4ECDC4');
-                }
-            }
-
-            function buyClickUpgrade(upgradeKey) {
-                const upgrade = clickUpgrades[upgradeKey];
-                const cost = getClickUpgradeCost(upgrade);
-                
-                if (cookies >= cost) {
-                    cookies -= cost;
-                    upgrade.level++;
-                    totalCookiesBaked += cost;
-                    calculateClickPower();
-                    updateDisplay();
-                    createShopItems();
-                    checkAchievements();
-                    createParticles(event.clientX, event.clientY, '#E74C3C');
-                    showAchievement({name: 'שדרוג לחיצה!', desc: `${upgrade.name} - רמה ${upgrade.level}`, emoji: upgrade.emoji});
-                }
-            }
-
-            function buyUpgrade(upgradeKey) {
-                const upgrade = upgrades[upgradeKey];
-                
-                if (cookies >= upgrade.cost && !upgrade.purchased) {
-                    cookies -= upgrade.cost;
-                    totalCookiesBaked += upgrade.cost;
-                    upgrade.purchased = true;
-                    upgrade.effect();
-                    calculateCPS();
-                    updateDisplay();
-                    createShopItems();
-                    checkAchievements();
-                    createParticles(event.clientX, event.clientY, '#E74C3C');
-                    showAchievement({name: 'שדרוג נקנה!', desc: `קנית: ${upgrade.name}`, emoji: '⚡'});
-                }
-            }
-
-            function toggleShop() {
-                const shop = document.getElementById('shop');
-                const shopToggle = document.getElementById('shopToggle');
-                
-                if (shop.classList.contains('hidden')) {
-                    shop.classList.remove('hidden');
-                    shopToggle.style.display = 'none';
-                } else {
-                    shop.classList.add('hidden');
-                    shopToggle.style.display = 'block';
-                }
-            }
-
-            function checkAchievements() {
-                achievements.forEach(achievement => {
-                    if (!unlockedAchievements.includes(achievement.id) && achievement.condition()) {
-                        unlockedAchievements.push(achievement.id);
-                        showAchievement(achievement);
-                    }
-                });
-            }
-
-            function showAchievement(achievement) {
-                const popup = document.getElementById('achievementPopup');
-                popup.innerHTML = `
-                    <div style="font-size: 2rem; margin-bottom: 10px;">${achievement.emoji}</div>
-                    <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">${achievement.name}</div>
-                    <div style="font-size: 1rem;">${achievement.desc}</div>
-                `;
-                popup.classList.add('show');
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = color;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px)`;
+                document.body.appendChild(particle);
                 
                 setTimeout(() => {
-                    popup.classList.remove('show');
-                }, 4000);
-            }
-
-            function prestige() {
-                if (totalCookiesBaked >= 1000000) {
-                    if (confirm('האם אתה בטוח שברצונך לעשות איפוס יוקרה? זה יאפס את כל ההתקדמות אבל יגדיל את הכפולה!')) {
-                        prestigeLevel++;
-                        prestigeMultiplier = 1 + (prestigeLevel * 0.1);
-                        
-                        // Reset everything
-                        cookies = 0;
-                        for (let key in buildings) {
-                            buildings[key].count = 0;
-                        }
-                        for (let key in clickUpgrades) {
-                            clickUpgrades[key].level = 0;
-                        }
-                        for (let key in upgrades) {
-                            upgrades[key].purchased = false;
-                        }
-                        
-                        calculateClickPower();
-                        calculateCPS();
-                        updateDisplay();
-                        createShopItems();
-                        showAchievement({name: 'יוקרה!', desc: `רמת יוקרה ${prestigeLevel}`, emoji: '⭐'});
+                    if (document.body.contains(particle)) {
+                        document.body.removeChild(particle);
                     }
-                } else {
-                    showNotification('נדרש מיליון עוגיות לפחות לאיפוס יוקרה!', 'error');
-                }
-            }
-
-            // Chat Functions
-            function toggleChat() {
-                const chatContainer = document.getElementById('chatContainer');
-                const chatToggle = document.getElementById('chatToggle');
-                
-                if (chatContainer.classList.contains('minimized')) {
-                    chatContainer.classList.remove('minimized');
-                    chatToggle.textContent = '−';
-                } else {
-                    chatContainer.classList.add('minimized');
-                    chatToggle.textContent = '+';
-                }
-            }
-
-            async function sendMessage() {
-                const input = document.getElementById('chatInput');
-                const message = input.value.trim();
-                
-                if (!message || !currentUser) return;
-                
-                const messageData = {
-                    id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    sender: currentUser,
-                    message: message,
-                    timestamp: Date.now()
-                };
-
-                // Add to local cache
-                chatMessages.push(messageData);
-                if (chatMessages.length > 50) {
-                    chatMessages = chatMessages.slice(-50);
-                }
-
-                // Send to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`chat/${messageData.id}`).set(messageData);
-                    } catch (error) {
-                        console.warn('Failed to send message to Firebase:', error);
-                    }
-                }
-
-                input.value = '';
-                displayChatMessages();
-            }
-
-            function displayChatMessages() {
-                const chatMessagesDiv = document.getElementById('chatMessages');
-                chatMessagesDiv.innerHTML = '';
-
-                chatMessages.slice(-20).forEach(msg => {
-                    const messageDiv = document.createElement('div');
-                    
-                    // Check if it's a system message
-                    if (msg.isSystemMessage) {
-                        messageDiv.className = 'chat-message system-message';
-                        messageDiv.style.background = 'linear-gradient(45deg, #F39C12, #E67E22)';
-                        messageDiv.style.color = 'white';
-                        messageDiv.style.textAlign = 'center';
-                        messageDiv.style.margin = '10px 5px';
-                        messageDiv.style.fontWeight = 'bold';
-                    } else {
-                        messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
-                    }
-                    
-                    const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-
-                    if (msg.isSystemMessage) {
-                        messageDiv.innerHTML = `
-                            <div>${msg.message}</div>
-                            <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 3px;">${time}</div>
-                        `;
-                    } else {
-                        messageDiv.innerHTML = `
-                            ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
-                            <div>${msg.message}</div>
-                            <div class="message-time">${time}</div>
-                        `;
-                    }
-
-                    chatMessagesDiv.appendChild(messageDiv);
-                });
-
-                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-            }
-
-            function setupChatListener() {
-                if (!firebaseInitialized) return;
-
-                try {
-                    chatListener = database.ref('chat').limitToLast(50);
-                    chatListener.on('value', (snapshot) => {
-                        if (snapshot.exists()) {
-                            chatMessages = Object.values(snapshot.val());
-                            displayChatMessages();
-                        }
-                    });
-                } catch (error) {
-                    console.warn('Failed to setup chat listener:', error);
-                }
-            }
-
-            // Club Functions
-            async function generateClubCode() {
-                let code;
-                let attempts = 0;
-                const maxAttempts = 100;
-
-                do {
-                    code = Math.floor(1000 + Math.random() * 9000).toString();
-                    attempts++;
-
-                    // Check Firebase first
-                    if (firebaseInitialized) {
-                        try {
-                            const snapshot = await database.ref(`clubs/${code}`).once('value');
-                            if (!snapshot.exists() && !clubs[code]) {
-                                break;
-                            }
-                        } catch (error) {
-                            console.warn('Firebase club code check failed, using local data:', error);
-                            if (!clubs[code]) break;
-                        }
-                    } else {
-                        if (!clubs[code]) break;
-                    }
-                } while (attempts < maxAttempts);
-
-                if (attempts >= maxAttempts) {
-                    throw new Error('Failed to generate unique club code');
-                }
-
-                return code;
-            }
-
-            function openJoinClubModal() {
-                document.getElementById('joinClubModal').style.display = 'flex';
-            }
-
-            function openCreateClubModal() {
-                document.getElementById('createClubModal').style.display = 'flex';
-            }
-
-            function closeModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-                // Clear messages
-                const messageElements = document.querySelectorAll('#' + modalId + ' .error-message, #' + modalId + ' .success-message');
-                messageElements.forEach(el => el.remove());
-            }
-
-            async function joinClub() {
-                const clubCode = document.getElementById('clubCodeInput').value.trim();
-                const messageDiv = document.getElementById('joinClubMessage');
-
-                if (clubCode.length !== 4 || !/^\d{4}$/.test(clubCode)) {
-                    messageDiv.innerHTML = '<div class="error-message">הקוד חייב להיות 4 ספרות</div>';
-                    return;
-                }
-
-                // Check if club exists (try Firebase first)
-                let clubExists = false;
-                let clubData = null;
-
-                if (firebaseInitialized) {
-                    try {
-                        const clubSnapshot = await database.ref(`clubs/${clubCode}`).once('value');
-                        if (clubSnapshot.exists()) {
-                            clubData = clubSnapshot.val();
-                            clubExists = true;
-                        }
-                    } catch (error) {
-                        console.warn('Firebase club check failed, using local data:', error);
-                    }
-                }
-
-                if (!clubExists && clubs[clubCode]) {
-                    clubData = clubs[clubCode];
-                    clubExists = true;
-                }
-
-                if (!clubExists) {
-                    messageDiv.innerHTML = '<div class="error-message">לא נמצא מועדון עם קוד זה</div>';
-                    return;
-                }
-
-                if (currentClub) {
-                    messageDiv.innerHTML = '<div class="error-message">אתה כבר חבר במועדון אחר</div>';
-                    return;
-                }
-
-                // Join the club
-                const newMember = {
-                    username: currentUser,
-                    role: 'חבר רגיל',
-                    joinDate: Date.now()
-                };
-
-                clubData.members.push(newMember);
-                clubs[clubCode] = clubData;
-
-                currentClub = clubCode;
-                users[currentUser].club = clubCode;
-
-                // Save to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`clubs/${clubCode}`).set(clubData);
-                        await database.ref(`users/${currentUser}/club`).set(clubCode);
-                    } catch (error) {
-                        console.warn('Failed to save club join to Firebase:', error);
-                    }
-                }
-
-                // Save to localStorage
-                localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                messageDiv.innerHTML = '<div class="success-message">הצטרפת למועדון בהצלחה!</div>';
-                updateClubButton();
-                
-                setTimeout(() => {
-                    closeModal('joinClubModal');
-                    showClubInfo();
-                }, 1000);
-            }
-
-            async function createClub() {
-                const clubName = document.getElementById('clubNameInput').value.trim();
-                const messageDiv = document.getElementById('createClubMessage');
-
-                if (!clubName) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן שם מועדון</div>';
-                    return;
-                }
-
-                if (clubName.length < 3) {
-                    messageDiv.innerHTML = '<div class="error-message">שם המועדון חייב להיות לפחות 3 תווים</div>';
-                    return;
-                }
-
-                if (currentClub) {
-                    messageDiv.innerHTML = '<div class="error-message">אתה כבר חבר במועדון אחר</div>';
-                    return;
-                }
-
-                const clubCode = await generateClubCode();
-                
-                const newClub = {
-                    name: clubName,
-                    code: clubCode,
-                    founder: currentUser,
-                    created: Date.now(),
-                    members: [{
-                        username: currentUser,
-                        role: 'מייסד מועדון',
-                        joinDate: Date.now()
-                    }]
-                };
-
-                clubs[clubCode] = newClub;
-                currentClub = clubCode;
-                users[currentUser].club = clubCode;
-
-                // Save to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`clubs/${clubCode}`).set(newClub);
-                        await database.ref(`users/${currentUser}/club`).set(clubCode);
-                    } catch (error) {
-                        console.warn('Failed to save new club to Firebase:', error);
-                    }
-                }
-
-                // Save to localStorage
-                localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                messageDiv.innerHTML = '<div class="success-message">המועדון נוצר בהצלחה!<br>קוד המועדון: ' + clubCode + '</div>';
-                updateClubButton();
-                
-                setTimeout(() => {
-                    closeModal('createClubModal');
-                    showClubInfo();
                 }, 2000);
             }
-            async function leaveClub() {
-                if (!currentClub) return;
+        }
 
-                const club = clubs[currentClub];
-                if (club.founder === currentUser) {
-                    if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
-                        // Delete club from Firebase
-                        if (firebaseInitialized) {
-                            try {
-                                await database.ref(`clubs/${currentClub}`).remove();
-                            } catch (error) {
-                                console.warn('Failed to delete club from Firebase:', error);
-                            }
-                        }
-
-                        delete clubs[currentClub];
-                        
-                        // Remove club from all members
-                        for (let username in users) {
-                            if (users[username].club === currentClub) {
-                                users[username].club = null;
-                                // Update in Firebase
-                                if (firebaseInitialized) {
-                                    try {
-                                        await database.ref(`users/${username}/club`).remove();
-                                    } catch (error) {
-                                        console.warn('Failed to update user club in Firebase:', error);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    club.members = club.members.filter(member => member.username !== currentUser);
-                    
-                    // Update club in Firebase
-                    if (firebaseInitialized) {
-                        try {
-                            await database.ref(`clubs/${currentClub}/members`).set(club.members);
-                        } catch (error) {
-                            console.warn('Failed to update club members in Firebase:', error);
-                        }
-                    }
-                }
-
-                currentClub = null;
-                users[currentUser].club = null;
-                
-                // Update user in Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`users/${currentUser}/club`).remove();
-                    } catch (error) {
-                        console.warn('Failed to update user club in Firebase:', error);
-                    }
-                }
-
-                // Save to localStorage
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-                localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-                
-                updateClubButton();
-                closeModal('clubInfoModal');
-            }
-
-            async function showClubInfo() {
-                if (!currentClub) return;
-
-                let club = clubs[currentClub];
-
-                // Try to get fresh data from Firebase
-                if (firebaseInitialized) {
-                    try {
-                        const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
-                        if (clubSnapshot.exists()) {
-                            club = clubSnapshot.val();
-                            clubs[currentClub] = club; // Update local cache
-                        }
-                    } catch (error) {
-                        console.warn('Failed to fetch club info from Firebase:', error);
-                    }
-                }
-
-                if (!club) return;
-
-                document.getElementById('clubInfoName').textContent = club.name;
-                document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
-                
-                // Calculate total clicks from all members
-                let totalClubClicks = 0;
-                for (const member of club.members) {
-                    if (users[member.username]) {
-                        totalClubClicks += users[member.username].totalClicks || 0;
-                    } else if (firebaseInitialized) {
-                        // Try to fetch member data from Firebase
-                        try {
-                            const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
-                            if (memberSnapshot.exists()) {
-                                const memberData = memberSnapshot.val();
-                                users[member.username] = memberData; // Cache locally
-                                totalClubClicks += memberData.totalClicks || 0;
-                            }
-                        } catch (error) {
-                            console.warn('Failed to fetch member data from Firebase:', error);
-                        }
-                    }
-                }
-                
-                document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
-                
-                // Show members
-                const memberListDiv = document.getElementById('memberList');
-                memberListDiv.innerHTML = '';
-                club.members.forEach(member => {
-                    const memberDiv = document.createElement('div');
-                    memberDiv.className = 'member-item';
-                    memberDiv.innerHTML = `
-                        <span class="member-name">${member.username}</span>
-                        <span class="member-role">${member.role}</span>
-                    `;
-                    memberListDiv.appendChild(memberDiv);
-                });
-
-                document.getElementById('clubInfoModal').style.display = 'flex';
-            }
-
-            function updateClubButton() {
-                const clubButtons = document.querySelector('.club-buttons');
-                if (currentClub) {
-                    clubButtons.innerHTML = `
-                        <button class="club-button" onclick="showClubInfo()">🏆 ${clubs[currentClub].name}</button>
-                    `;
-                } else {
-                    clubButtons.innerHTML = `
-                        <button class="club-button" onclick="openJoinClubModal()">🏆 הצטרף למועדון</button>
-                        <button class="club-button" onclick="openCreateClubModal()">⭐ צור מועדון</button>
-                    `;
-                }
-            }
-
-            // Donation Functions
-            function openDonateModal() {
-                if (!currentUser) {
-                    showNotification('יש להתחבר כדי לתרום עוגיות', 'error');
-                    return;
-                }
-                
-                loadOnlinePlayers();
-                document.getElementById('donateModal').style.display = 'flex';
-            }
-
-            async function loadOnlinePlayers() {
-                const playerListDiv = document.getElementById('playerList');
-                playerListDiv.innerHTML = '';
-
-                // Get all users from Firebase or local cache
-                let allUsers = { ...users };
-                
-                if (firebaseInitialized) {
-                    try {
-                        const usersSnapshot = await database.ref('users').once('value');
-                        if (usersSnapshot.exists()) {
-                            allUsers = { ...allUsers, ...usersSnapshot.val() };
-                        }
-                    } catch (error) {
-                        console.warn('Failed to load users from Firebase:', error);
-                    }
-                }
-
-                for (let username in allUsers) {
-                    if (username === currentUser) continue; // Don't show self
-                    
-                    const playerDiv = document.createElement('div');
-                    playerDiv.className = 'player-item';
-                    playerDiv.onclick = () => selectPlayer(username);
-                    
-                    const lastSave = allUsers[username].lastSave || 0;
-                    const isOnline = Date.now() - lastSave < 300000; // 5 minutes
-                    
-                    playerDiv.innerHTML = `
-                        <div class="player-name">👤 ${username}</div>
-                        <div class="player-status">${isOnline ? '🟢 מחובר' : '🔴 לא מחובר'}</div>
-                    `;
-                    
-                    playerListDiv.appendChild(playerDiv);
-                }
-            }
-
-            function selectPlayer(username) {
-                selectedDonationTarget = username;
-                document.getElementById('donationTargetPlayer').textContent = username;
-                document.getElementById('currentCookiesDisplay').textContent = formatNumber(cookies);
-                document.getElementById('donationAmountInput').value = '';
-                
-                closeModal('donateModal');
-                document.getElementById('donationAmountModal').style.display = 'flex';
-            }
-
-            async function confirmDonation() {
-                const amount = parseInt(document.getElementById('donationAmountInput').value);
-                const messageDiv = document.getElementById('donationMessage');
-                
-                if (!amount || amount <= 0) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן מספר עוגיות תקין</div>';
-                    return;
-                }
-                
-                if (amount > cookies) {
-                    messageDiv.innerHTML = `<div class="error-message">אין לך ${formatNumber(amount)} עוגיות</div>`;
-                    return;
-                }
-
-                try {
-                    // First, load the target player's current data from Firebase
-                    let targetPlayerData = null;
-                    
-                    if (firebaseInitialized) {
-                        const userSnapshot = await database.ref(`users/${selectedDonationTarget}`).once('value');
-                        if (userSnapshot.exists()) {
-                            targetPlayerData = userSnapshot.val();
-                        }
-                    } else if (users[selectedDonationTarget]) {
-                        targetPlayerData = users[selectedDonationTarget];
-                    }
-
-                    if (!targetPlayerData) {
-                        messageDiv.innerHTML = '<div class="error-message">לא ניתן למצוא את השחקן</div>';
-                        return;
-                    }
-
-                    // Deduct from current user
-                    cookies -= amount;
-                    totalCookiesBaked += amount; // Add to total for achievements
-
-                    // Add to target player's cookies
-                    const targetNewCookies = (targetPlayerData.cookies || 0) + amount;
-                    const targetNewTotal = (targetPlayerData.totalCookiesBaked || 0) + amount;
-
-                    // Update target player data
-                    targetPlayerData.cookies = targetNewCookies;
-                    targetPlayerData.totalCookiesBaked = targetNewTotal;
-                    targetPlayerData.lastUpdate = Date.now();
-
-                    // Update local cache
-                    users[selectedDonationTarget] = targetPlayerData;
-
-                    // Save both users to Firebase
-                    if (firebaseInitialized) {
-                        // Save target player
-                        await database.ref(`users/${selectedDonationTarget}`).set(targetPlayerData);
-                        
-                        // Save current user
-                        await saveUserData();
-
-    // Send notification message via chat
-                        const notificationMessage = {
-                            id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                            sender: 'מערכת',
-                            message: `🎁 ${currentUser} תרם ל${selectedDonationTarget} ${formatNumber(amount)} עוגיות!`,
-                            timestamp: Date.now(),
-                            isSystemMessage: true
-                        };
-
-                        await database.ref(`chat/${notificationMessage.id}`).set(notificationMessage);
-
-                        // Also send a direct notification
-                        const directNotification = {
-                            id: Date.now() + '_notif_' + Math.random().toString(36).substr(2, 9),
-                            recipient: selectedDonationTarget,
-                            sender: currentUser,
-                            amount: amount,
-                            message: `${currentUser} תרם לך ${formatNumber(amount)} עוגיות! 🎁`,
-                            timestamp: Date.now(),
-                            type: 'donation'
-                        };
-
-                        await database.ref(`notifications/${selectedDonationTarget}/${directNotification.id}`).set(directNotification);
-                    }
-
-                    // Update display
-                    updateDisplay();
-                    
-                    messageDiv.innerHTML = `<div class="success-message">העברת ל${selectedDonationTarget} ${formatNumber(amount)} עוגיות בהצלחה!</div>`;
-                    
-                    setTimeout(() => {
-                        closeModal('donationAmountModal');
-                        showNotification(`תרמת ${formatNumber(amount)} עוגיות ל${selectedDonationTarget}! 🎁`, 'success');
-                    }, 1500);
-
-                } catch (error) {
-                    console.error('Donation failed:', error);
-                    messageDiv.innerHTML = '<div class="error-message">שגיאה בתרומה, נסה שוב</div>';
-                }
-            }
-
-            // Settings Functions
-            function openSettingsModal() {
-                if (!currentUser) {
-                    showNotification('יש להתחבר כדי לגשת להגדרות', 'error');
-                    return;
-                }
-                
-                // Update current info display
-                document.getElementById('currentUsername').textContent = currentUser;
-                const userData = users[currentUser] || {};
-                const genderText = userData.gender === 'male' ? 'בן' : 
-                                userData.gender === 'female' ? 'בת' : 'לא נבחר';
-                document.getElementById('currentGender').textContent = genderText;
-                
-                // Set current gender selection
-                const maleOption = document.getElementById('maleOption');
-                const femaleOption = document.getElementById('femaleOption');
-                maleOption.classList.remove('selected');
-                femaleOption.classList.remove('selected');
-                
-                if (userData.gender === 'male') {
-                    maleOption.classList.add('selected');
-                    document.querySelector('input[value="male"]').checked = true;
-                } else if (userData.gender === 'female') {
-                    femaleOption.classList.add('selected');
-                    document.querySelector('input[value="female"]').checked = true;
-                }
-                
-                // Clear input fields
-                document.getElementById('newUsernameInput').value = '';
-                document.getElementById('currentPasswordInput').value = '';
-                document.getElementById('newPasswordInput').value = '';
-                document.getElementById('confirmPasswordInput').value = '';
-                
-                document.getElementById('settingsModal').style.display = 'flex';
-            }
-
-            async function changeUsername() {
-                const newUsername = document.getElementById('newUsernameInput').value.trim();
-                const messageDiv = document.getElementById('settingsMessage');
-                
-                if (!newUsername) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש חדש</div>';
-                    return;
-                }
-                
-                if (newUsername.length < 3) {
-                    messageDiv.innerHTML = '<div class="error-message">שם המשתמש חייב להיות לפחות 3 תווים</div>';
-                    return;
-                }
-                
-                if (newUsername === currentUser) {
-                    messageDiv.innerHTML = '<div class="error-message">זה כבר שם המשתמש הנוכחי שלך</div>';
-                    return;
-                }
-
-                // Check if username already exists
-                let userExists = false;
-                
-                if (firebaseInitialized) {
-                    try {
-                        const userSnapshot = await database.ref(`users/${newUsername}`).once('value');
-                        userExists = userSnapshot.exists();
-                    } catch (error) {
-                        console.warn('Firebase username check failed:', error);
-                    }
-                }
-                
-                if (!userExists && users[newUsername]) {
-                    userExists = true;
-                }
-                
-                if (userExists) {
-                    messageDiv.innerHTML = '<div class="error-message">שם המשתמש כבר קיים</div>';
-                    return;
-                }
-
-                try {
-                    const oldUsername = currentUser;
-                    const userData = users[oldUsername];
-                    
-                    // Create new user entry
-                    users[newUsername] = { ...userData };
-                    delete users[oldUsername];
-                    
-                    // Update Firebase
-                    if (firebaseInitialized) {
-                        await database.ref(`users/${newUsername}`).set(userData);
-                        await database.ref(`users/${oldUsername}`).remove();
-                        
-                        // Update club memberships
-                        if (currentClub && clubs[currentClub]) {
-                            const club = clubs[currentClub];
-                            club.members = club.members.map(member => {
-                                if (member.username === oldUsername) {
-                                    member.username = newUsername;
-                                }
-                                return member;
-                            });
-                            
-                            if (club.founder === oldUsername) {
-                                club.founder = newUsername;
-                            }
-                            
-                            await database.ref(`clubs/${currentClub}`).set(club);
-                            clubs[currentClub] = club;
-                        }
-                    }
-                    
-                    // Update current user
-                    currentUser = newUsername;
-                    localStorage.setItem('rememberedUser', newUsername);
-                    localStorage.setItem('cookieUsers', JSON.stringify(users));
-                    
-                    document.getElementById('currentUsername').textContent = newUsername;
-                    document.getElementById('newUsernameInput').value = '';
-                    
-                    messageDiv.innerHTML = '<div class="success-message">שם המשתמש שונה בהצלחה!</div>';
-                    
-                } catch (error) {
-                    console.error('Username change failed:', error);
-                    messageDiv.innerHTML = '<div class="error-message">שגיאה בשינוי שם המשתמש</div>';
-                }
-            }
-
-            async function changePassword() {
-                const currentPassword = document.getElementById('currentPasswordInput').value;
-                const newPassword = document.getElementById('newPasswordInput').value;
-                const confirmPassword = document.getElementById('confirmPasswordInput').value;
-                const messageDiv = document.getElementById('settingsMessage');
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא מלא את כל השדות</div>';
-                    return;
-                }
-                
-                if (users[currentUser].password !== currentPassword) {
-                    messageDiv.innerHTML = '<div class="error-message">סיסמה נוכחית שגויה</div>';
-                    return;
-                }
-                
-                if (newPassword.length < 4) {
-                    messageDiv.innerHTML = '<div class="error-message">הסיסמה החדשה חייבת להיות לפחות 4 תווים</div>';
-                    return;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    messageDiv.innerHTML = '<div class="error-message">הסיסמאות אינן תואמות</div>';
-                    return;
-                }
-
-                try {
-                    users[currentUser].password = newPassword;
-                    
-                    if (firebaseInitialized) {
-                        await database.ref(`users/${currentUser}/password`).set(newPassword);
-                    }
-                    
-                    localStorage.setItem('cookieUsers', JSON.stringify(users));
-                    
-                    document.getElementById('currentPasswordInput').value = '';
-                    document.getElementById('newPasswordInput').value = '';
-                    document.getElementById('confirmPasswordInput').value = '';
-                    
-                    messageDiv.innerHTML = '<div class="success-message">הסיסמה שונתה בהצלחה!</div>';
-                    
-                } catch (error) {
-                    console.error('Password change failed:', error);
-                    messageDiv.innerHTML = '<div class="error-message">שגיאה בשינוי הסיסמה</div>';
-                }
-            }
-
-            async function changeGender() {
-                const selectedGender = document.querySelector('input[name="gender"]:checked');
-                const messageDiv = document.getElementById('settingsMessage');
-                
-                if (!selectedGender) {
-                    messageDiv.innerHTML = '<div class="error-message">אנא בחר מגדר</div>';
-                    return;
-                }
-
-                try {
-                    users[currentUser].gender = selectedGender.value;
-                    
-                    if (firebaseInitialized) {
-                        await database.ref(`users/${currentUser}/gender`).set(selectedGender.value);
-                    }
-                    
-                    localStorage.setItem('cookieUsers', JSON.stringify(users));
-                    
-                    const genderText = selectedGender.value === 'male' ? 'בן' : 'בת';
-                    document.getElementById('currentGender').textContent = genderText;
-                    
-                    messageDiv.innerHTML = '<div class="success-message">המגדר עודכן בהצלחה!</div>';
-                    
-                } catch (error) {
-                    console.error('Gender change failed:', error);
-                    messageDiv.innerHTML = '<div class="error-message">שגיאה בעדכון המגדר</div>';
-                }
-            }
-
-            function logout() {
-                if (confirm('האם אתה בטוח שברצונך להתנתק?')) {
-                    // Clear current user data
-                    currentUser = null;
-                    currentClub = null;
-                    selectedDonationTarget = null;
-                    
-                    // Remove remembered user
-                    localStorage.removeItem('rememberedUser');
-                    
-                    // Reset game state
-                    cookies = 0;
-                    cookiesPerSecond = 0;
-                    clickPower = 1;
-                    prestigeLevel = 0;
-                    prestigeMultiplier = 1;
-                    totalCookiesBaked = 0;
-                    goldenCookieClicks = 0;
-                    totalClicks = 0;
-                    
-                    // Reset buildings and upgrades
-                    for (let key in buildings) {
-                        buildings[key].count = 0;
-                    }
-                    for (let key in clickUpgrades) {
-                        clickUpgrades[key].level = 0;
-                    }
-                    for (let key in upgrades) {
-                        upgrades[key].purchased = false;
-                    }
-                    
-                    // Close all modals
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.style.display = 'none';
-                    });
-                    
-                    // Reset shop visibility
-                    const shop = document.getElementById('shop');
-                    const shopToggle = document.getElementById('shopToggle');
-                    shop.classList.remove('hidden');
-                    shopToggle.style.display = 'none';
-                    
-                    // Show login screen
-                    document.getElementById('loginScreen').style.display = 'flex';
-                    
-                    // Clear login form
-                    document.getElementById('usernameInput').value = '';
-                    document.getElementById('passwordInput').value = '';
-                    document.getElementById('rememberMe').checked = false;
-                    document.getElementById('loginMessage').innerHTML = '';
-                    
-                    showNotification('התנתקת בהצלחה', 'success');
-                }
-            }
-
-            // Event Listeners
-            document.addEventListener('DOMContentLoaded', function() {
-                const genderOptions = document.querySelectorAll('.gender-option');
-                genderOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        genderOptions.forEach(opt => opt.classList.remove('selected'));
-                        this.classList.add('selected');
-                        this.querySelector('input[type="radio"]').checked = true;
-                    });
-                });
-
-                const chatInput = document.getElementById('chatInput');
-                if (chatInput) {
-                    chatInput.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            sendMessage();
-                        }
-                    });
+        function checkAchievements() {
+            achievements.forEach(achievement => {
+                if (!unlockedAchievements.includes(achievement.id) && achievement.condition()) {
+                    unlockedAchievements.push(achievement.id);
+                    showAchievement(achievement);
                 }
             });
-        </script>
-        <div class="leaderboard-modal" id="leaderboardModal"></div>
-    </body>
-    </html>
+        }
+
+        function showAchievement(achievement) {
+            const popup = document.getElementById('achievementPopup');
+            const text = document.getElementById('achievementText');
+            text.innerHTML = `<strong>🏆 הישג חדש!</strong><br>${achievement.emoji} ${achievement.name}<br>${achievement.desc}`;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 4000);
+        }
+
+        function createFloatingCookies() {
+            const container = document.getElementById('floatingCookies');
+            
+            for (let i = 0; i < 20; i++) {
+                const cookie = document.createElement('div');
+                cookie.className = 'floating-cookie';
+                cookie.style.left = Math.random() * 100 + '%';
+                cookie.style.animationDelay = Math.random() * 25 + 's';
+                cookie.style.animationDuration = (20 + Math.random() * 10) + 's';
+                container.appendChild(cookie);
+            }
+        }
+
+        function spawnGoldenCookie() {
+            if (Date.now() - lastGoldenCookie < 30000) return; // 30 seconds cooldown
+            
+            const goldenCookie = document.createElement('div');
+            goldenCookie.className = 'golden-cookie';
+            goldenCookie.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+            goldenCookie.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+            
+            goldenCookie.onclick = function() {
+                goldenCookieClicks++;
+                const bonus = Math.floor(cookies * 0.15) + Math.floor(cookiesPerSecond * 77);
+                cookies += bonus;
+                totalCookiesBaked += bonus;
+                createClickEffect(event.clientX, event.clientY);
+                createParticles(event.clientX, event.clientY, '#FFD700');
+                showAchievement({name: 'עוגיית זהב!', desc: `+${formatNumber(bonus)} עוגיות!`, emoji: '🌟'});
+                document.body.removeChild(goldenCookie);
+                lastGoldenCookie = Date.now();
+                checkAchievements();
+            };
+            
+            document.body.appendChild(goldenCookie);
+            
+            // Remove after 13 seconds
+            setTimeout(() => {
+                if (document.body.contains(goldenCookie)) {
+                    document.body.removeChild(goldenCookie);
+                }
+            }, 13000);
+        }
+
+        function prestige() {
+            if (totalCookiesBaked < 1000000) {
+                showAchievement({name: 'לא מוכן!', desc: 'צריך לפחות מיליון עוגיות כדי לעשות איפוס יוקרה', emoji: '❌'});
+                return;
+            }
+            
+            if (confirm('האם אתה בטוח שאתה רוצה לעשות איפוס יוקרה? זה יאפס את כל הקניות אבל יתן לך בונוס קבוע!')) {
+                prestigeLevel++;
+                prestigeMultiplier = 1 + (prestigeLevel * 0.1);
+                
+                // Reset everything except prestige
+                cookies = 0;
+                cookiesPerSecond = 0;
+                totalCookiesBaked = 0;
+                
+                // Reset buildings
+                for (let key in buildings) {
+                    buildings[key].count = 0;
+                    buildings[key].cps = buildings[key].baseCost === 15 ? 0.1 : 
+                                        buildings[key].baseCost === 100 ? 1 :
+                                        buildings[key].baseCost === 1100 ? 8 :
+                                        buildings[key].baseCost === 12000 ? 47 :
+                                        buildings[key].baseCost === 130000 ? 260 :
+                                        buildings[key].baseCost === 1400000 ? 1400 :
+                                        buildings[key].baseCost === 20000000 ? 7800 :
+                                        buildings[key].baseCost === 330000000 ? 44000 :
+                                        buildings[key].baseCost === 5100000000 ? 260000 :
+                                        buildings[key].baseCost === 75000000000 ? 1600000 :
+                                        buildings[key].baseCost === 1000000000000 ? 10000000 : 65000000;
+                }
+                
+                // Reset upgrades
+                for (let key in upgrades) {
+                    upgrades[key].purchased = false;
+                }
+                
+                calculateCPS();
+                updateDisplay();
+                createShopItems();
+                checkAchievements();
+                showAchievement({name: 'איפוס יוקרה!', desc: `רמת יוקרה: ${prestigeLevel}`, emoji: '⭐'});
+            }
+        }
+
+        // Event listeners
+        document.getElementById('cookie').addEventListener('click', function(e) {
+            const clickValue = clickPower * prestigeMultiplier;
+            cookies += clickValue;
+            totalCookiesBaked += clickValue;
+            updateDisplay();
+            createClickEffect(e.clientX, e.clientY);
+            createParticles(e.clientX, e.clientY, '#FFD700');
+            checkAchievements();
+        });
+
+        // Game loops
+        setInterval(() => {
+            const cpsGain = cookiesPerSecond / 10;
+            cookies += cpsGain;
+            totalCookiesBaked += cpsGain;
+            updateDisplay();
+            checkAchievements();
+        }, 100);
+
+        setInterval(() => {
+            createShopItems();
+        }, 1000);
+
+        // Golden cookie spawner
+        setInterval(() => {
+            if (Math.random() < 0.3 && cookiesPerSecond > 0) { // 30% chance every 10 seconds if producing
+                spawnGoldenCookie();
+            }
+        }, 10000);
+
+        // Auto-save
+        setInterval(() => {
+            const gameData = {
+                cookies,
+                totalCookiesBaked,
+                buildings,
+                upgrades,
+                unlockedAchievements,
+                prestigeLevel,
+                prestigeMultiplier,
+                goldenCookieClicks
+            };
+            // In a real implementation, you'd save to localStorage here
+            // localStorage.setItem('cookieClickerSave', JSON.stringify(gameData));
+        }, 30000);
+
+        // Initialize game
+        calculateCPS();
+        updateDisplay();
+        createShopItems();
+        createFloatingCookies();
+        checkAchievements();
+    </script>
+</body>
+</html>
