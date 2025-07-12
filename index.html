@@ -1519,6 +1519,23 @@
         </div>
     </div>
 
+    <!-- Friends Modal -->
+    <div class="modal" id="friendsModal">
+        <div class="modal-content">
+            <h3>👥 רשימת החברים שלך</h3>
+            
+            <div class="friends-section">
+                <h4>החברים שלך</h4>
+                <div class="friends-list" id="friendsList">
+                    <!-- Friends will be loaded here -->
+                </div>
+            </div>
+
+            <button class="close-button" onclick="closeModal('friendsModal')">סגור</button>
+            <div id="friendsMessage"></div>
+        </div>
+    </div>
+
     <div class="floating-cookies" id="floatingCookies"></div>
     
     <!-- Firebase Status -->
@@ -1651,6 +1668,7 @@
         let chatListener = null;
         let selectedDonationTarget = null;
         let selectedPlayerForMenu = null;
+        let userFriends = []; // List of user's friends
 
         const buildings = {
             cursor: {
@@ -2126,6 +2144,13 @@
                     }
                 }
 
+                // Load friends list
+                if (userData.friends) {
+                    userFriends = userData.friends;
+                } else {
+                    userFriends = [];
+                }
+
                 currentClub = userData.club;
                 if (currentClub && clubs[currentClub]) {
                     updateClubButton();
@@ -2144,6 +2169,7 @@
                 users[currentUser].prestigeLevel = prestigeLevel;
                 users[currentUser].prestigeMultiplier = prestigeMultiplier;
                 users[currentUser].club = currentClub;
+                users[currentUser].friends = userFriends;
                 users[currentUser].lastSave = Date.now();
 
                 // Save to localStorage immediately
@@ -2255,6 +2281,7 @@
                 prestigeLevel: 0,
                 prestigeMultiplier: 1,
                 club: null,
+                friends: [],
                 created: Date.now()
             };
 
@@ -2847,6 +2874,143 @@
                 friendBtn.disabled = false;
                 friendBtn.textContent = 'שלח בקשת חברות';
                 showNotification('שגיאה בשליחת בקשת החברות', 'error');
+            }
+        }
+
+        // Friends Functions
+        function openFriendsModal() {
+            if (!currentUser) {
+                showNotification('יש להתחבר כדי לראות רשימת חברים', 'error');
+                return;
+            }
+            
+            loadFriendsList();
+            document.getElementById('friendsModal').style.display = 'flex';
+        }
+
+        async function loadFriendsList() {
+            const friendsListDiv = document.getElementById('friendsList');
+            friendsListDiv.innerHTML = '<div style="text-align: center; padding: 20px;">טוען רשימת חברים...</div>';
+
+            try {
+                // Load user's friends list from Firebase
+                if (firebaseInitialized) {
+                    const friendsSnapshot = await database.ref(`users/${currentUser}/friends`).once('value');
+                    if (friendsSnapshot.exists()) {
+                        userFriends = friendsSnapshot.val() || [];
+                    } else {
+                        userFriends = [];
+                    }
+                }
+
+                // If no friends, show message
+                if (userFriends.length === 0) {
+                    friendsListDiv.innerHTML = `
+                        <div class="no-friends">
+                            😔 אין לך חברים עדיין<br>
+                            שלח בקשות חברות לשחקנים אחרים דרך הצ'אט!
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Load friends data and display
+                friendsListDiv.innerHTML = '';
+                
+                for (const friendUsername of userFriends) {
+                    let friendData = users[friendUsername];
+                    
+                    // Try to fetch from Firebase if not in cache
+                    if (!friendData && firebaseInitialized) {
+                        try {
+                            const friendSnapshot = await database.ref(`users/${friendUsername}`).once('value');
+                            if (friendSnapshot.exists()) {
+                                friendData = friendSnapshot.val();
+                                users[friendUsername] = friendData; // Cache it
+                            }
+                        } catch (error) {
+                            console.warn(`Failed to fetch friend data for ${friendUsername}:`, error);
+                        }
+                    }
+
+                    // Determine online status
+                    const lastSave = friendData?.lastSave || 0;
+                    const isOnline = Date.now() - lastSave < 300000; // 5 minutes
+                    
+                    // Create friend item
+                    const friendItem = document.createElement('div');
+                    friendItem.className = 'friend-item';
+                    
+                    friendItem.innerHTML = `
+                        <div class="friend-info">
+                            <div class="friend-name">👤 ${friendUsername}</div>
+                            <div class="friend-status ${isOnline ? 'online' : 'offline'}">
+                                ${isOnline ? '🟢 מחובר' : '🔴 לא מחובר'}
+                                ${friendData ? '' : ' (נתונים לא זמינים)'}
+                            </div>
+                        </div>
+                        <div class="friend-cookies">
+                            🍪 ${friendData ? formatNumber(friendData.cookies || 0) : 'לא ידוע'}
+                        </div>
+                    `;
+                    
+                    friendsListDiv.appendChild(friendItem);
+                }
+
+            } catch (error) {
+                console.error('Failed to load friends list:', error);
+                friendsListDiv.innerHTML = `
+                    <div class="no-friends">
+                        ❌ שגיאה בטעינת רשימת החברים<br>
+                        נסה שוב מאוחר יותר
+                    </div>
+                `;
+            }
+        }
+
+        // Function to accept friend request (will be called from notifications)
+        async function acceptFriendRequest(fromUser) {
+            try {
+                if (firebaseInitialized) {
+                    // Add to both users' friends lists
+                    const currentUserFriends = await database.ref(`users/${currentUser}/friends`).once('value');
+                    const fromUserFriends = await database.ref(`users/${fromUser}/friends`).once('value');
+                    
+                    let currentFriends = currentUserFriends.exists() ? currentUserFriends.val() : [];
+                    let fromFriends = fromUserFriends.exists() ? fromUserFriends.val() : [];
+                    
+                    // Add each other to friends lists if not already there
+                    if (!currentFriends.includes(fromUser)) {
+                        currentFriends.push(fromUser);
+                        await database.ref(`users/${currentUser}/friends`).set(currentFriends);
+                    }
+                    
+                    if (!fromFriends.includes(currentUser)) {
+                        fromFriends.push(currentUser);
+                        await database.ref(`users/${fromUser}/friends`).set(fromFriends);
+                    }
+                    
+                    // Update local cache
+                    userFriends = currentFriends;
+                    
+                    // Send confirmation notification
+                    const notification = {
+                        id: Date.now() + '_notif_' + Math.random().toString(36).substr(2, 9),
+                        recipient: fromUser,
+                        sender: currentUser,
+                        message: `${currentUser} קיבל את בקשת החברות שלך! 🎉`,
+                        timestamp: Date.now(),
+                        type: 'friend_accepted'
+                    };
+                    
+                    await database.ref(`notifications/${fromUser}/${notification.id}`).set(notification);
+                    
+                    showNotification(`${fromUser} נוסף לרשימת החברים שלך! 🎉`, 'success');
+                }
+                
+            } catch (error) {
+                console.error('Failed to accept friend request:', error);
+                showNotification('שגיאה בקבלת בקשת החברות', 'error');
             }
         }
 
@@ -3598,6 +3762,7 @@
                 currentUser = null;
                 currentClub = null;
                 selectedDonationTarget = null;
+                userFriends = [];
                 
                 // Remove remembered user
                 localStorage.removeItem('rememberedUser');
