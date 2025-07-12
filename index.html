@@ -521,6 +521,7 @@
             border-radius: 10px;
             font-size: 0.9rem;
             word-wrap: break-word;
+            position: relative;
         }
 
         .chat-message.own {
@@ -547,6 +548,77 @@
             font-size: 0.7rem;
             opacity: 0.6;
             margin-top: 3px;
+        }
+
+        .message-options {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #666;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .message-options:hover {
+            background: rgba(0, 0, 0, 0.2);
+            opacity: 1;
+        }
+
+        .player-menu {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            z-index: 6000;
+            text-align: center;
+        }
+
+        .player-menu h4 {
+            color: #2C3E50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .player-menu .player-cookies {
+            color: #E67E22;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .friend-request-button {
+            background: linear-gradient(45deg, #3498DB, #2980B9);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .friend-request-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .friend-request-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .chat-input-container {
@@ -1367,7 +1439,6 @@
             <div id="donationMessage"></div>
         </div>
     </div>
-
     <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
@@ -1456,7 +1527,7 @@
     <!-- Global Chat -->
     <div class="chat-container" id="chatContainer">
         <div class="chat-header" onclick="toggleChat()">
-            <span>💬 צ'ט גלובלי</span>
+            <span>💬 צ'אט גלובלי</span>
             <button class="chat-toggle" id="chatToggle">−</button>
         </div>
         <div class="chat-messages" id="chatMessages"></div>
@@ -1464,6 +1535,13 @@
             <input type="text" class="chat-input" id="chatInput" placeholder="הקלד הודעה..." maxlength="200">
             <button class="chat-send-btn" onclick="sendMessage()">שלח</button>
         </div>
+    </div>
+
+    <!-- Player Menu (for chat message options) -->
+    <div class="player-menu" id="playerMenu" style="display: none;">
+        <h4 id="playerMenuName"></h4>
+        <div class="player-cookies" id="playerMenuCookies"></div>
+        <button class="friend-request-button" id="friendRequestBtn" onclick="sendFriendRequest()">שלח בקשת חברות</button>
     </div>
 
     <div class="game-container">
@@ -1528,7 +1606,6 @@
     measurementId: "G-W9EBGS5PQ5"
   };
 
-
         // Initialize Firebase
         let database;
         let firebaseInitialized = false;
@@ -1573,6 +1650,7 @@
         let chatMessages = []; // Local chat cache
         let chatListener = null;
         let selectedDonationTarget = null;
+        let selectedPlayerForMenu = null;
 
         const buildings = {
             cursor: {
@@ -1623,7 +1701,7 @@
                 cps: 1400,
                 count: 0
             },
-temple: {
+            temple: {
                 name: "מקדש",
                 emoji: "🏛️",
                 description: "מקדש קדוש לעוגיות",
@@ -2350,7 +2428,7 @@ temple: {
             }
         });
 
-function clickCookie(event) {
+        function clickCookie(event) {
             const gainedCookies = Math.floor(clickPower * prestigeMultiplier);
             cookies += gainedCookies;
             totalCookiesBaked += gainedCookies;
@@ -2636,7 +2714,7 @@ function clickCookie(event) {
             }
         }
 
-        // Chat Functions
+        // Enhanced Chat Functions with Player Menu
         function toggleChat() {
             const chatContainer = document.getElementById('chatContainer');
             const chatToggle = document.getElementById('chatToggle');
@@ -2682,6 +2760,79 @@ function clickCookie(event) {
             displayChatMessages();
         }
 
+        function showPlayerMenu(playerName, x, y) {
+            if (playerName === currentUser || !users[playerName]) return;
+            
+            selectedPlayerForMenu = playerName;
+            const playerMenu = document.getElementById('playerMenu');
+            const playerData = users[playerName];
+            
+            document.getElementById('playerMenuName').textContent = playerName;
+            document.getElementById('playerMenuCookies').textContent = `עוגיות: ${formatNumber(playerData.cookies || 0)}`;
+            
+            // Position the menu
+            playerMenu.style.left = x + 'px';
+            playerMenu.style.top = y + 'px';
+            playerMenu.style.display = 'block';
+            
+            // Check if friend request already sent
+            const friendBtn = document.getElementById('friendRequestBtn');
+            friendBtn.disabled = false;
+            friendBtn.textContent = 'שלח בקשת חברות';
+        }
+
+        function hidePlayerMenu() {
+            document.getElementById('playerMenu').style.display = 'none';
+            selectedPlayerForMenu = null;
+        }
+
+        async function sendFriendRequest() {
+            if (!selectedPlayerForMenu) return;
+            
+            const friendBtn = document.getElementById('friendRequestBtn');
+            friendBtn.disabled = true;
+            friendBtn.textContent = 'נשלח...';
+            
+            try {
+                if (firebaseInitialized) {
+                    const friendRequestData = {
+                        id: Date.now() + '_friend_' + Math.random().toString(36).substr(2, 9),
+                        from: currentUser,
+                        to: selectedPlayerForMenu,
+                        timestamp: Date.now(),
+                        status: 'pending'
+                    };
+                    
+                    await database.ref(`friendRequests/${selectedPlayerForMenu}/${friendRequestData.id}`).set(friendRequestData);
+                    
+                    // Send notification
+                    const notification = {
+                        id: Date.now() + '_notif_' + Math.random().toString(36).substr(2, 9),
+                        recipient: selectedPlayerForMenu,
+                        sender: currentUser,
+                        message: `${currentUser} שלח לך בקשת חברות! 👥`,
+                        timestamp: Date.now(),
+                        type: 'friend_request'
+                    };
+                    
+                    await database.ref(`notifications/${selectedPlayerForMenu}/${notification.id}`).set(notification);
+                    
+                    showNotification(`בקשת חברות נשלחה ל${selectedPlayerForMenu}! 👥`, 'success');
+                }
+                
+                friendBtn.textContent = 'נשלח!';
+                setTimeout(() => {
+                    hidePlayerMenu();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Failed to send friend request:', error);
+                friendBtn.disabled = false;
+                friendBtn.textContent = 'שלח בקשת חברות';
+                showNotification('שגיאה בשליחת בקשת החברות', 'error');
+            }
+        }
+
         function displayChatMessages() {
             const chatMessagesDiv = document.getElementById('chatMessages');
             chatMessagesDiv.innerHTML = '';
@@ -2713,7 +2864,10 @@ function clickCookie(event) {
                     `;
                 } else {
                     messageDiv.innerHTML = `
-                        ${msg.sender !== currentUser ? `<div class="message-sender">${msg.sender}</div>` : ''}
+                        ${msg.sender !== currentUser ? `
+                            <div class="message-options" onclick="showPlayerMenu('${msg.sender}', event.pageX, event.pageY)">⋯</div>
+                            <div class="message-sender">${msg.sender}</div>
+                        ` : ''}
                         <div>${msg.message}</div>
                         <div class="message-time">${time}</div>
                     `;
@@ -2924,6 +3078,7 @@ function clickCookie(event) {
                 showClubInfo();
             }, 2000);
         }
+        
         async function leaveClub() {
             if (!currentClub) return;
 
@@ -3178,7 +3333,7 @@ function clickCookie(event) {
                     // Save current user
                     await saveUserData();
 
-// Send notification message via chat
+                    // Send notification message via chat
                     const notificationMessage = {
                         id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                         sender: 'מערכת',
@@ -3494,6 +3649,14 @@ function clickCookie(event) {
                     }
                 });
             }
+
+            // Close player menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const playerMenu = document.getElementById('playerMenu');
+                if (playerMenu.style.display === 'block' && !playerMenu.contains(e.target)) {
+                    hidePlayerMenu();
+                }
+            });
         });
     </script>
 </body>
