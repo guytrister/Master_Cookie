@@ -2760,15 +2760,32 @@
             displayChatMessages();
         }
 
-        function showPlayerMenu(playerName, x, y) {
-            if (playerName === currentUser || !users[playerName]) return;
+        async function showPlayerMenu(playerName, x, y) {
+            if (playerName === currentUser) return;
             
             selectedPlayerForMenu = playerName;
             const playerMenu = document.getElementById('playerMenu');
-            const playerData = users[playerName];
             
+            // Try to get player data
+            let playerData = users[playerName];
+            
+            // If not in cache, try to fetch from Firebase
+            if (!playerData && firebaseInitialized) {
+                try {
+                    const userSnapshot = await database.ref(`users/${playerName}`).once('value');
+                    if (userSnapshot.exists()) {
+                        playerData = userSnapshot.val();
+                        users[playerName] = playerData; // Cache it
+                    }
+                } catch (error) {
+                    console.warn('Failed to fetch player data:', error);
+                }
+            }
+            
+            // Show menu even if no data found
             document.getElementById('playerMenuName').textContent = playerName;
-            document.getElementById('playerMenuCookies').textContent = `עוגיות: ${formatNumber(playerData.cookies || 0)}`;
+            document.getElementById('playerMenuCookies').textContent = playerData ? 
+                `עוגיות: ${formatNumber(playerData.cookies || 0)}` : 'עוגיות: לא ידוע';
             
             // Position the menu
             playerMenu.style.left = x + 'px';
@@ -2865,7 +2882,7 @@
                 } else {
                     messageDiv.innerHTML = `
                         ${msg.sender !== currentUser ? `
-                            <div class="message-options" onclick="showPlayerMenu('${msg.sender}', event.pageX, event.pageY)">⋯</div>
+                            <div class="message-options" onclick="event.stopPropagation(); showPlayerMenu('${msg.sender}', event.pageX, event.pageY);">⋯</div>
                             <div class="message-sender">${msg.sender}</div>
                         ` : ''}
                         <div>${msg.message}</div>
