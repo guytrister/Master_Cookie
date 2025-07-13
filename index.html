@@ -195,6 +195,30 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             background: linear-gradient(45deg, #A569BD, #9B59B6);
         }
+
+        .friends-button {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: linear-gradient(45deg, #3498DB, #2980B9);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .friends-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #5DADE2, #3498DB);
+        }
         .modal {
             position: fixed;
             top: 0;
@@ -474,6 +498,149 @@
             color: #3498DB;
             font-size: 0.9rem;
         }
+
+        .admin-broadcast-section {
+            background: rgba(230, 126, 34, 0.1);
+            border: 2px solid rgba(230, 126, 34, 0.3);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+        }
+
+        .admin-broadcast-section h4 {
+            color: #E67E22;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .admin-broadcast-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #E67E22;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .admin-broadcast-input:focus {
+            border-color: #D35400;
+            outline: none;
+            box-shadow: 0 0 10px rgba(230, 126, 34, 0.3);
+        }
+
+        .admin-broadcast-button {
+            background: linear-gradient(45deg, #E67E22, #D35400);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-broadcast-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .friends-section {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .friends-section h4 {
+            color: #3498DB;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .friends-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .friend-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .friend-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .friend-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .friend-name {
+            font-weight: bold;
+            color: #2C3E50;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .friend-status {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .friend-status.online {
+            color: #27AE60;
+        }
+
+        .friend-status.offline {
+            color: #E74C3C;
+        }
+
+        .friend-cookies {
+            color: #E67E22;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            background: rgba(230, 126, 34, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .no-friends {
+            text-align: center;
+            color: #7F8C8D;
+            font-style: italic;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
         .chat-container {
             position: fixed;
             bottom: 20px;
@@ -720,7 +887,6 @@
             border-radius: 15px;
             margin-bottom: 10px;
         }
-
         .cookies-per-click {
             font-size: 1.2rem;
             color: #E74C3C;
@@ -1371,6 +1537,9 @@
     <!-- Admin Button -->
     <button class="admin-button" onclick="openAdminModal()">👑 מסך יוצר</button>
 
+    <!-- Friends Button -->
+    <button class="friends-button" onclick="openFriendsModal()">👥 חברים</button>
+
     <!-- Shop Toggle Button (hidden by default) -->
     <button class="shop-toggle" id="shopToggle" onclick="toggleShop()" style="display: none;">חנות</button>
 
@@ -1439,6 +1608,7 @@
             <div id="donationMessage"></div>
         </div>
     </div>
+
     <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
@@ -1484,1922 +1654,25 @@
             <div id="settingsMessage"></div>
         </div>
     </div>
-
-    <!-- Enhanced Admin Modal -->
-    <div class="modal" id="adminModal">
-        <div class="modal-content">
-            <h3>👑 מסך יוצר המשחק</h3>
-            
-            <div class="admin-warning">
-                ⚠️ אזור מוגבל ליוצרי המשחק בלבד ⚠️
-            </div>
-
-            <div class="admin-section">
-                <h4>🔐 אימות יוצר</h4>
-                <input type="password" class="admin-input" id="adminPasswordInput" placeholder="הזן סיסמת יוצר">
-                <div class="password-requirement">
-                    💡 נדרשת סיסמת יוצר מיוחדת לגישה למסך זה
-                </div>
-                <button class="admin-button-large" onclick="verifyAdmin()">אמת גישה</button>
-            </div>
-
-            <div class="admin-transfer-section" id="adminActionsSection" style="display: none;">
-                <h4>💰 העברת עוגיות לשחקן</h4>
-                <input type="text" class="admin-transfer-input" id="targetPlayerInput" placeholder="שם משתמש של השחקן המקבל">
-                <input type="password" class="admin-transfer-input" id="targetPlayerPasswordInput" placeholder="סיסמה של השחקן (לאימות)">
-                <input type="number" class="admin-transfer-input" id="cookieAmountInput" placeholder="מספר עוגיות להעברה" min="1">
-                <div style="background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center; color: #27AE60; font-size: 0.9rem;">
-                    💡 ההעברה תתבצע ללא הגבלה וללא ניכוי מהיוצר
-                </div>
-                <button class="admin-transfer-button" onclick="adminTransferCookies()">העבר עוגיות</button>
-            </div>
-
-            <button class="close-button" onclick="closeModal('adminModal')">סגור</button>
-            <div id="adminMessage"></div>
-        </div>
-    </div>
-
-    <!-- Friends Modal -->
-    <div class="modal" id="friendsModal">
-        <div class="modal-content">
-            <h3>👥 רשימת החברים שלך</h3>
-            
-            <div class="friends-section">
-                <h4>החברים שלך</h4>
-                <div class="friends-list" id="friendsList">
-                    <!-- Friends will be loaded here -->
-                </div>
-            </div>
-
-            <button class="close-button" onclick="closeModal('friendsModal')">סגור</button>
-            <div id="friendsMessage"></div>
-        </div>
-    </div>
-
-    <div class="floating-cookies" id="floatingCookies"></div>
-    
-    <!-- Firebase Status -->
-    <div class="firebase-status loading" id="firebaseStatus">🔄 מתחבר ל-Firebase...</div>
-    
-    <!-- Global Chat -->
-    <div class="chat-container" id="chatContainer">
-        <div class="chat-header" onclick="toggleChat()">
-            <span>💬 צ'אט גלובלי</span>
-            <button class="chat-toggle" id="chatToggle">−</button>
-        </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chatInput" placeholder="הקלד הודעה..." maxlength="200">
-            <button class="chat-send-btn" onclick="sendMessage()">שלח</button>
-        </div>
-    </div>
-
-    <!-- Player Menu (for chat message options) -->
-    <div class="player-menu" id="playerMenu" style="display: none;">
-        <h4 id="playerMenuName"></h4>
-        <div class="player-cookies" id="playerMenuCookies"></div>
-        <button class="friend-request-button" id="friendRequestBtn" onclick="sendFriendRequest()">שלח בקשת חברות</button>
-    </div>
-
-    <div class="game-container">
-        <div class="main-game">
-            <div class="stats">
-                <div style="font-size: 1.1rem; color: #2C3E50; font-weight: bold; margin-bottom: 15px; background: rgba(255, 255, 255, 0.4); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.5);">
-                    🎮 יוצרי המשחק: רון אברמוביץ' וגיא טריסטר 🎮
-                                   
-                </div>
-                <div class="cookie-count" id="cookieCount">0</div>
-                <div class="cookies-per-second" id="cpsDisplay">0 עוגיות לשנייה</div>
-                <div class="cookies-per-click" id="cpcDisplay">+1 עוגיות ללחיצה</div>
-                <div class="prestige-info" id="prestigeInfo">רמת יוקרה: 0 | כפולה: x1</div>
-                <button class="prestige-button" id="prestigeButton" onclick="prestige()">🌟 איפוס יוקרה 🌟</button>
-            </div>
-            
-            <div class="cookie-container">
-                <div class="cookie" id="cookie"></div>
-            </div>
-        </div>
-        
-        <div class="shop" id="shop">
-            <button class="shop-close" onclick="toggleShop()">×</button>
-            <h2>🛒 חנות האימפריה 🛒</h2>
-            
-            <div class="shop-section">
-                <h3>🏭 מבנים</h3>
-                <div id="buildingItems"></div>
-            </div>
-            
-            <div class="shop-section">
-                <h3>👆 שדרוגי לחיצה</h3>
-                <div id="clickUpgradeItems"></div>
-            </div>
-            
-            <div class="shop-section">
-                <h3>⚡ שדרוגים</h3>
-                <div id="upgradeItems"></div>
-            </div>
-            
-            <div class="shop-section">
-                <h3>🎯 הישגים</h3>
-                <div id="achievementItems"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="achievement-popup" id="achievementPopup">
-        <div id="achievementText"></div>
-    </div>
-
-    <script>
-        // Firebase Configuration
-       const firebaseConfig = {
-    apiKey: "AIzaSyBZKyN8w32w1pn4hf28Fv9LecsTDgjZRTs",
-    authDomain: "my-login-system-d583d.firebaseapp.com",
-    databaseURL: "https://my-login-system-d583d-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "my-login-system-d583d",
-    storageBucket: "my-login-system-d583d.firebasestorage.app",
-    messagingSenderId: "873530338056",
-    appId: "1:873530338056:web:1d2911d1cb9a0000271abd",
-    measurementId: "G-W9EBGS5PQ5"
-  };
-
-        // Initialize Firebase
-        let database;
-        let firebaseInitialized = false;
-
-        try {
-            firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            firebaseInitialized = true;
-            updateFirebaseStatus('connected');
-        } catch (error) {
-            console.warn('Firebase initialization failed, using localStorage fallback:', error);
-            updateFirebaseStatus('disconnected');
-        }
-
-        function updateFirebaseStatus(status) {
-            const statusElement = document.getElementById('firebaseStatus');
-            if (status === 'connected') {
-                statusElement.className = 'firebase-status firebase-connected';
-                statusElement.textContent = '✅ מחובר ל-Firebase';
-            } else {
-                statusElement.className = 'firebase-status firebase-disconnected';
-                statusElement.textContent = '❌ מצב אופליין (localStorage)';
-            }
-        }
-
-        // Game Variables
-        let cookies = 0;
-        let cookiesPerSecond = 0;
-        let clickPower = 1;
-        let prestigeLevel = 0;
-        let prestigeMultiplier = 1;
-        let totalCookiesBaked = 0;
-        let goldenCookieClicks = 0;
-        let lastGoldenCookie = 0;
-        let totalClicks = 0;
-
-        // User and Club System
-        let currentUser = null;
-        let currentClub = null;
-        let users = {}; // Local cache
-        let clubs = {}; // Local cache
-        let chatMessages = []; // Local chat cache
-        let chatListener = null;
-        let selectedDonationTarget = null;
-        let selectedPlayerForMenu = null;
-        let userFriends = []; // List of user's friends
-
-        const buildings = {
-            cursor: {
-                name: "סמן אוטומטי",
-                emoji: "👆",
-                description: "לוחץ על העוגייה אוטומטית",
-                baseCost: 15,
-                cps: 0.1,
-                count: 0
-            },
-            grandma: {
-                name: "סבתא",
-                emoji: "👵",
-                description: "סבתא מנוסה שאופה עוגיות טעימות",
-                baseCost: 100,
-                cps: 1,
-                count: 0
-            },
-            farm: {
-                name: "חווה",
-                emoji: "🚜",
-                description: "חווה לגידול עוגיות אורגניות",
-                baseCost: 1100,
-                cps: 8,
-                count: 0
-            },
-            mine: {
-                name: "מכרה",
-                emoji: "⛏️",
-                description: "מכרה עמוק לחפירת עוגיות נדירות",
-                baseCost: 12000,
-                cps: 47,
-                count: 0
-            },
-            factory: {
-                name: "מפעל",
-                emoji: "🏭",
-                description: "מפעל אוטומטי לייצור עוגיות",
-                baseCost: 130000,
-                cps: 260,
-                count: 0
-            },
-            bank: {
-                name: "בנק",
-                emoji: "🏦",
-                description: "בנק שמייצר עוגיות מריבית",
-                baseCost: 1400000,
-                cps: 1400,
-                count: 0
-            },
-            temple: {
-                name: "מקדש",
-                emoji: "🏛️",
-                description: "מקדש קדוש לעוגיות",
-                baseCost: 20000000,
-                cps: 7800,
-                count: 0
-            },
-            wizardTower: {
-                name: "מגדל קוסמים",
-                emoji: "🧙",
-                description: "קוסמים שמזמנים עוגיות מהאוויר",
-                baseCost: 330000000,
-                cps: 44000,
-                count: 0
-            },
-            shipment: {
-                name: "חללית",
-                emoji: "🚀",
-                description: "חללית שמביאה עוגיות מהחלל",
-                baseCost: 5100000000,
-                cps: 260000,
-                count: 0
-            },
-            alchemyLab: {
-                name: "מעבדה אלכימית",
-                emoji: "⚗️",
-                description: "מעבדה להפיכת חומרים לעוגיות",
-                baseCost: 75000000000,
-                cps: 1600000,
-                count: 0
-            },
-            portal: {
-                name: "פורטל",
-                emoji: "🌀",
-                description: "פורטל לממדים אחרים מלאי עוגיות",
-                baseCost: 1000000000000,
-                cps: 10000000,
-                count: 0
-            },
-            timeMachine: {
-                name: "מכונת זמן",
-                emoji: "⏰",
-                description: "מכונת זמן שמביאה עוגיות מהעתיד",
-                baseCost: 14000000000000,
-                cps: 65000000,
-                count: 0
-            }
-        };
-
-        const clickUpgrades = {
-            clickPower1: {
-                name: "אצבע חזקה",
-                emoji: "👆",
-                description: "כל לחיצה מביאה +1 עוגיה נוספת",
-                baseCost: 50,
-                clickBonus: 1,
-                level: 0
-            },
-            clickPower2: {
-                name: "יד ברזל",
-                emoji: "✊",
-                description: "כל לחיצה מביאה +5 עוגיות נוספות",
-                baseCost: 500,
-                clickBonus: 5,
-                level: 0
-            },
-            clickPower3: {
-                name: "זרוע טיטניום",
-                emoji: "🦾",
-                description: "כל לחיצה מביאה +25 עוגיות נוספות",
-                baseCost: 5000,
-                clickBonus: 25,
-                level: 0
-            },
-            clickPower4: {
-                name: "כוח על-אנושי",
-                emoji: "⚡",
-                description: "כל לחיצה מביאה +100 עוגיות נוספות",
-                baseCost: 50000,
-                clickBonus: 100,
-                level: 0
-            },
-            clickPower5: {
-                name: "אצבע אלוהית",
-                emoji: "🌟",
-                description: "כל לחיצה מביאה +500 עוגיות נוספות",
-                baseCost: 500000,
-                clickBonus: 500,
-                level: 0
-            }
-        };
-
-        const upgrades = {
-            reinforcedIndex: {
-                name: "אצבע מחוזקת",
-                emoji: "💪",
-                description: "כפולה x2 לכל הסמנים",
-                cost: 100,
-                condition: () => buildings.cursor.count >= 1,
-                effect: () => { buildings.cursor.cps *= 2; },
-                purchased: false
-            },
-            carpalTunnelPrevention: {
-                name: "מניעת תסמונת התעלה",
-                emoji: "🖱️",
-                description: "כפולה x2 לכל הסמנים",
-                cost: 500,
-                condition: () => buildings.cursor.count >= 5,
-                effect: () => { buildings.cursor.cps *= 2; },
-                purchased: false
-            },
-            ambidextrous: {
-                name: "דו-צדדי",
-                emoji: "👐",
-                description: "כפולה x2 לכל הסמנים",
-                cost: 10000,
-                condition: () => buildings.cursor.count >= 25,
-                effect: () => { buildings.cursor.cps *= 2; },
-                purchased: false
-            },
-            forwardsFromGrandma: {
-                name: "מתכונים מסבתא",
-                emoji: "📧",
-                description: "כפולה x2 לכל הסבתות",
-                cost: 1000,
-                condition: () => buildings.grandma.count >= 1,
-                effect: () => { buildings.grandma.cps *= 2; },
-                purchased: false
-            },
-            steelPlatedRollingPins: {
-                name: "מערוכי מתכת",
-                emoji: "🍴",
-                description: "כפולה x2 לכל הסבתות",
-                cost: 5000,
-                condition: () => buildings.grandma.count >= 5,
-                effect: () => { buildings.grandma.cps *= 2; },
-                purchased: false
-            },
-            lubrication: {
-                name: "שיפור מכונות",
-                emoji: "🛠️",
-                description: "כפולה x2 לכל המפעלים",
-                cost: 650000,
-                condition: () => buildings.factory.count >= 1,
-                effect: () => { buildings.factory.cps *= 2; },
-                purchased: false
-            },
-            goldenTouch: {
-                name: "מגע הזהב",
-                emoji: "✨",
-                description: "כפולה x3 לכל הייצור",
-                cost: 10000000,
-                condition: () => goldenCookieClicks >= 5,
-                effect: () => { 
-                    for (let key in buildings) {
-                        buildings[key].cps *= 3;
-                    }
-                },
-                purchased: false
-            }
-        };
-
-        const achievements = [
-            { id: 'first_click', name: 'הלחיצה הראשונה', emoji: '👆', desc: 'לחצת על העוגייה!', condition: () => totalCookiesBaked >= 1 },
-            { id: 'hundred_cookies', name: 'מאה עוגיות', emoji: '💯', desc: 'הגעת ל-100 עוגיות!', condition: () => totalCookiesBaked >= 100 },
-            { id: 'first_building', name: 'הבנייה הראשונה', emoji: '🏗️', desc: 'קנית את הבניין הראשון!', condition: () => Object.values(buildings).some(b => b.count > 0) },
-            { id: 'thousand_cookies', name: 'אלף עוגיות', emoji: '🎯', desc: 'הגעת ל-1,000 עוגיות!', condition: () => totalCookiesBaked >= 1000 },
-            { id: 'ten_thousand_cookies', name: 'עשרת אלפים עוגיות', emoji: '🏆', desc: 'הגעת ל-10,000 עוגיות!', condition: () => totalCookiesBaked >= 10000 },
-            { id: 'hundred_thousand_cookies', name: 'מאה אלף עוגיות', emoji: '🎖️', desc: 'הגעת ל-100,000 עוגיות!', condition: () => totalCookiesBaked >= 100000 },
-            { id: 'million_cookies', name: 'מיליון עוגיות', emoji: '💎', desc: 'הגעת למיליון עוגיות!', condition: () => totalCookiesBaked >= 1000000 },
-            { id: 'first_golden', name: 'עוגיית הזהב הראשונה', emoji: '🌟', desc: 'לחצת על עוגיית זהב!', condition: () => goldenCookieClicks >= 1 },
-            { id: 'golden_master', name: 'מאסטר הזהב', emoji: '👑', desc: 'לחצת על 10 עוגיות זהב!', condition: () => goldenCookieClicks >= 10 },
-            { id: 'hundred_buildings', name: 'מאה בניינים', emoji: '🏙️', desc: 'יש לך 100 בניינים!', condition: () => Object.values(buildings).reduce((sum, b) => sum + b.count, 0) >= 100 },
-            { id: 'first_prestige', name: 'יוקרה ראשונה', emoji: '⭐', desc: 'עשית איפוס יוקרה!', condition: () => prestigeLevel >= 1 }
-        ];
-
-        let unlockedAchievements = [];
-
-        // Enhanced Admin Functions
-        function openAdminModal() {
-            document.getElementById('adminModal').style.display = 'flex';
-            document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminActionsSection').style.display = 'none';
-            document.getElementById('adminMessage').innerHTML = '';
-            // Clear all input fields
-            document.getElementById('targetPlayerInput').value = '';
-            document.getElementById('targetPlayerPasswordInput').value = '';
-            document.getElementById('cookieAmountInput').value = '';
-        }
-
-        function verifyAdmin() {
-            const password = document.getElementById('adminPasswordInput').value;
-            const messageDiv = document.getElementById('adminMessage');
-            
-            if (password === 'גיארון7865') {
-                document.getElementById('adminActionsSection').style.display = 'block';
-                messageDiv.innerHTML = '<div class="success-message">🎉 גישת יוצר אומתה בהצלחה!</div>';
-                document.getElementById('adminPasswordInput').value = '';
-            } else {
-                messageDiv.innerHTML = '<div class="error-message">❌ סיסמה שגויה - גישה נדחתה</div>';
-            }
-        }
-
-        async function adminTransferCookies() {
-            const targetPlayer = document.getElementById('targetPlayerInput').value.trim();
-            const targetPassword = document.getElementById('targetPlayerPasswordInput').value;
-            const amount = parseInt(document.getElementById('cookieAmountInput').value);
-            const messageDiv = document.getElementById('adminMessage');
-            
-            if (!targetPlayer) {
-                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש</div>';
-                return;
-            }
-            
-            if (!targetPassword) {
-                messageDiv.innerHTML = '<div class="error-message">אנא הזן סיסמה של השחקן</div>';
-                return;
-            }
-            
-            if (!amount || amount <= 0) {
-                messageDiv.innerHTML = '<div class="error-message">אנא הזן מספר עוגיות תקין</div>';
-                return;
-            }
-
-            try {
-                // Check if target player exists and verify password
-                let targetPlayerData = null;
-                
-                if (firebaseInitialized) {
-                    const userSnapshot = await database.ref(`users/${targetPlayer}`).once('value');
-                    if (userSnapshot.exists()) {
-                        targetPlayerData = userSnapshot.val();
-                    }
-                } else if (users[targetPlayer]) {
-                    targetPlayerData = users[targetPlayer];
-                }
-
-                if (!targetPlayerData) {
-                    messageDiv.innerHTML = '<div class="error-message">שחקן לא נמצא במערכת</div>';
-                    return;
-                }
-
-                // Verify player's password
-                if (targetPlayerData.password !== targetPassword) {
-                    messageDiv.innerHTML = '<div class="error-message">סיסמה שגויה לשחקן זה</div>';
-                    return;
-                }
-
-                // Add cookies to target player (no deduction from admin)
-                const targetNewCookies = (targetPlayerData.cookies || 0) + amount;
-                const targetNewTotal = (targetPlayerData.totalCookiesBaked || 0) + amount;
-
-                // Update target player data
-                targetPlayerData.cookies = targetNewCookies;
-                targetPlayerData.totalCookiesBaked = targetNewTotal;
-                targetPlayerData.lastUpdate = Date.now();
-
-                // Update local cache
-                users[targetPlayer] = targetPlayerData;
-
-                // Save to Firebase
-                if (firebaseInitialized) {
-                    // Save target player
-                    await database.ref(`users/${targetPlayer}`).set(targetPlayerData);
-
-                    // Send notification message via chat
-                    const adminNotificationMessage = {
-                        id: Date.now() + '_admin_' + Math.random().toString(36).substr(2, 9),
-                        sender: 'מערכת',
-                        message: `👑 יוצר המשחק העביר ל${targetPlayer} ${formatNumber(amount)} עוגיות!`,
-                        timestamp: Date.now(),
-                        isSystemMessage: true
-                    };
-
-                    await database.ref(`chat/${adminNotificationMessage.id}`).set(adminNotificationMessage);
-
-                    // Send direct notification to player
-                    const directNotification = {
-                        id: Date.now() + '_admin_notif_' + Math.random().toString(36).substr(2, 9),
-                        recipient: targetPlayer,
-                        sender: 'יוצר המשחק',
-                        amount: amount,
-                        message: `יוצר המשחק העביר לך ${formatNumber(amount)} עוגיות! 🎁👑`,
-                        timestamp: Date.now(),
-                        type: 'admin_transfer'
-                    };
-
-                    await database.ref(`notifications/${targetPlayer}/${directNotification.id}`).set(directNotification);
-                }
-
-                // Save to localStorage
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                // Clear inputs
-                document.getElementById('targetPlayerInput').value = '';
-                document.getElementById('targetPlayerPasswordInput').value = '';
-                document.getElementById('cookieAmountInput').value = '';
-                
-                messageDiv.innerHTML = `<div class="success-message">✅ הועברו ${formatNumber(amount)} עוגיות ל${targetPlayer} בהצלחה!<br>🎉 השחקן יקבל הודעה על ההעברה</div>`;
-
-            } catch (error) {
-                console.error('Admin transfer failed:', error);
-                messageDiv.innerHTML = '<div class="error-message">שגיאה בהעברת העוגיות</div>';
-            }
-        }
-
-        // Load saved data from localStorage and Firebase
-        async function loadInitialData() {
-            // Load local cache first
-            if (localStorage.getItem('cookieUsers')) {
-                users = JSON.parse(localStorage.getItem('cookieUsers'));
-            }
-            if (localStorage.getItem('cookieClubs')) {
-                clubs = JSON.parse(localStorage.getItem('cookieClubs'));
-            }
-
-            // Try to sync with Firebase
-            if (firebaseInitialized) {
-                try {
-                    // Load users from Firebase
-                    const usersSnapshot = await database.ref('users').once('value');
-                    if (usersSnapshot.exists()) {
-                        const firebaseUsers = usersSnapshot.val();
-                        users = { ...users, ...firebaseUsers };
-                    }
-
-                    // Load clubs from Firebase
-                    const clubsSnapshot = await database.ref('clubs').once('value');
-                    if (clubsSnapshot.exists()) {
-                        const firebaseClubs = clubsSnapshot.val();
-                        clubs = { ...clubs, ...firebaseClubs };
-                    }
-
-                    // Save merged data to localStorage
-                    localStorage.setItem('cookieUsers', JSON.stringify(users));
-                    localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-
-                    // Load chat messages
-                    const chatSnapshot = await database.ref('chat').limitToLast(50).once('value');
-                    if (chatSnapshot.exists()) {
-                        chatMessages = Object.values(chatSnapshot.val());
-                    }
-                } catch (error) {
-                    console.warn('Failed to load from Firebase:', error);
-                }
-            }
-        }
-
-        async function saveToFirebase(type, key, data) {
-            if (!firebaseInitialized) return false;
-            
-            try {
-                await database.ref(`${type}/${key}`).set(data);
-                return true;
-            } catch (error) {
-                console.warn('Failed to save to Firebase:', error);
-                return false;
-            }
-        }
-
-        async function saveData() {
-            // Always save to localStorage
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-
-            // Try to save to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref('users').set(users);
-                    await database.ref('clubs').set(clubs);
-                } catch (error) {
-                    console.warn('Failed to sync with Firebase:', error);
-                }
-            }
-        }
-
-        async function loadUserData() {
-            if (users[currentUser]) {
-                const userData = users[currentUser];
-                
-                // If Firebase is available, get fresh data
-                if (firebaseInitialized) {
-                    try {
-                        const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
-                        if (userSnapshot.exists()) {
-                            const freshData = userSnapshot.val();
-                            users[currentUser] = freshData;
-                            Object.assign(userData, freshData);
-                        }
-                    } catch (error) {
-                        console.warn('Failed to load fresh user data:', error);
-                    }
-                }
-
-                cookies = userData.cookies || 0;
-                totalClicks = userData.totalClicks || 0;
-                totalCookiesBaked = userData.totalCookiesBaked || 0;
-                prestigeLevel = userData.prestigeLevel || 0;
-                prestigeMultiplier = userData.prestigeMultiplier || 1;
-                
-                if (userData.buildings) {
-                    for (let key in userData.buildings) {
-                        if (buildings[key]) {
-                            buildings[key].count = userData.buildings[key].count || 0;
-                        }
-                    }
-                }
-                
-                if (userData.clickUpgrades) {
-                    for (let key in userData.clickUpgrades) {
-                        if (clickUpgrades[key]) {
-                            clickUpgrades[key].level = userData.clickUpgrades[key].level || 0;
-                        }
-                    }
-                }
-                
-                if (userData.upgrades) {
-                    for (let key in userData.upgrades) {
-                        if (upgrades[key]) {
-                            upgrades[key].purchased = userData.upgrades[key].purchased || false;
-                        }
-                    }
-                }
-
-                // Load friends list
-                if (userData.friends) {
-                    userFriends = userData.friends;
-                } else {
-                    userFriends = [];
-                }
-
-                currentClub = userData.club;
-                if (currentClub && clubs[currentClub]) {
-                    updateClubButton();
-                }
-            }
-        }
-
-        async function saveUserData() {
-            if (currentUser && users[currentUser]) {
-                users[currentUser].cookies = cookies;
-                users[currentUser].totalClicks = totalClicks;
-                users[currentUser].totalCookiesBaked = totalCookiesBaked;
-                users[currentUser].buildings = JSON.parse(JSON.stringify(buildings));
-                users[currentUser].clickUpgrades = JSON.parse(JSON.stringify(clickUpgrades));
-                users[currentUser].upgrades = JSON.parse(JSON.stringify(upgrades));
-                users[currentUser].prestigeLevel = prestigeLevel;
-                users[currentUser].prestigeMultiplier = prestigeMultiplier;
-                users[currentUser].club = currentClub;
-                users[currentUser].friends = userFriends;
-                users[currentUser].lastSave = Date.now();
-
-                // Save to localStorage immediately
-                localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-                // Try to save to Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`users/${currentUser}`).update(users[currentUser]);
-                    } catch (error) {
-                        console.warn('Failed to save user data to Firebase:', error);
-                    }
-                }
-            }
-        }
-
-        // Login and Registration Functions
-        async function login() {
-            const username = document.getElementById('usernameInput').value.trim();
-            const password = document.getElementById('passwordInput').value;
-            const remember = document.getElementById('rememberMe').checked;
-            const messageDiv = document.getElementById('loginMessage');
-
-            if (!username || !password) {
-                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
-                return;
-            }
-
-            // Check if user exists (try Firebase first, then localStorage)
-            let userExists = false;
-            let userData = null;
-
-            if (firebaseInitialized) {
-                try {
-                    const userSnapshot = await database.ref(`users/${username}`).once('value');
-                    if (userSnapshot.exists()) {
-                        userData = userSnapshot.val();
-                        userExists = true;
-                    }
-                } catch (error) {
-                    console.warn('Firebase login check failed, using local data:', error);
-                }
-            }
-
-            if (!userExists && users[username]) {
-                userData = users[username];
-                userExists = true;
-            }
-
-            if (userExists && userData.password === password) {
-                currentUser = username;
-                users[username] = userData; // Update local cache
-                await loadUserData();
-                if (remember) {
-                    localStorage.setItem('rememberedUser', username);
-                }
-                document.getElementById('loginScreen').style.display = 'none';
-                startGame();
-            } else {
-                messageDiv.innerHTML = '<div class="error-message">שם משתמש או סיסמה שגויים</div>';
-            }
-        }
-
-        async function register() {
-            const username = document.getElementById('usernameInput').value.trim();
-            const password = document.getElementById('passwordInput').value;
-            const remember = document.getElementById('rememberMe').checked;
-            const messageDiv = document.getElementById('registerMessage') || document.getElementById('loginMessage');
-
-            if (!username || !password) {
-                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם משתמש וסיסמה</div>';
-                return;
-            }
-
-            if (username.length < 3) {
-                messageDiv.innerHTML = '<div class="error-message">שם המשתמש חייב להיות לפחות 3 תווים</div>';
-                return;
-            }
-
-            // Check if user already exists
-            let userExists = false;
-            
-            if (firebaseInitialized) {
-                try {
-                    const userSnapshot = await database.ref(`users/${username}`).once('value');
-                    userExists = userSnapshot.exists();
-                } catch (error) {
-                    console.warn('Firebase registration check failed, using local data:', error);
-                }
-            }
-
-            if (!userExists && users[username]) {
-                userExists = true;
-            }
-
-            if (userExists) {
-                messageDiv.innerHTML = '<div class="error-message">שם המשתמש כבר קיים</div>';
-                return;
-            }
-
-            const newUser = {
-                password: password,
-                cookies: 0,
-                totalClicks: 0,
-                totalCookiesBaked: 0,
-                buildings: JSON.parse(JSON.stringify(buildings)),
-                clickUpgrades: JSON.parse(JSON.stringify(clickUpgrades)),
-                upgrades: JSON.parse(JSON.stringify(upgrades)),
-                prestigeLevel: 0,
-                prestigeMultiplier: 1,
-                club: null,
-                friends: [],
-                created: Date.now()
-            };
-
-            users[username] = newUser;
-            currentUser = username;
-
-            // Save to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`users/${username}`).set(newUser);
-                } catch (error) {
-                    console.warn('Failed to save new user to Firebase:', error);
-                }
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-            
-            if (remember) {
-                localStorage.setItem('rememberedUser', username);
-            }
-            
-            messageDiv.innerHTML = '<div class="success-message">נרשמת בהצלחה!</div>';
-            setTimeout(() => {
-                document.getElementById('loginScreen').style.display = 'none';
-                startGame();
-            }, 1000);
-        }
-
-        // Game utility functions
-        function formatNumber(num) {
-            if (num < 1000) return Math.floor(num).toString();
-            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
-            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
-            return (num / 1000000000000).toFixed(1) + 'T';
-        }
-
-        function calculateClickPower() {
-            clickPower = 1; // Base click power
-            for (let key in clickUpgrades) {
-                clickPower += clickUpgrades[key].level * clickUpgrades[key].clickBonus;
-            }
-        }
-
-        function updateDisplay() {
-            document.getElementById('cookieCount').textContent = formatNumber(cookies);
-            document.getElementById('cpsDisplay').textContent = `${formatNumber(cookiesPerSecond)} עוגיות לשנייה`;
-            document.getElementById('cpcDisplay').textContent = `+${formatNumber(Math.floor(clickPower * prestigeMultiplier))} עוגיות ללחיצה`;
-            document.getElementById('prestigeInfo').textContent = `רמת יוקרה: ${prestigeLevel} | כפולה: x${prestigeMultiplier.toFixed(1)}`;
-        }
-
-        function calculateCPS() {
-            cookiesPerSecond = 0;
-            for (let key in buildings) {
-                cookiesPerSecond += buildings[key].count * buildings[key].cps * prestigeMultiplier;
-            }
-        }
-
-        function getCost(building) {
-            return Math.floor(building.baseCost * Math.pow(1.15, building.count));
-        }
-
-        function getClickUpgradeCost(upgrade) {
-            return Math.floor(upgrade.baseCost * Math.pow(2, upgrade.level));
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = 'notification-popup';
-            if (type === 'error') {
-                notification.style.background = 'linear-gradient(135deg, #E74C3C, #C0392B)';
-            } else if (type === 'success') {
-                notification.style.background = 'linear-gradient(135deg, #27AE60, #2ECC71)';
-            }
-            
-            notification.innerHTML = `
-                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
-                    ${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}
-                </div>
-                <div>${message}</div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 4000);
-        }
-
-        // Check for notifications when user logs in or periodically
-        async function checkNotifications() {
-            if (!firebaseInitialized || !currentUser) return;
-            
-            try {
-                const notificationsSnapshot = await database.ref(`notifications/${currentUser}`).once('value');
-                if (notificationsSnapshot.exists()) {
-                    const notifications = notificationsSnapshot.val();
-                    
-                    for (let notificationId in notifications) {
-                        const notification = notifications[notificationId];
-                        
-                        // Show notification popup
-                        showNotification(notification.message, 'success');
-                        
-                        // If it's a donation or admin transfer, make sure to update local data
-                        if ((notification.type === 'donation' || notification.type === 'admin_transfer') && notification.amount) {
-                            // Reload user data to get the updated cookies
-                            const userSnapshot = await database.ref(`users/${currentUser}`).once('value');
-                            if (userSnapshot.exists()) {
-                                const updatedUserData = userSnapshot.val();
-                                cookies = updatedUserData.cookies || cookies;
-                                totalCookiesBaked = updatedUserData.totalCookiesBaked || totalCookiesBaked;
-                                updateDisplay();
-                            }
-                        }
-                        
-                        // Remove notification after showing
-                        await database.ref(`notifications/${currentUser}/${notificationId}`).remove();
-                    }
-                }
-            } catch (error) {
-                console.warn('Failed to check notifications:', error);
-            }
-        }
-
-        // Start the game
-        async function startGame() {
-            await loadInitialData();
-            await checkNotifications(); // Check for any pending notifications
-            calculateClickPower();
-            calculateCPS();
-            updateDisplay();
-            createShopItems();
-            setupChatListener();
-            
-            // Set up auto-save
-            setInterval(saveUserData, 30000); // Save every 30 seconds
-            
-            // Set up periodic notification check
-            setInterval(checkNotifications, 60000); // Check every minute
-            
-            // Update cookies per second
-            setInterval(() => {
-                if (cookiesPerSecond > 0) {
-                    cookies += cookiesPerSecond / 10; // Update 10 times per second
-                    totalCookiesBaked += cookiesPerSecond / 10;
-                    updateDisplay();
-                    checkAchievements();
-                }
-            }, 100);
-            
-            // Generate floating cookies
-            createFloatingCookies();
-            
-            // Set up cookie click handler
-            document.getElementById('cookie').addEventListener('click', clickCookie);
-        }
-
-        // Initialize the game when page loads
-        window.addEventListener('load', async () => {
-            await loadInitialData();
-            
-            // Check for remembered user
-            const rememberedUser = localStorage.getItem('rememberedUser');
-            if (rememberedUser && users[rememberedUser]) {
-                document.getElementById('usernameInput').value = rememberedUser;
-                document.getElementById('rememberMe').checked = true;
-            }
-        });
-
-        function clickCookie(event) {
-            const gainedCookies = Math.floor(clickPower * prestigeMultiplier);
-            cookies += gainedCookies;
-            totalCookiesBaked += gainedCookies;
-            totalClicks++;
-            
-            updateDisplay();
-            createShopItems();
-            checkAchievements();
-            
-            // Create click effect
-            createClickEffect(event.clientX, event.clientY, gainedCookies);
-            createParticles(event.clientX, event.clientY, '#FFD700');
-        }
-
-        function createClickEffect(x, y, amount) {
-            const effect = document.createElement('div');
-            effect.className = 'click-effect';
-            effect.textContent = `+${formatNumber(amount)}`;
-            effect.style.left = x + 'px';
-            effect.style.top = y + 'px';
-            document.body.appendChild(effect);
-            
-            setTimeout(() => {
-                if (document.body.contains(effect)) {
-                    document.body.removeChild(effect);
-                }
-            }, 1200);
-        }
-
-        function createParticles(x, y, color) {
-            for (let i = 0; i < 5; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = (x + Math.random() * 20 - 10) + 'px';
-                particle.style.top = (y + Math.random() * 20 - 10) + 'px';
-                particle.style.background = color;
-                document.body.appendChild(particle);
-                
-                setTimeout(() => {
-                    if (document.body.contains(particle)) {
-                        document.body.removeChild(particle);
-                    }
-                }, 2000);
-            }
-        }
-
-        function createFloatingCookies() {
-            const container = document.getElementById('floatingCookies');
-            
-            setInterval(() => {
-                const cookie = document.createElement('div');
-                cookie.className = 'floating-cookie';
-                cookie.style.left = Math.random() * window.innerWidth + 'px';
-                cookie.style.animationDuration = (15 + Math.random() * 20) + 's';
-                container.appendChild(cookie);
-                
-                setTimeout(() => {
-                    if (container.contains(cookie)) {
-                        container.removeChild(cookie);
-                    }
-                }, 30000);
-            }, 3000);
-        }
-
-        function createShopItems() {
-            // Buildings
-            const buildingContainer = document.getElementById('buildingItems');
-            buildingContainer.innerHTML = '';
-            
-            for (let key in buildings) {
-                const building = buildings[key];
-                const cost = getCost(building);
-                const canAfford = cookies >= cost;
-                
-                const item = document.createElement('div');
-                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${building.emoji} ${building.name}</span>
-                        <span class="item-count">${building.count}</span>
-                    </div>
-                    <div class="item-description">${building.description}</div>
-                    <div class="item-production">מייצר: ${formatNumber(building.cps * prestigeMultiplier)} עוגיות/שנייה</div>
-                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
-                `;
-                
-                if (canAfford) {
-                    item.onclick = () => buyBuilding(key);
-                }
-                
-                buildingContainer.appendChild(item);
-            }
-
-            // Click Upgrades
-            const clickUpgradeContainer = document.getElementById('clickUpgradeItems');
-            clickUpgradeContainer.innerHTML = '';
-            
-            for (let key in clickUpgrades) {
-                const upgrade = clickUpgrades[key];
-                const cost = getClickUpgradeCost(upgrade);
-                const canAfford = cookies >= cost;
-                
-                const item = document.createElement('div');
-                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
-                        <span class="item-count">רמה ${upgrade.level}</span>
-                    </div>
-                    <div class="item-description">${upgrade.description}</div>
-                    <div class="item-production">נוכחי: +${formatNumber(upgrade.level * upgrade.clickBonus)} ללחיצה</div>
-                    <div class="item-price">💰 ${formatNumber(cost)} עוגיות</div>
-                `;
-                
-                if (canAfford) {
-                    item.onclick = () => buyClickUpgrade(key);
-                }
-                
-                clickUpgradeContainer.appendChild(item);
-            }
-
-            // Upgrades
-            const upgradeContainer = document.getElementById('upgradeItems');
-            upgradeContainer.innerHTML = '';
-            
-            for (let key in upgrades) {
-                const upgrade = upgrades[key];
-                if (upgrade.purchased || !upgrade.condition()) continue;
-                
-                const canAfford = cookies >= upgrade.cost;
-                
-                const item = document.createElement('div');
-                item.className = `shop-item ${canAfford ? '' : 'disabled'}`;
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${upgrade.emoji} ${upgrade.name}</span>
-                        <span class="item-count">🆕</span>
-                    </div>
-                    <div class="item-description">${upgrade.description}</div>
-                    <div class="item-price">💰 ${formatNumber(upgrade.cost)} עוגיות</div>
-                `;
-                
-                if (canAfford) {
-                    item.onclick = () => buyUpgrade(key);
-                }
-                
-                upgradeContainer.appendChild(item);
-            }
-
-            // Achievements
-            const achievementContainer = document.getElementById('achievementItems');
-            achievementContainer.innerHTML = '';
-            
-            achievements.forEach(achievement => {
-                const unlocked = unlockedAchievements.includes(achievement.id);
-                const item = document.createElement('div');
-                item.className = `shop-item ${unlocked ? '' : 'disabled'}`;
-                item.style.cursor = 'default';
-                item.innerHTML = `
-                    <div class="item-header">
-                        <span class="item-name">${achievement.emoji} ${achievement.name}</span>
-                        <span class="item-count">${unlocked ? '✅' : '❌'}</span>
-                    </div>
-                    <div class="item-description">${achievement.desc}</div>
-                `;
-                achievementContainer.appendChild(item);
-            });
-        }
-
-        function buyBuilding(buildingKey) {
-            const building = buildings[buildingKey];
-            const cost = getCost(building);
-            
-            if (cookies >= cost) {
-                cookies -= cost;
-                building.count++;
-                totalCookiesBaked += cost;
-                calculateClickPower();
-                calculateCPS();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                createParticles(event.clientX, event.clientY, '#4ECDC4');
-            }
-        }
-
-        function buyClickUpgrade(upgradeKey) {
-            const upgrade = clickUpgrades[upgradeKey];
-            const cost = getClickUpgradeCost(upgrade);
-            
-            if (cookies >= cost) {
-                cookies -= cost;
-                upgrade.level++;
-                totalCookiesBaked += cost;
-                calculateClickPower();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                createParticles(event.clientX, event.clientY, '#E74C3C');
-                showAchievement({name: 'שדרוג לחיצה!', desc: `${upgrade.name} - רמה ${upgrade.level}`, emoji: upgrade.emoji});
-            }
-        }
-
-        function buyUpgrade(upgradeKey) {
-            const upgrade = upgrades[upgradeKey];
-            
-            if (cookies >= upgrade.cost && !upgrade.purchased) {
-                cookies -= upgrade.cost;
-                totalCookiesBaked += upgrade.cost;
-                upgrade.purchased = true;
-                upgrade.effect();
-                calculateCPS();
-                updateDisplay();
-                createShopItems();
-                checkAchievements();
-                createParticles(event.clientX, event.clientY, '#E74C3C');
-                showAchievement({name: 'שדרוג נקנה!', desc: `קנית: ${upgrade.name}`, emoji: '⚡'});
-            }
-        }
-
-        function toggleShop() {
-            const shop = document.getElementById('shop');
-            const shopToggle = document.getElementById('shopToggle');
-            
-            if (shop.classList.contains('hidden')) {
-                shop.classList.remove('hidden');
-                shopToggle.style.display = 'none';
-            } else {
-                shop.classList.add('hidden');
-                shopToggle.style.display = 'block';
-            }
-        }
-
-        function checkAchievements() {
-            achievements.forEach(achievement => {
-                if (!unlockedAchievements.includes(achievement.id) && achievement.condition()) {
-                    unlockedAchievements.push(achievement.id);
-                    showAchievement(achievement);
-                }
-            });
-        }
-
-        function showAchievement(achievement) {
-            const popup = document.getElementById('achievementPopup');
-            popup.innerHTML = `
-                <div style="font-size: 2rem; margin-bottom: 10px;">${achievement.emoji}</div>
-                <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">${achievement.name}</div>
-                <div style="font-size: 1rem;">${achievement.desc}</div>
-            `;
-            popup.classList.add('show');
-            
-            setTimeout(() => {
-                popup.classList.remove('show');
-            }, 4000);
-        }
-
-        function prestige() {
-            if (totalCookiesBaked >= 1000000) {
-                if (confirm('האם אתה בטוח שברצונך לעשות איפוס יוקרה? זה יאפס את כל ההתקדמות אבל יגדיל את הכפולה!')) {
-                    prestigeLevel++;
-                    prestigeMultiplier = 1 + (prestigeLevel * 0.1);
-                    
-                    // Reset everything
-                    cookies = 0;
-                    for (let key in buildings) {
-                        buildings[key].count = 0;
-                    }
-                    for (let key in clickUpgrades) {
-                        clickUpgrades[key].level = 0;
-                    }
-                    for (let key in upgrades) {
-                        upgrades[key].purchased = false;
-                    }
-                    
-                    calculateClickPower();
-                    calculateCPS();
-                    updateDisplay();
-                    createShopItems();
-                    showAchievement({name: 'יוקרה!', desc: `רמת יוקרה ${prestigeLevel}`, emoji: '⭐'});
-                }
-            } else {
-                showNotification('נדרש מיליון עוגיות לפחות לאיפוס יוקרה!', 'error');
-            }
-        }
-
-        // Enhanced Chat Functions with Player Menu
-        function toggleChat() {
-            const chatContainer = document.getElementById('chatContainer');
-            const chatToggle = document.getElementById('chatToggle');
-            
-            if (chatContainer.classList.contains('minimized')) {
-                chatContainer.classList.remove('minimized');
-                chatToggle.textContent = '−';
-            } else {
-                chatContainer.classList.add('minimized');
-                chatToggle.textContent = '+';
-            }
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message || !currentUser) return;
-            
-            const messageData = {
-                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                sender: currentUser,
-                message: message,
-                timestamp: Date.now()
-            };
-
-            // Add to local cache
-            chatMessages.push(messageData);
-            if (chatMessages.length > 50) {
-                chatMessages = chatMessages.slice(-50);
-            }
-
-            // Send to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`chat/${messageData.id}`).set(messageData);
-                } catch (error) {
-                    console.warn('Failed to send message to Firebase:', error);
-                }
-            }
-
-            input.value = '';
-            displayChatMessages();
-        }
-
-        async function showPlayerMenu(playerName, x, y) {
-            if (playerName === currentUser) return;
-            
-            selectedPlayerForMenu = playerName;
-            const playerMenu = document.getElementById('playerMenu');
-            
-            // Try to get player data
-            let playerData = users[playerName];
-            
-            // If not in cache, try to fetch from Firebase
-            if (!playerData && firebaseInitialized) {
-                try {
-                    const userSnapshot = await database.ref(`users/${playerName}`).once('value');
-                    if (userSnapshot.exists()) {
-                        playerData = userSnapshot.val();
-                        users[playerName] = playerData; // Cache it
-                    }
-                } catch (error) {
-                    console.warn('Failed to fetch player data:', error);
-                }
-            }
-            
-            // Show menu even if no data found
-            document.getElementById('playerMenuName').textContent = playerName;
-            document.getElementById('playerMenuCookies').textContent = playerData ? 
-                `עוגיות: ${formatNumber(playerData.cookies || 0)}` : 'עוגיות: לא ידוע';
-            
-            // Position the menu
-            playerMenu.style.left = x + 'px';
-            playerMenu.style.top = y + 'px';
-            playerMenu.style.display = 'block';
-            
-            // Check if friend request already sent
-            const friendBtn = document.getElementById('friendRequestBtn');
-            friendBtn.disabled = false;
-            friendBtn.textContent = 'שלח בקשת חברות';
-        }
-
-        function hidePlayerMenu() {
-            document.getElementById('playerMenu').style.display = 'none';
-            selectedPlayerForMenu = null;
-        }
-
-        async function sendFriendRequest() {
-            if (!selectedPlayerForMenu) return;
-            
-            const friendBtn = document.getElementById('friendRequestBtn');
-            friendBtn.disabled = true;
-            friendBtn.textContent = 'נשלח...';
-            
-            try {
-                if (firebaseInitialized) {
-                    const friendRequestData = {
-                        id: Date.now() + '_friend_' + Math.random().toString(36).substr(2, 9),
-                        from: currentUser,
-                        to: selectedPlayerForMenu,
-                        timestamp: Date.now(),
-                        status: 'pending'
-                    };
-                    
-                    await database.ref(`friendRequests/${selectedPlayerForMenu}/${friendRequestData.id}`).set(friendRequestData);
-                    
-                    // Send notification
-                    const notification = {
-                        id: Date.now() + '_notif_' + Math.random().toString(36).substr(2, 9),
-                        recipient: selectedPlayerForMenu,
-                        sender: currentUser,
-                        message: `${currentUser} שלח לך בקשת חברות! 👥`,
-                        timestamp: Date.now(),
-                        type: 'friend_request'
-                    };
-                    
-                    await database.ref(`notifications/${selectedPlayerForMenu}/${notification.id}`).set(notification);
-                    
-                    showNotification(`בקשת חברות נשלחה ל${selectedPlayerForMenu}! 👥`, 'success');
-                }
-                
-                friendBtn.textContent = 'נשלח!';
-                setTimeout(() => {
-                    hidePlayerMenu();
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Failed to send friend request:', error);
-                friendBtn.disabled = false;
-                friendBtn.textContent = 'שלח בקשת חברות';
-                showNotification('שגיאה בשליחת בקשת החברות', 'error');
+   
+         
+            <script>
+
+ showNotification('שגיאה בשליחת בקשת החברות', 'error');
             }
         }
 
         // Friends Functions
         function openFriendsModal() {
             if (!currentUser) {
-                showNotification('יש להתחבר כדי לראות רשימת חברים', 'error');
-                return;
-            }
-            
-            loadFriendsList();
-            document.getElementById('friendsModal').style.display = 'flex';
-        }
 
-        async function loadFriendsList() {
-            const friendsListDiv = document.getElementById('friendsList');
-            friendsListDiv.innerHTML = '<div style="text-align: center; padding: 20px;">טוען רשימת חברים...</div>';
 
-            try {
-                // Load user's friends list from Firebase
-                if (firebaseInitialized) {
-                    const friendsSnapshot = await database.ref(`users/${currentUser}/friends`).once('value');
-                    if (friendsSnapshot.exists()) {
-                        userFriends = friendsSnapshot.val() || [];
-                    } else {
-                        userFriends = [];
-                    }
-                }
 
-                // If no friends, show message
-                if (userFriends.length === 0) {
-                    friendsListDiv.innerHTML = `
-                        <div class="no-friends">
-                            😔 אין לך חברים עדיין<br>
-                            שלח בקשות חברות לשחקנים אחרים דרך הצ'אט!
-                        </div>
-                    `;
-                    return;
-                }
 
-                // Load friends data and display
-                friendsListDiv.innerHTML = '';
+
+
+
                 
-                for (const friendUsername of userFriends) {
-                    let friendData = users[friendUsername];
-                    
-                    // Try to fetch from Firebase if not in cache
-                    if (!friendData && firebaseInitialized) {
-                        try {
-                            const friendSnapshot = await database.ref(`users/${friendUsername}`).once('value');
-                            if (friendSnapshot.exists()) {
-                                friendData = friendSnapshot.val();
-                                users[friendUsername] = friendData; // Cache it
-                            }
-                        } catch (error) {
-                            console.warn(`Failed to fetch friend data for ${friendUsername}:`, error);
-                        }
-                    }
-
-                    // Determine online status
-                    const lastSave = friendData?.lastSave || 0;
-                    const isOnline = Date.now() - lastSave < 300000; // 5 minutes
-                    
-                    // Create friend item
-                    const friendItem = document.createElement('div');
-                    friendItem.className = 'friend-item';
-                    
-                    friendItem.innerHTML = `
-                        <div class="friend-info">
-                            <div class="friend-name">👤 ${friendUsername}</div>
-                            <div class="friend-status ${isOnline ? 'online' : 'offline'}">
-                                ${isOnline ? '🟢 מחובר' : '🔴 לא מחובר'}
-                                ${friendData ? '' : ' (נתונים לא זמינים)'}
-                            </div>
-                        </div>
-                        <div class="friend-cookies">
-                            🍪 ${friendData ? formatNumber(friendData.cookies || 0) : 'לא ידוע'}
-                        </div>
-                    `;
-                    
-                    friendsListDiv.appendChild(friendItem);
-                }
-
-            } catch (error) {
-                console.error('Failed to load friends list:', error);
-                friendsListDiv.innerHTML = `
-                    <div class="no-friends">
-                        ❌ שגיאה בטעינת רשימת החברים<br>
-                        נסה שוב מאוחר יותר
-                    </div>
-                `;
-            }
-        }
-
-        // Function to accept friend request (will be called from notifications)
-        async function acceptFriendRequest(fromUser) {
-            try {
-                if (firebaseInitialized) {
-                    // Add to both users' friends lists
-                    const currentUserFriends = await database.ref(`users/${currentUser}/friends`).once('value');
-                    const fromUserFriends = await database.ref(`users/${fromUser}/friends`).once('value');
-                    
-                    let currentFriends = currentUserFriends.exists() ? currentUserFriends.val() : [];
-                    let fromFriends = fromUserFriends.exists() ? fromUserFriends.val() : [];
-                    
-                    // Add each other to friends lists if not already there
-                    if (!currentFriends.includes(fromUser)) {
-                        currentFriends.push(fromUser);
-                        await database.ref(`users/${currentUser}/friends`).set(currentFriends);
-                    }
-                    
-                    if (!fromFriends.includes(currentUser)) {
-                        fromFriends.push(currentUser);
-                        await database.ref(`users/${fromUser}/friends`).set(fromFriends);
-                    }
-                    
-                    // Update local cache
-                    userFriends = currentFriends;
-                    
-                    // Send confirmation notification
-                    const notification = {
-                        id: Date.now() + '_notif_' + Math.random().toString(36).substr(2, 9),
-                        recipient: fromUser,
-                        sender: currentUser,
-                        message: `${currentUser} קיבל את בקשת החברות שלך! 🎉`,
-                        timestamp: Date.now(),
-                        type: 'friend_accepted'
-                    };
-                    
-                    await database.ref(`notifications/${fromUser}/${notification.id}`).set(notification);
-                    
-                    showNotification(`${fromUser} נוסף לרשימת החברים שלך! 🎉`, 'success');
-                }
-                
-            } catch (error) {
-                console.error('Failed to accept friend request:', error);
-                showNotification('שגיאה בקבלת בקשת החברות', 'error');
-            }
-        }
-
-        function displayChatMessages() {
-            const chatMessagesDiv = document.getElementById('chatMessages');
-            chatMessagesDiv.innerHTML = '';
-
-            chatMessages.slice(-20).forEach(msg => {
-                const messageDiv = document.createElement('div');
-                
-                // Check if it's a system message
-                if (msg.isSystemMessage) {
-                    messageDiv.className = 'chat-message system-message';
-                    messageDiv.style.background = 'linear-gradient(45deg, #F39C12, #E67E22)';
-                    messageDiv.style.color = 'white';
-                    messageDiv.style.textAlign = 'center';
-                    messageDiv.style.margin = '10px 5px';
-                    messageDiv.style.fontWeight = 'bold';
-                } else {
-                    messageDiv.className = `chat-message ${msg.sender === currentUser ? 'own' : 'other'}`;
-                }
-                
-                const time = new Date(msg.timestamp).toLocaleTimeString('he-IL', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                if (msg.isSystemMessage) {
-                    messageDiv.innerHTML = `
-                        <div>${msg.message}</div>
-                        <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 3px;">${time}</div>
-                    `;
-                } else {
-                    messageDiv.innerHTML = `
-                        ${msg.sender !== currentUser ? `
-                            <div class="message-options" onclick="event.stopPropagation(); showPlayerMenu('${msg.sender}', event.pageX, event.pageY);">⋯</div>
-                            <div class="message-sender">${msg.sender}</div>
-                        ` : ''}
-                        <div>${msg.message}</div>
-                        <div class="message-time">${time}</div>
-                    `;
-                }
-
-                chatMessagesDiv.appendChild(messageDiv);
-            });
-
-            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-        }
-
-        function setupChatListener() {
-            if (!firebaseInitialized) return;
-
-            try {
-                chatListener = database.ref('chat').limitToLast(50);
-                chatListener.on('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        chatMessages = Object.values(snapshot.val());
-                        displayChatMessages();
-                    }
-                });
-            } catch (error) {
-                console.warn('Failed to setup chat listener:', error);
-            }
-        }
-
-        // Club Functions
-        async function generateClubCode() {
-            let code;
-            let attempts = 0;
-            const maxAttempts = 100;
-
-            do {
-                code = Math.floor(1000 + Math.random() * 9000).toString();
-                attempts++;
-
-                // Check Firebase first
-                if (firebaseInitialized) {
-                    try {
-                        const snapshot = await database.ref(`clubs/${code}`).once('value');
-                        if (!snapshot.exists() && !clubs[code]) {
-                            break;
-                        }
-                    } catch (error) {
-                        console.warn('Firebase club code check failed, using local data:', error);
-                        if (!clubs[code]) break;
-                    }
-                } else {
-                    if (!clubs[code]) break;
-                }
-            } while (attempts < maxAttempts);
-
-            if (attempts >= maxAttempts) {
-                throw new Error('Failed to generate unique club code');
-            }
-
-            return code;
-        }
-
-        function openJoinClubModal() {
-            document.getElementById('joinClubModal').style.display = 'flex';
-        }
-
-        function openCreateClubModal() {
-            document.getElementById('createClubModal').style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            // Clear messages
-            const messageElements = document.querySelectorAll('#' + modalId + ' .error-message, #' + modalId + ' .success-message');
-            messageElements.forEach(el => el.remove());
-        }
-
-        async function joinClub() {
-            const clubCode = document.getElementById('clubCodeInput').value.trim();
-            const messageDiv = document.getElementById('joinClubMessage');
-
-            if (clubCode.length !== 4 || !/^\d{4}$/.test(clubCode)) {
-                messageDiv.innerHTML = '<div class="error-message">הקוד חייב להיות 4 ספרות</div>';
-                return;
-            }
-
-            // Check if club exists (try Firebase first)
-            let clubExists = false;
-            let clubData = null;
-
-            if (firebaseInitialized) {
-                try {
-                    const clubSnapshot = await database.ref(`clubs/${clubCode}`).once('value');
-                    if (clubSnapshot.exists()) {
-                        clubData = clubSnapshot.val();
-                        clubExists = true;
-                    }
-                } catch (error) {
-                    console.warn('Firebase club check failed, using local data:', error);
-                }
-            }
-
-            if (!clubExists && clubs[clubCode]) {
-                clubData = clubs[clubCode];
-                clubExists = true;
-            }
-
-            if (!clubExists) {
-                messageDiv.innerHTML = '<div class="error-message">לא נמצא מועדון עם קוד זה</div>';
-                return;
-            }
-
-            if (currentClub) {
-                messageDiv.innerHTML = '<div class="error-message">אתה כבר חבר במועדון אחר</div>';
-                return;
-            }
-
-            // Join the club
-            const newMember = {
-                username: currentUser,
-                role: 'חבר רגיל',
-                joinDate: Date.now()
-            };
-
-            clubData.members.push(newMember);
-            clubs[clubCode] = clubData;
-
-            currentClub = clubCode;
-            users[currentUser].club = clubCode;
-
-            // Save to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`clubs/${clubCode}`).set(clubData);
-                    await database.ref(`users/${currentUser}/club`).set(clubCode);
-                } catch (error) {
-                    console.warn('Failed to save club join to Firebase:', error);
-                }
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-            messageDiv.innerHTML = '<div class="success-message">הצטרפת למועדון בהצלחה!</div>';
-            updateClubButton();
-            
-            setTimeout(() => {
-                closeModal('joinClubModal');
-                showClubInfo();
-            }, 1000);
-        }
-
-        async function createClub() {
-            const clubName = document.getElementById('clubNameInput').value.trim();
-            const messageDiv = document.getElementById('createClubMessage');
-
-            if (!clubName) {
-                messageDiv.innerHTML = '<div class="error-message">אנא הזן שם מועדון</div>';
-                return;
-            }
-
-            if (clubName.length < 3) {
-                messageDiv.innerHTML = '<div class="error-message">שם המועדון חייב להיות לפחות 3 תווים</div>';
-                return;
-            }
-
-            if (currentClub) {
-                messageDiv.innerHTML = '<div class="error-message">אתה כבר חבר במועדון אחר</div>';
-                return;
-            }
-
-            const clubCode = await generateClubCode();
-            
-            const newClub = {
-                name: clubName,
-                code: clubCode,
-                founder: currentUser,
-                created: Date.now(),
-                members: [{
-                    username: currentUser,
-                    role: 'מייסד מועדון',
-                    joinDate: Date.now()
-                }]
-            };
-
-            clubs[clubCode] = newClub;
-            currentClub = clubCode;
-            users[currentUser].club = clubCode;
-
-            // Save to Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`clubs/${clubCode}`).set(newClub);
-                    await database.ref(`users/${currentUser}/club`).set(clubCode);
-                } catch (error) {
-                    console.warn('Failed to save new club to Firebase:', error);
-                }
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-
-            messageDiv.innerHTML = '<div class="success-message">המועדון נוצר בהצלחה!<br>קוד המועדון: ' + clubCode + '</div>';
-            updateClubButton();
-            
-            setTimeout(() => {
-                closeModal('createClubModal');
-                showClubInfo();
-            }, 2000);
-        }
-        
-        async function leaveClub() {
-            if (!currentClub) return;
-
-            const club = clubs[currentClub];
-            if (club.founder === currentUser) {
-                if (confirm('אתה מייסד המועדון. עזיבה תמחק את המועדון לחלוטין. האם אתה בטוח?')) {
-                    // Delete club from Firebase
-                    if (firebaseInitialized) {
-                        try {
-                            await database.ref(`clubs/${currentClub}`).remove();
-                        } catch (error) {
-                            console.warn('Failed to delete club from Firebase:', error);
-                        }
-                    }
-
-                    delete clubs[currentClub];
-                    
-                    // Remove club from all members
-                    for (let username in users) {
-                        if (users[username].club === currentClub) {
-                            users[username].club = null;
-                            // Update in Firebase
-                            if (firebaseInitialized) {
-                                try {
-                                    await database.ref(`users/${username}/club`).remove();
-                                } catch (error) {
-                                    console.warn('Failed to update user club in Firebase:', error);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                club.members = club.members.filter(member => member.username !== currentUser);
-                
-                // Update club in Firebase
-                if (firebaseInitialized) {
-                    try {
-                        await database.ref(`clubs/${currentClub}/members`).set(club.members);
-                    } catch (error) {
-                        console.warn('Failed to update club members in Firebase:', error);
-                    }
-                }
-            }
-
-            currentClub = null;
-            users[currentUser].club = null;
-            
-            // Update user in Firebase
-            if (firebaseInitialized) {
-                try {
-                    await database.ref(`users/${currentUser}/club`).remove();
-                } catch (error) {
-                    console.warn('Failed to update user club in Firebase:', error);
-                }
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cookieUsers', JSON.stringify(users));
-            localStorage.setItem('cookieClubs', JSON.stringify(clubs));
-            
-            updateClubButton();
-            closeModal('clubInfoModal');
-        }
-
-        async function showClubInfo() {
-            if (!currentClub) return;
-
-            let club = clubs[currentClub];
-
-            // Try to get fresh data from Firebase
-            if (firebaseInitialized) {
-                try {
-                    const clubSnapshot = await database.ref(`clubs/${currentClub}`).once('value');
-                    if (clubSnapshot.exists()) {
-                        club = clubSnapshot.val();
-                        clubs[currentClub] = club; // Update local cache
-                    }
-                } catch (error) {
-                    console.warn('Failed to fetch club info from Firebase:', error);
-                }
-            }
-
-            if (!club) return;
-
-            document.getElementById('clubInfoName').textContent = club.name;
-            document.getElementById('clubInfoCode').textContent = `קוד המועדון: ${club.code}`;
-            
-            // Calculate total clicks from all members
-            let totalClubClicks = 0;
-            for (const member of club.members) {
-                if (users[member.username]) {
-                    totalClubClicks += users[member.username].totalClicks || 0;
-                } else if (firebaseInitialized) {
-                    // Try to fetch member data from Firebase
-                    try {
-                        const memberSnapshot = await database.ref(`users/${member.username}`).once('value');
-                        if (memberSnapshot.exists()) {
-                            const memberData = memberSnapshot.val();
-                            users[member.username] = memberData; // Cache locally
-                            totalClubClicks += memberData.totalClicks || 0;
-                        }
-                    } catch (error) {
-                        console.warn('Failed to fetch member data from Firebase:', error);
-                    }
-                }
-            }
-            
-            document.getElementById('clubInfoStats').textContent = `סך הלחיצות במועדון: ${totalClubClicks.toLocaleString()}`;
-            
-            // Show members
-            const memberListDiv = document.getElementById('memberList');
-            memberListDiv.innerHTML = '';
-            club.members.forEach(member => {
-                const memberDiv = document.createElement('div');
-                memberDiv.className = 'member-item';
-                memberDiv.innerHTML = `
-                    <span class="member-name">${member.username}</span>
-                    <span class="member-role">${member.role}</span>
-                `;
-                memberListDiv.appendChild(memberDiv);
-            });
-
-            document.getElementById('clubInfoModal').style.display = 'flex';
-        }
-
-        function updateClubButton() {
-            const clubButtons = document.querySelector('.club-buttons');
-            if (currentClub) {
-                clubButtons.innerHTML = `
-                    <button class="club-button" onclick="showClubInfo()">🏆 ${clubs[currentClub].name}</button>
-                `;
-            } else {
-                clubButtons.innerHTML = `
-                    <button class="club-button" onclick="openJoinClubModal()">🏆 הצטרף למועדון</button>
-                    <button class="club-button" onclick="openCreateClubModal()">⭐ צור מועדון</button>
-                `;
-            }
-        }
-
         // Donation Functions
         function openDonateModal() {
             if (!currentUser) {
@@ -3839,7 +2112,17 @@
                     hidePlayerMenu();
                 }
             });
+
+            // Add event listener for admin broadcast input
+            const adminBroadcastInput = document.getElementById('adminBroadcastInput');
+            if (adminBroadcastInput) {
+                adminBroadcastInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        sendAdminBroadcast();
+                    }
+                });
+            }
         });
     </script>
 </body>
-</html>
+</html>                    
